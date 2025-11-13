@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import '../providers/business_provider.dart';
 import '../models/business_profile.dart';
+import '../services/permission_handler.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -41,13 +42,104 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.dispose();
   }
 
-  Future<void> _pickLogo() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() {
-        _logoPath = pickedFile.path;
-      });
+  Future<void> _showImageSourceDialog() async {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Seleccionar logo'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.photo_library, color: Color(0xFF2196F3)),
+              title: const Text('Galería'),
+              onTap: () {
+                Navigator.pop(context);
+                _pickLogo(ImageSource.gallery);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.camera_alt, color: Color(0xFF4CAF50)),
+              title: const Text('Cámara'),
+              onTap: () {
+                Navigator.pop(context);
+                _pickLogo(ImageSource.camera);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _pickLogo(ImageSource source) async {
+    bool hasPermission = false;
+
+    // Solicitar permisos según la fuente
+    if (source == ImageSource.gallery) {
+      hasPermission = await AppPermissionHandler.requestGalleryPermission(context);
+      
+      if (!hasPermission) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('⚠️ Se necesitan permisos para acceder a la galería'),
+              backgroundColor: Colors.orange,
+            ),
+          );
+        }
+        return;
+      }
+    } else if (source == ImageSource.camera) {
+      hasPermission = await AppPermissionHandler.requestCameraPermission(context);
+      
+      if (!hasPermission) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('⚠️ Se necesitan permisos para usar la cámara'),
+              backgroundColor: Colors.orange,
+            ),
+          );
+        }
+        return;
+      }
+    }
+
+    try {
+      final picker = ImagePicker();
+      final pickedFile = await picker.pickImage(
+        source: source,
+        maxWidth: 512,
+        maxHeight: 512,
+        imageQuality: 85,
+      );
+      
+      if (pickedFile != null) {
+        setState(() {
+          _logoPath = pickedFile.path;
+        });
+        
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('✅ Logo seleccionado'),
+              backgroundColor: Colors.green,
+              duration: Duration(seconds: 1),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      print('❌ Error al seleccionar logo: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('❌ Error al seleccionar logo: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
@@ -68,37 +160,71 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               Center(
                 child: GestureDetector(
-                  onTap: _pickLogo,
-                  child: Container(
-                    width: 120.w,
-                    height: 120.w,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.grey[300]!, width: 2),
-                    ),
-                    child: _logoPath != null
-                        ? ClipOval(
-                            child: Image.file(
-                              File(_logoPath!),
-                              fit: BoxFit.cover,
-                            ),
-                          )
-                        : Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.add_a_photo,
-                                  size: 40.sp, color: Colors.grey),
-                              SizedBox(height: 8.h),
-                              Text(
-                                'Agregar Logo',
-                                style: TextStyle(
-                                  color: Colors.grey[600],
-                                  fontSize: 12.sp,
+                  onTap: _showImageSourceDialog,
+                  child: Stack(
+                    children: [
+                      Container(
+                        width: 120.w,
+                        height: 120.w,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.grey[300]!, width: 2),
+                        ),
+                        child: _logoPath != null
+                            ? ClipOval(
+                                child: Image.file(
+                                  File(_logoPath!),
+                                  fit: BoxFit.cover,
                                 ),
+                              )
+                            : Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.add_a_photo,
+                                      size: 40.sp, color: Colors.grey),
+                                  SizedBox(height: 8.h),
+                                  Text(
+                                    'Agregar Logo',
+                                    style: TextStyle(
+                                      color: Colors.grey[600],
+                                      fontSize: 12.sp,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
+                      ),
+                      if (_logoPath != null)
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF2196F3),
+                              shape: BoxShape.circle,
+                              border: Border.all(color: Colors.white, width: 2),
+                            ),
+                            child: IconButton(
+                              icon: const Icon(
+                                Icons.edit,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                              onPressed: _showImageSourceDialog,
+                            ),
                           ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 8.h),
+              Center(
+                child: Text(
+                  'Toca para cambiar el logo',
+                  style: TextStyle(
+                    color: Colors.grey[600],
+                    fontSize: 12.sp,
                   ),
                 ),
               ),

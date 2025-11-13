@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import '../providers/product_provider.dart';
 import '../models/product.dart';
 import '../widgets/product_card.dart';
+import '../services/permission_handler.dart';
 
 class ProductsScreen extends StatelessWidget {
   const ProductsScreen({super.key});
@@ -103,13 +104,104 @@ class _AddProductDialogState extends State<AddProductDialog> {
     super.dispose();
   }
 
-  Future<void> _pickImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() {
-        _imagePath = pickedFile.path;
-      });
+  Future<void> _showImageSourceDialog() async {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Seleccionar imagen'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.photo_library, color: Color(0xFF2196F3)),
+              title: const Text('Galería'),
+              onTap: () {
+                Navigator.pop(context);
+                _pickImage(ImageSource.gallery);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.camera_alt, color: Color(0xFF4CAF50)),
+              title: const Text('Cámara'),
+              onTap: () {
+                Navigator.pop(context);
+                _pickImage(ImageSource.camera);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
+    bool hasPermission = false;
+
+    // Solicitar permisos según la fuente
+    if (source == ImageSource.gallery) {
+      hasPermission = await AppPermissionHandler.requestGalleryPermission(context);
+      
+      if (!hasPermission) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('⚠️ Se necesitan permisos para acceder a la galería'),
+              backgroundColor: Colors.orange,
+            ),
+          );
+        }
+        return;
+      }
+    } else if (source == ImageSource.camera) {
+      hasPermission = await AppPermissionHandler.requestCameraPermission(context);
+      
+      if (!hasPermission) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('⚠️ Se necesitan permisos para usar la cámara'),
+              backgroundColor: Colors.orange,
+            ),
+          );
+        }
+        return;
+      }
+    }
+
+    try {
+      final picker = ImagePicker();
+      final pickedFile = await picker.pickImage(
+        source: source,
+        maxWidth: 1024,
+        maxHeight: 1024,
+        imageQuality: 85,
+      );
+      
+      if (pickedFile != null) {
+        setState(() {
+          _imagePath = pickedFile.path;
+        });
+        
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('✅ Imagen seleccionada'),
+              backgroundColor: Colors.green,
+              duration: Duration(seconds: 1),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      print('❌ Error al seleccionar imagen: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('❌ Error al seleccionar imagen: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
@@ -149,7 +241,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
 
                 // Image Picker
                 GestureDetector(
-                  onTap: _pickImage,
+                  onTap: _showImageSourceDialog,
                   child: Container(
                     width: double.infinity,
                     height: 120.h,
@@ -159,12 +251,36 @@ class _AddProductDialogState extends State<AddProductDialog> {
                       border: Border.all(color: Colors.grey[300]!),
                     ),
                     child: _imagePath != null
-                        ? ClipRRect(
-                            borderRadius: BorderRadius.circular(12.r),
-                            child: Image.file(
-                              File(_imagePath!),
-                              fit: BoxFit.cover,
-                            ),
+                        ? Stack(
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(12.r),
+                                child: Image.file(
+                                  File(_imagePath!),
+                                  fit: BoxFit.cover,
+                                  width: double.infinity,
+                                  height: double.infinity,
+                                ),
+                              ),
+                              Positioned(
+                                top: 8,
+                                right: 8,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.black.withOpacity(0.5),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: IconButton(
+                                    icon: const Icon(
+                                      Icons.edit,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
+                                    onPressed: _showImageSourceDialog,
+                                  ),
+                                ),
+                              ),
+                            ],
                           )
                         : Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -174,6 +290,12 @@ class _AddProductDialogState extends State<AddProductDialog> {
                               SizedBox(height: 8.h),
                               Text('Agregar imagen',
                                   style: TextStyle(color: Colors.grey[600])),
+                              SizedBox(height: 4.h),
+                              Text('Toca para seleccionar',
+                                  style: TextStyle(
+                                    color: Colors.grey[500],
+                                    fontSize: 12.sp,
+                                  )),
                             ],
                           ),
                   ),
