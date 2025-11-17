@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
-import 'package:path_provider/path_provider.dart';
 
 /// Servicio para guardar imágenes en la galería
 /// Compatible con todas las versiones de Android y políticas de Play Store
