@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../providers/business_provider.dart';
 import '../providers/product_provider.dart';
 import '../providers/order_provider.dart';
 import '../providers/invoice_provider.dart';
+import '../providers/settings_provider.dart';
 import '../widgets/dashboard_card.dart';
 import '../widgets/bottom_nav_bar.dart';
 import 'products_screen.dart';
 import 'orders_screen.dart';
 import 'invoices_screen.dart';
-import 'profile_screen.dart';
+import 'settings_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({Key? key}) : super(key: key);
@@ -32,6 +34,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       const ProductsScreen(),
       const OrdersScreen(),
       const InvoicesScreen(),
+      const SettingsScreen(),
     ];
   }
 
@@ -56,10 +59,12 @@ class DashboardHome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final businessProvider = Provider.of<BusinessProvider>(context);
     final productProvider = Provider.of<ProductProvider>(context);
     final orderProvider = Provider.of<OrderProvider>(context);
     final invoiceProvider = Provider.of<InvoiceProvider>(context);
+    final settingsProvider = Provider.of<SettingsProvider>(context);
 
     return Scaffold(
       body: SafeArea(
@@ -102,25 +107,6 @@ class DashboardHome extends StatelessWidget {
                           ),
                         ],
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const ProfileScreen(),
-                            ),
-                          );
-                        },
-                        child: CircleAvatar(
-                          radius: 24.r,
-                          backgroundColor: Colors.white,
-                          child: Icon(
-                            Icons.settings,
-                            color: const Color(0xFF2196F3),
-                            size: 24.sp,
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 ],
@@ -133,7 +119,7 @@ class DashboardHome extends StatelessWidget {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'Dashboard',
+                  l10n.dashboard,
                   style: TextStyle(
                     fontSize: 28.sp,
                     fontWeight: FontWeight.bold,
@@ -149,22 +135,22 @@ class DashboardHome extends StatelessWidget {
                 child: Column(
                   children: [
                     DashboardCard(
-                      title: 'Productos Registrados',
+                      title: l10n.productsRegistered,
                       value: '${productProvider.totalProducts}',
                       color: const Color(0xFF4CAF50),
                       icon: Icons.inventory_2,
                     ),
                     SizedBox(height: 16.h),
                     DashboardCard(
-                      title: 'Pedidos Realizados',
+                      title: l10n.ordersPlaced,
                       value: '${orderProvider.totalOrders}',
                       color: const Color(0xFF2196F3),
                       icon: Icons.shopping_cart,
                     ),
                     SizedBox(height: 16.h),
                     DashboardCard(
-                      title: 'Ingresos Totales',
-                      value: '\$${invoiceProvider.totalRevenue.toStringAsFixed(0)}',
+                      title: l10n.totalRevenue,
+                      value: settingsProvider.formatPrice(invoiceProvider.totalRevenue),
                       color: const Color(0xFF9C27B0),
                       icon: Icons.attach_money,
                     ),
@@ -194,7 +180,7 @@ class DashboardHome extends StatelessWidget {
                                 const Icon(Icons.inventory_2, color: Colors.white),
                                 SizedBox(width: 8.w),
                                 Text(
-                                  'Productos',
+                                  l10n.products,
                                   style: TextStyle(
                                     fontSize: 16.sp,
                                     fontWeight: FontWeight.bold,
@@ -228,7 +214,7 @@ class DashboardHome extends StatelessWidget {
                                 const Icon(Icons.shopping_cart, color: Colors.white),
                                 SizedBox(width: 8.w),
                                 Text(
-                                  'Pedidos',
+                                  l10n.orders,
                                   style: TextStyle(
                                     fontSize: 16.sp,
                                     fontWeight: FontWeight.bold,

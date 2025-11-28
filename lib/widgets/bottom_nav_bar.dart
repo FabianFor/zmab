@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
   final int currentIndex;
@@ -13,6 +14,8 @@ class CustomBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -32,22 +35,26 @@ class CustomBottomNavBar extends StatelessWidget {
         unselectedItemColor: Colors.grey,
         selectedFontSize: 12.sp,
         unselectedFontSize: 12.sp,
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Inicio',
+            icon: const Icon(Icons.home),
+            label: l10n.dashboard,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.inventory_2),
-            label: 'Productos',
+            icon: const Icon(Icons.inventory_2),
+            label: l10n.products,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart),
-            label: 'Pedidos',
+            icon: const Icon(Icons.shopping_cart),
+            label: l10n.orders,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.receipt_long),
-            label: 'Boletas',
+            icon: const Icon(Icons.receipt_long),
+            label: l10n.invoices,
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.settings),
+            label: l10n.settings,
           ),
         ],
       ),
