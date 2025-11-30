@@ -8,8 +8,6 @@ import '../l10n/app_localizations.dart';
 import '../models/product.dart';
 import '../providers/product_provider.dart';
 import '../widgets/product_card.dart';
-import '../widgets/error_snackbar.dart';
-import '../core/utils/validators.dart';
 
 class ProductsScreen extends StatefulWidget {
   const ProductsScreen({super.key});
@@ -29,7 +27,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
     final isLargeScreen = screenWidth > 600;
 
-    // ✅ MANEJO DE ESTADO DE CARGA
     if (productProvider.isLoading) {
       return const Scaffold(
         body: Center(
@@ -38,7 +35,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
       );
     }
 
-    // ✅ MANEJO DE ERRORES
     if (productProvider.error != null) {
       return Scaffold(
         body: Center(
@@ -59,7 +55,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                   productProvider.loadProducts();
                 },
                 icon: const Icon(Icons.refresh),
-                label: Text(_getRetryText(l10n)),
+                label: const Text('Reintentar'),
               ),
             ],
           ),
@@ -67,7 +63,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
       );
     }
 
-    // Filtrar productos
     List<Product> filteredProducts = productProvider.products;
     
     if (_searchQuery.isNotEmpty) {
@@ -86,7 +81,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
         backgroundColor: const Color(0xFF2196F3),
         foregroundColor: Colors.white,
         actions: [
-          // ✅ Filtro por categoría
           PopupMenuButton<String>(
             icon: const Icon(Icons.filter_list),
             onSelected: (value) {
@@ -95,9 +89,9 @@ class _ProductsScreenState extends State<ProductsScreen> {
               });
             },
             itemBuilder: (context) => [
-              PopupMenuItem(
+              const PopupMenuItem(
                 value: 'all',
-                child: Text(_getAllCategoriesText(l10n)),
+                child: Text('Todas las categorías'),
               ),
               PopupMenuItem(
                 value: 'food',
@@ -121,7 +115,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
       ),
       body: Column(
         children: [
-          // Search Bar
           Container(
             padding: EdgeInsets.all(16.w),
             color: Colors.white,
@@ -132,7 +125,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                 });
               },
               decoration: InputDecoration(
-                hintText: _getSearchProductsText(l10n),
+                hintText: 'Buscar productos...',
                 hintStyle: TextStyle(fontSize: 14.sp),
                 prefixIcon: Icon(Icons.search, size: 20.sp),
                 suffixIcon: _searchQuery.isNotEmpty
@@ -159,7 +152,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
             ),
           ),
 
-          // ✅ Chip de filtro activo
           if (_selectedCategory != 'all')
             Container(
               padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
@@ -179,7 +171,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
               ),
             ),
 
-          // Product List
           Expanded(
             child: filteredProducts.isEmpty
                 ? Center(
@@ -196,7 +187,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                         SizedBox(height: 16.h),
                         Text(
                           _searchQuery.isNotEmpty || _selectedCategory != 'all'
-                              ? _getNoProductsFoundText(l10n)
+                              ? 'No se encontraron productos'
                               : l10n.noProducts,
                           style: TextStyle(fontSize: 18.sp, color: Colors.grey),
                         ),
@@ -204,8 +195,26 @@ class _ProductsScreenState extends State<ProductsScreen> {
                     ),
                   )
                 : isLargeScreen
-                    ? _buildGridView(filteredProducts, screenWidth)
-                    : _buildListView(filteredProducts),
+                    ? GridView.builder(
+                        padding: EdgeInsets.all(16.w),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: screenWidth > 1200 ? 3 : 2,
+                          childAspectRatio: 3,
+                          crossAxisSpacing: 16.w,
+                          mainAxisSpacing: 16.h,
+                        ),
+                        itemCount: filteredProducts.length,
+                        itemBuilder: (context, index) {
+                          return ProductCard(product: filteredProducts[index]);
+                        },
+                      )
+                    : ListView.builder(
+                        padding: EdgeInsets.all(16.w),
+                        itemCount: filteredProducts.length,
+                        itemBuilder: (context, index) {
+                          return ProductCard(product: filteredProducts[index]);
+                        },
+                      ),
           ),
         ],
       ),
@@ -223,76 +232,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
     );
   }
 
-  // ✅ ListView para móviles
-  Widget _buildListView(List<Product> products) {
-    return ListView.builder(
-      padding: EdgeInsets.all(16.w),
-      itemCount: products.length,
-      itemBuilder: (context, index) {
-        return ProductCard(product: products[index]);
-      },
-    );
-  }
-
-  // ✅ GridView para tablets/desktop
-  Widget _buildGridView(List<Product> products, double screenWidth) {
-    final crossAxisCount = screenWidth > 1200 ? 3 : 2;
-    
-    return GridView.builder(
-      padding: EdgeInsets.all(16.w),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: crossAxisCount,
-        childAspectRatio: 3,
-        crossAxisSpacing: 16.w,
-        mainAxisSpacing: 16.h,
-      ),
-      itemCount: products.length,
-      itemBuilder: (context, index) {
-        return ProductCard(product: products[index]);
-      },
-    );
-  }
-
-  String _getAllCategoriesText(AppLocalizations l10n) {
-    switch (l10n.localeName) {
-      case 'es': return 'Todas las categorías';
-      case 'en': return 'All categories';
-      case 'pt': return 'Todas as categorias';
-      case 'zh': return '所有类别';
-      default: return 'All categories';
-    }
-  }
-
-  String _getSearchProductsText(AppLocalizations l10n) {
-    switch (l10n.localeName) {
-      case 'es': return 'Buscar productos...';
-      case 'en': return 'Search products...';
-      case 'pt': return 'Buscar produtos...';
-      case 'zh': return '搜索产品...';
-      default: return 'Search products...';
-    }
-  }
-
-  String _getNoProductsFoundText(AppLocalizations l10n) {
-    switch (l10n.localeName) {
-      case 'es': return 'No se encontraron productos';
-      case 'en': return 'No products found';
-      case 'pt': return 'Nenhum produto encontrado';
-      case 'zh': return '未找到产品';
-      default: return 'No products found';
-    }
-  }
-
-  String _getRetryText(AppLocalizations l10n) {
-    switch (l10n.localeName) {
-      case 'es': return 'Reintentar';
-      case 'en': return 'Retry';
-      case 'pt': return 'Tentar novamente';
-      case 'zh': return '重试';
-      default: return 'Retry';
-    }
-  }
-
   String _getCategoryName(String category, AppLocalizations l10n) {
     switch (category) {
       case 'food': return l10n.food;
@@ -304,7 +243,10 @@ class _ProductsScreenState extends State<ProductsScreen> {
   }
 }
 
-// ✅ DIÁLOGO CON VALIDACIONES COMPLETAS
+// ============================================================================
+// DIÁLOGO PARA AGREGAR/EDITAR PRODUCTO
+// ============================================================================
+
 class AddProductDialog extends StatefulWidget {
   final Product? product;
 
@@ -339,7 +281,6 @@ class _AddProductDialogState extends State<AddProductDialog> {
 
   @override
   void dispose() {
-    // ✅ DISPOSE de controllers para evitar memory leaks
     _nameController.dispose();
     _descriptionController.dispose();
     _priceController.dispose();
@@ -351,9 +292,9 @@ class _AddProductDialogState extends State<AddProductDialog> {
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(
       source: ImageSource.gallery,
-      maxWidth: 800, // ✅ Optimización
+      maxWidth: 800,
       maxHeight: 800,
-      imageQuality: 85, // ✅ Compresión
+      imageQuality: 85,
     );
 
     if (image != null) {
@@ -364,7 +305,6 @@ class _AddProductDialogState extends State<AddProductDialog> {
   }
 
   Future<void> _saveProduct() async {
-    // ✅ Validar formulario
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -399,14 +339,23 @@ class _AddProductDialogState extends State<AddProductDialog> {
 
       if (success) {
         Navigator.pop(context);
-        SuccessSnackBar.show(
-          context,
-          widget.product == null
-              ? _getProductAddedText()
-              : _getProductUpdatedText(),
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              widget.product == null
+                  ? 'Producto agregado exitosamente'
+                  : 'Producto actualizado exitosamente',
+            ),
+            backgroundColor: Colors.green,
+          ),
         );
       } else {
-        ErrorSnackBar.show(context, productProvider.error ?? 'Error desconocido');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(productProvider.error ?? 'Error desconocido'),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
     }
   }
@@ -415,6 +364,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
     final isLargeScreen = screenWidth > 600;
 
     return Dialog(
@@ -422,8 +372,10 @@ class _AddProductDialogState extends State<AddProductDialog> {
         borderRadius: BorderRadius.circular(20.r),
       ),
       child: Container(
-        width: isLargeScreen ? 600.w : double.infinity,
-        constraints: BoxConstraints(maxHeight: 0.9.sh),
+        width: isLargeScreen ? 600.w : screenWidth * 0.9,
+        constraints: BoxConstraints(
+          maxHeight: screenHeight * 0.85,
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -453,16 +405,17 @@ class _AddProductDialogState extends State<AddProductDialog> {
               ),
             ),
 
-            // Form
-            Expanded(
+            // Form (scrolleable)
+            Flexible(
               child: SingleChildScrollView(
                 padding: EdgeInsets.all(20.w),
                 child: Form(
                   key: _formKey,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      // ✅ NOMBRE con validación
+                      // Nombre
                       TextFormField(
                         controller: _nameController,
                         decoration: InputDecoration(
@@ -472,12 +425,20 @@ class _AddProductDialogState extends State<AddProductDialog> {
                           ),
                           prefixIcon: const Icon(Icons.label),
                         ),
-                        validator: Validators.validateProductName,
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'El nombre no puede estar vacío';
+                          }
+                          if (value.trim().length < 2) {
+                            return 'El nombre debe tener al menos 2 caracteres';
+                          }
+                          return null;
+                        },
                         textCapitalization: TextCapitalization.words,
                       ),
                       SizedBox(height: 16.h),
 
-                      // ✅ DESCRIPCIÓN con validación
+                      // Descripción
                       TextFormField(
                         controller: _descriptionController,
                         decoration: InputDecoration(
@@ -487,13 +448,12 @@ class _AddProductDialogState extends State<AddProductDialog> {
                           ),
                           prefixIcon: const Icon(Icons.description),
                         ),
-                        validator: Validators.validateDescription,
                         maxLines: 3,
                         textCapitalization: TextCapitalization.sentences,
                       ),
                       SizedBox(height: 16.h),
 
-                      // ✅ PRECIO con validación
+                      // Precio
                       TextFormField(
                         controller: _priceController,
                         decoration: InputDecoration(
@@ -504,11 +464,20 @@ class _AddProductDialogState extends State<AddProductDialog> {
                           prefixIcon: const Icon(Icons.attach_money),
                         ),
                         keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                        validator: Validators.validatePrice,
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'El precio no puede estar vacío';
+                          }
+                          final price = double.tryParse(value);
+                          if (price == null || price <= 0) {
+                            return 'Ingrese un precio válido';
+                          }
+                          return null;
+                        },
                       ),
                       SizedBox(height: 16.h),
 
-                      // ✅ STOCK con validación
+                      // Stock
                       TextFormField(
                         controller: _stockController,
                         decoration: InputDecoration(
@@ -519,7 +488,16 @@ class _AddProductDialogState extends State<AddProductDialog> {
                           prefixIcon: const Icon(Icons.inventory),
                         ),
                         keyboardType: TextInputType.number,
-                        validator: Validators.validateStock,
+                        validator: (value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'El stock no puede estar vacío';
+                          }
+                          final stock = int.tryParse(value);
+                          if (stock == null || stock < 0) {
+                            return 'Ingrese un stock válido';
+                          }
+                          return null;
+                        },
                       ),
                       SizedBox(height: 16.h),
 
@@ -547,7 +525,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
                       ),
                       SizedBox(height: 20.h),
 
-                      // Imagen
+                      // Imagen preview
                       if (_imagePath.isNotEmpty)
                         Center(
                           child: Stack(
@@ -582,13 +560,13 @@ class _AddProductDialogState extends State<AddProductDialog> {
                             ],
                           ),
                         ),
-                      SizedBox(height: 16.h),
+                      if (_imagePath.isNotEmpty) SizedBox(height: 16.h),
 
-                      // Botón para agregar imagen
+                      // Botón para agregar/cambiar imagen
                       OutlinedButton.icon(
                         onPressed: _pickImage,
                         icon: const Icon(Icons.image),
-                        label: Text(_imagePath.isEmpty ? l10n.addImage : l10n.changeImage),
+                        label: Text(_imagePath.isEmpty ? 'Agregar imagen' : 'Cambiar imagen'),
                         style: OutlinedButton.styleFrom(
                           minimumSize: Size(double.infinity, 50.h),
                           shape: RoundedRectangleBorder(
@@ -602,7 +580,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
               ),
             ),
 
-            // Botones
+            // Botones de acción
             Padding(
               padding: EdgeInsets.all(20.w),
               child: Row(
@@ -649,27 +627,5 @@ class _AddProductDialogState extends State<AddProductDialog> {
         ),
       ),
     );
-  }
-
-  String _getProductAddedText() {
-    final l10n = AppLocalizations.of(context)!;
-    switch (l10n.localeName) {
-      case 'es': return 'Producto agregado exitosamente';
-      case 'en': return 'Product added successfully';
-      case 'pt': return 'Produto adicionado com sucesso';
-      case 'zh': return '产品添加成功';
-      default: return 'Product added successfully';
-    }
-  }
-
-  String _getProductUpdatedText() {
-    final l10n = AppLocalizations.of(context)!;
-    switch (l10n.localeName) {
-      case 'es': return 'Producto actualizado exitosamente';
-      case 'en': return 'Product updated successfully';
-      case 'pt': return 'Produto atualizado com sucesso';
-      case 'zh': return '产品更新成功';
-      default: return 'Product updated successfully';
-    }
   }
 }

@@ -13,6 +13,11 @@ class SettingsScreen extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final settingsProvider = context.watch<SettingsProvider>();
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    
+    // ✅ DETECTAR TAMAÑO DE PANTALLA
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isLargeScreen = screenWidth > 600;
+    final maxWidth = isLargeScreen ? 800.0 : double.infinity; // ✅ Limitar ancho en tablets
 
     return Scaffold(
       appBar: AppBar(
@@ -20,235 +25,472 @@ class SettingsScreen extends StatelessWidget {
         backgroundColor: isDark ? null : const Color(0xFF2196F3),
         foregroundColor: Colors.white,
       ),
-      body: ListView(
-        padding: EdgeInsets.all(16.w),
-        children: [
-          // ✅ DARK MODE SWITCH
-          Card(
-            child: SwitchListTile(
-              value: settingsProvider.isDarkMode,
-              onChanged: (value) {
-                settingsProvider.toggleDarkMode();
-              },
-              title: Text(
-                _getDarkModeText(l10n),
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w500,
+      body: Center( // ✅ CENTRAR contenido en tablets
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: maxWidth), // ✅ LIMITAR ancho
+          child: ListView(
+            padding: EdgeInsets.all(isLargeScreen ? 24.w : 16.w),
+            children: [
+              // ✅ DARK MODE SWITCH
+              Card(
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.r),
                 ),
-              ),
-              subtitle: Text(
-                _getDarkModeSubtitleText(l10n),
-                style: TextStyle(fontSize: 13.sp),
-              ),
-              secondary: Icon(
-                settingsProvider.isDarkMode 
-                    ? Icons.dark_mode 
-                    : Icons.light_mode,
-                color: const Color(0xFF2196F3),
-                size: 28.sp,
-              ),
-              activeColor: const Color(0xFF2196F3),
-            ),
-          ),
-          
-          SizedBox(height: 16.h),
-
-          // Perfil del negocio
-          Card(
-            child: ListTile(
-              leading: Icon(
-                Icons.store,
-                color: const Color(0xFF2196F3),
-                size: 28.sp,
-              ),
-              title: Text(
-                l10n.businessProfile,
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              subtitle: Text(
-                _getBusinessProfileSubtitleText(l10n),
-                style: TextStyle(fontSize: 13.sp),
-              ),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const ProfileScreen(),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: isLargeScreen ? 20.w : 16.w,
+                    vertical: isLargeScreen ? 12.h : 8.h,
                   ),
-                );
-              },
-            ),
-          ),
-
-          SizedBox(height: 16.h),
-
-          // Idioma
-          Card(
-            child: ListTile(
-              leading: Icon(
-                Icons.language,
-                color: const Color(0xFF4CAF50),
-                size: 28.sp,
-              ),
-              title: Text(
-                l10n.language,
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              subtitle: Text(
-                '${settingsProvider.currentLanguageFlag} ${settingsProvider.currentLanguageName}',
-                style: TextStyle(fontSize: 14.sp),
-              ),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {
-                _showLanguageDialog(context);
-              },
-            ),
-          ),
-
-          SizedBox(height: 16.h),
-
-          // Moneda
-          Card(
-            child: ListTile(
-              leading: Icon(
-                Icons.attach_money,
-                color: const Color(0xFF9C27B0),
-                size: 28.sp,
-              ),
-              title: Text(
-                l10n.currency,
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              subtitle: Text(
-                '${settingsProvider.currentCurrencyFlag} ${settingsProvider.currentCurrencyName}',
-                style: TextStyle(fontSize: 14.sp),
-              ),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {
-                _showCurrencyDialog(context);
-              },
-            ),
-          ),
-
-          SizedBox(height: 32.h),
-
-          // Info de la app
-          Center(
-            child: Column(
-              children: [
-                Text(
-                  'MiNegocio',
-                  style: TextStyle(
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.grey[600],
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(12.w),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF2196F3).withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12.r),
+                        ),
+                        child: Icon(
+                          settingsProvider.isDarkMode 
+                              ? Icons.dark_mode 
+                              : Icons.light_mode,
+                          color: const Color(0xFF2196F3),
+                          size: isLargeScreen ? 32.sp : 28.sp,
+                        ),
+                      ),
+                      SizedBox(width: 16.w),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              _getDarkModeText(l10n),
+                              style: TextStyle(
+                                fontSize: isLargeScreen ? 18.sp : 16.sp,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            SizedBox(height: 4.h),
+                            Text(
+                              _getDarkModeSubtitleText(l10n),
+                              style: TextStyle(
+                                fontSize: isLargeScreen ? 15.sp : 13.sp,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Switch(
+                        value: settingsProvider.isDarkMode,
+                        onChanged: (value) {
+                          settingsProvider.toggleDarkMode();
+                        },
+                        activeColor: const Color(0xFF2196F3),
+                      ),
+                    ],
                   ),
                 ),
-                SizedBox(height: 8.h),
-                Text(
-                  'Versión 1.0.0',
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    color: Colors.grey[500],
-                  ),
+              ),
+              
+              SizedBox(height: 16.h),
+
+              // ✅ PERFIL DEL NEGOCIO
+              Card(
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.r),
                 ),
-              ],
-            ),
+                child: ListTile(
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: isLargeScreen ? 20.w : 16.w,
+                    vertical: isLargeScreen ? 12.h : 8.h,
+                  ),
+                  leading: Container(
+                    padding: EdgeInsets.all(12.w),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF2196F3).withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                    child: Icon(
+                      Icons.store,
+                      color: const Color(0xFF2196F3),
+                      size: isLargeScreen ? 32.sp : 28.sp,
+                    ),
+                  ),
+                  title: Text(
+                    l10n.businessProfile,
+                    style: TextStyle(
+                      fontSize: isLargeScreen ? 18.sp : 16.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  subtitle: Text(
+                    _getBusinessProfileSubtitleText(l10n),
+                    style: TextStyle(
+                      fontSize: isLargeScreen ? 15.sp : 13.sp,
+                    ),
+                  ),
+                  trailing: Icon(
+                    Icons.chevron_right,
+                    size: isLargeScreen ? 28.sp : 24.sp,
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const ProfileScreen(),
+                      ),
+                    );
+                  },
+                ),
+              ),
+
+              SizedBox(height: 16.h),
+
+              // ✅ IDIOMA
+              Card(
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+                child: ListTile(
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: isLargeScreen ? 20.w : 16.w,
+                    vertical: isLargeScreen ? 12.h : 8.h,
+                  ),
+                  leading: Container(
+                    padding: EdgeInsets.all(12.w),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF4CAF50).withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                    child: Icon(
+                      Icons.language,
+                      color: const Color(0xFF4CAF50),
+                      size: isLargeScreen ? 32.sp : 28.sp,
+                    ),
+                  ),
+                  title: Text(
+                    l10n.language,
+                    style: TextStyle(
+                      fontSize: isLargeScreen ? 18.sp : 16.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  subtitle: Text(
+                    '${settingsProvider.currentLanguageFlag} ${settingsProvider.currentLanguageName}',
+                    style: TextStyle(
+                      fontSize: isLargeScreen ? 16.sp : 14.sp,
+                    ),
+                  ),
+                  trailing: Icon(
+                    Icons.chevron_right,
+                    size: isLargeScreen ? 28.sp : 24.sp,
+                  ),
+                  onTap: () {
+                    _showLanguageDialog(context);
+                  },
+                ),
+              ),
+
+              SizedBox(height: 16.h),
+
+              // ✅ MONEDA
+              Card(
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+                child: ListTile(
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: isLargeScreen ? 20.w : 16.w,
+                    vertical: isLargeScreen ? 12.h : 8.h,
+                  ),
+                  leading: Container(
+                    padding: EdgeInsets.all(12.w),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF9C27B0).withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                    child: Icon(
+                      Icons.attach_money,
+                      color: const Color(0xFF9C27B0),
+                      size: isLargeScreen ? 32.sp : 28.sp,
+                    ),
+                  ),
+                  title: Text(
+                    l10n.currency,
+                    style: TextStyle(
+                      fontSize: isLargeScreen ? 18.sp : 16.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  subtitle: Text(
+                    '${settingsProvider.currentCurrencyFlag} ${settingsProvider.currentCurrencyName}',
+                    style: TextStyle(
+                      fontSize: isLargeScreen ? 16.sp : 14.sp,
+                    ),
+                  ),
+                  trailing: Icon(
+                    Icons.chevron_right,
+                    size: isLargeScreen ? 28.sp : 24.sp,
+                  ),
+                  onTap: () {
+                    _showCurrencyDialog(context);
+                  },
+                ),
+              ),
+
+              SizedBox(height: 32.h),
+
+              // ✅ INFO DE LA APP
+              Center(
+                child: Column(
+                  children: [
+                    Text(
+                      'MiNegocio',
+                      style: TextStyle(
+                        fontSize: isLargeScreen ? 22.sp : 18.sp,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                    SizedBox(height: 8.h),
+                    Text(
+                      'Versión 1.0.0',
+                      style: TextStyle(
+                        fontSize: isLargeScreen ? 16.sp : 14.sp,
+                        color: Colors.grey[500],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 
+  // ✅ DIÁLOGO DE IDIOMA (RESPONSIVO)
   void _showLanguageDialog(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final settingsProvider = context.read<SettingsProvider>();
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final isLargeScreen = screenWidth > 600;
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.selectLanguage),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: SettingsProvider.supportedLanguages.entries.map((entry) {
-            final isSelected = settingsProvider.locale.languageCode == entry.key;
-            return ListTile(
-              leading: Text(
-                entry.value['flag']!,
-                style: TextStyle(fontSize: 24.sp),
-              ),
-              title: Text(entry.value['name']!),
-              trailing: isSelected 
-                  ? Icon(Icons.check, color: const Color(0xFF2196F3), size: 24.sp)
-                  : null,
-              selected: isSelected,
-              onTap: () {
-                settingsProvider.setLanguage(entry.key);
-                Navigator.pop(context);
-              },
-            );
-          }).toList(),
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.r),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(l10n.cancel),
+        child: Container(
+          constraints: BoxConstraints(
+            maxWidth: isLargeScreen ? 450 : screenWidth * 0.9,
+            maxHeight: screenHeight * 0.6,
           ),
-        ],
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // ✅ HEADER
+              Container(
+                padding: EdgeInsets.all(20.w),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF2196F3),
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(20.r),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.language,
+                      color: Colors.white,
+                      size: isLargeScreen ? 28.sp : 24.sp,
+                    ),
+                    SizedBox(width: 12.w),
+                    Expanded(
+                      child: Text(
+                        l10n.selectLanguage,
+                        style: TextStyle(
+                          fontSize: isLargeScreen ? 22.sp : 20.sp,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.close, color: Colors.white, size: 24.sp),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+              ),
+              
+              // ✅ LISTA DE IDIOMAS
+              Flexible(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  padding: EdgeInsets.symmetric(vertical: 8.h),
+                  itemCount: SettingsProvider.supportedLanguages.length,
+                  itemBuilder: (context, index) {
+                    final entry = SettingsProvider.supportedLanguages.entries.elementAt(index);
+                    final isSelected = settingsProvider.locale.languageCode == entry.key;
+                    
+                    return ListTile(
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 24.w,
+                        vertical: 8.h,
+                      ),
+                      leading: Text(
+                        entry.value['flag']!,
+                        style: TextStyle(fontSize: isLargeScreen ? 32.sp : 28.sp),
+                      ),
+                      title: Text(
+                        entry.value['name']!,
+                        style: TextStyle(
+                          fontSize: isLargeScreen ? 18.sp : 16.sp,
+                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                        ),
+                      ),
+                      trailing: isSelected 
+                          ? Icon(
+                              Icons.check_circle,
+                              color: const Color(0xFF2196F3),
+                              size: isLargeScreen ? 28.sp : 24.sp,
+                            )
+                          : null,
+                      selected: isSelected,
+                      selectedTileColor: const Color(0xFF2196F3).withOpacity(0.1),
+                      onTap: () {
+                        settingsProvider.setLanguage(entry.key);
+                        Navigator.pop(context);
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
 
+  // ✅ DIÁLOGO DE MONEDA (RESPONSIVO)
   void _showCurrencyDialog(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final settingsProvider = context.read<SettingsProvider>();
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final isLargeScreen = screenWidth > 600;
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.selectCurrency),
-        content: SizedBox(
-          width: double.maxFinite,
-          child: ListView(
-            shrinkWrap: true,
-            children: SettingsProvider.supportedCurrencies.entries.map((entry) {
-              final isSelected = settingsProvider.currencyCode == entry.key;
-              return ListTile(
-                leading: Text(
-                  entry.value['flag']!,
-                  style: TextStyle(fontSize: 24.sp),
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.r),
+        ),
+        child: Container(
+          constraints: BoxConstraints(
+            maxWidth: isLargeScreen ? 550 : screenWidth * 0.9,
+            maxHeight: screenHeight * 0.75, // ✅ Más altura para ver más monedas
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // ✅ HEADER
+              Container(
+                padding: EdgeInsets.all(20.w),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF9C27B0),
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(20.r),
+                  ),
                 ),
-                title: Text(entry.value['name']!),
-                subtitle: Text(entry.value['symbol']!),
-                trailing: isSelected 
-                    ? Icon(Icons.check, color: const Color(0xFF2196F3), size: 24.sp)
-                    : null,
-                selected: isSelected,
-                onTap: () {
-                  settingsProvider.setCurrency(entry.key);
-                  Navigator.pop(context);
-                },
-              );
-            }).toList(),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.attach_money,
+                      color: Colors.white,
+                      size: isLargeScreen ? 28.sp : 24.sp,
+                    ),
+                    SizedBox(width: 12.w),
+                    Expanded(
+                      child: Text(
+                        l10n.selectCurrency,
+                        style: TextStyle(
+                          fontSize: isLargeScreen ? 22.sp : 20.sp,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.close, color: Colors.white, size: 24.sp),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+              ),
+              
+              // ✅ LISTA DE MONEDAS
+              Flexible(
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  padding: EdgeInsets.symmetric(vertical: 8.h),
+                  itemCount: SettingsProvider.supportedCurrencies.length,
+                  itemBuilder: (context, index) {
+                    final entry = SettingsProvider.supportedCurrencies.entries.elementAt(index);
+                    final isSelected = settingsProvider.currencyCode == entry.key;
+                    
+                    return ListTile(
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 24.w,
+                        vertical: 8.h,
+                      ),
+                      leading: Text(
+                        entry.value['flag']!,
+                        style: TextStyle(fontSize: isLargeScreen ? 32.sp : 28.sp),
+                      ),
+                      title: Text(
+                        entry.value['name']!,
+                        style: TextStyle(
+                          fontSize: isLargeScreen ? 18.sp : 16.sp,
+                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                        ),
+                      ),
+                      subtitle: Text(
+                        entry.value['symbol']!,
+                        style: TextStyle(
+                          fontSize: isLargeScreen ? 16.sp : 14.sp,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                      trailing: isSelected 
+                          ? Icon(
+                              Icons.check_circle,
+                              color: const Color(0xFF9C27B0),
+                              size: isLargeScreen ? 28.sp : 24.sp,
+                            )
+                          : null,
+                      selected: isSelected,
+                      selectedTileColor: const Color(0xFF9C27B0).withOpacity(0.1),
+                      onTap: () {
+                        settingsProvider.setCurrency(entry.key);
+                        Navigator.pop(context);
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(l10n.cancel),
-          ),
-        ],
       ),
     );
   }
