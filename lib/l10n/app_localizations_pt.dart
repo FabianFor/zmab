@@ -9,10 +9,7 @@ class AppLocalizationsPt extends AppLocalizations {
   AppLocalizationsPt([String locale = 'pt']) : super(locale);
 
   @override
-  String get appName => 'MeuNegócio';
-
-  @override
-  String get dashboard => 'Painel Principal';
+  String get dashboard => 'Painel';
 
   @override
   String get products => 'Produtos';
@@ -21,67 +18,22 @@ class AppLocalizationsPt extends AppLocalizations {
   String get orders => 'Pedidos';
 
   @override
-  String get invoices => 'Notas Fiscais';
+  String get invoices => 'Faturas';
 
   @override
   String get settings => 'Configurações';
 
   @override
-  String get productsRegistered => 'Produtos Registrados';
+  String get profile => 'Perfil';
 
   @override
-  String get ordersPlaced => 'Pedidos Realizados';
+  String get add => 'Adicionar';
 
   @override
-  String get totalRevenue => 'Receita Total';
+  String get edit => 'Editar';
 
   @override
-  String get addProduct => 'Adicionar';
-
-  @override
-  String get newProduct => 'Novo Produto';
-
-  @override
-  String get editProduct => 'Editar Produto';
-
-  @override
-  String get deleteProduct => 'Excluir Produto';
-
-  @override
-  String get productName => 'Nome do Produto';
-
-  @override
-  String get productNameHint => 'Ex: Hambúrguer Clássico';
-
-  @override
-  String get price => 'Preço';
-
-  @override
-  String get description => 'Descrição';
-
-  @override
-  String get descriptionHint => 'Descrição do produto';
-
-  @override
-  String get category => 'Categoria';
-
-  @override
-  String get stock => 'Quantidade';
-
-  @override
-  String get addImage => 'Adicionar imagem';
-
-  @override
-  String get tapToSelect => 'Toque para selecionar';
-
-  @override
-  String get selectImage => 'Selecionar imagem';
-
-  @override
-  String get gallery => 'Galeria';
-
-  @override
-  String get camera => 'Câmera';
+  String get delete => 'Excluir';
 
   @override
   String get save => 'Salvar';
@@ -90,110 +42,19 @@ class AppLocalizationsPt extends AppLocalizations {
   String get cancel => 'Cancelar';
 
   @override
-  String get delete => 'Excluir';
+  String get name => 'Nome';
 
   @override
-  String get edit => 'Editar';
+  String get description => 'Descrição';
 
   @override
-  String get share => 'Compartilhar';
+  String get price => 'Preço';
 
   @override
-  String get download => 'Baixar';
+  String get stock => 'Estoque';
 
   @override
-  String get close => 'Fechar';
-
-  @override
-  String get createOrder => 'Criar Pedido';
-
-  @override
-  String get cart => 'Carrinho';
-
-  @override
-  String get viewCart => 'Ver carrinho';
-
-  @override
-  String get clearCart => 'Limpar carrinho';
-
-  @override
-  String get createInvoice => 'Criar Nota Fiscal';
-
-  @override
-  String get customerName => 'Nome do Cliente';
-
-  @override
-  String get customerPhone => 'Telefone';
-
-  @override
-  String get search => 'Buscar';
-
-  @override
-  String get searchProducts => 'Buscar produtos...';
-
-  @override
-  String get total => 'Total';
-
-  @override
-  String get quantity => 'Quantidade';
-
-  @override
-  String get subtotal => 'Subtotal';
-
-  @override
-  String get currency => 'Moeda';
-
-  @override
-  String get language => 'Idioma';
-
-  @override
-  String get businessProfile => 'Perfil do Negócio';
-
-  @override
-  String get businessName => 'Nome do Negócio';
-
-  @override
-  String get phone => 'Telefone';
-
-  @override
-  String get email => 'E-mail';
-
-  @override
-  String get address => 'Endereço';
-
-  @override
-  String get noProducts => 'Nenhum produto registrado';
-
-  @override
-  String get noOrders => 'Nenhum pedido registrado';
-
-  @override
-  String get noInvoices => 'Nenhuma nota fiscal registrada';
-
-  @override
-  String get confirmDelete => 'Confirmar exclusão';
-
-  @override
-  String get deleteConfirmation =>
-      'Tem certeza de que deseja excluir este item?';
-
-  @override
-  String get cannotUndo => 'Esta ação não pode ser desfeita';
-
-  @override
-  String get successSaved => 'Salvo com sucesso';
-
-  @override
-  String get productSavedSuccess => 'Produto salvo com sucesso';
-
-  @override
-  String get successDeleted => 'Excluído com sucesso';
-
-  @override
-  String get error => 'Erro';
-
-  @override
-  String get requiredField => 'Campo obrigatório';
+  String get category => 'Categoria';
 
   @override
   String get food => 'Comida';
@@ -208,17 +69,74 @@ class AppLocalizationsPt extends AppLocalizations {
   String get others => 'Outros';
 
   @override
-  String get galleryPermissionNeeded => 'Permissões de galeria são necessárias';
+  String get total => 'Total';
 
   @override
-  String get cameraPermissionNeeded => 'Permissões de câmera são necessárias';
+  String get confirmDelete => 'Confirmar exclusão';
 
   @override
-  String get imageSelected => 'Imagem selecionada';
+  String get cannotUndo => 'Esta ação não pode ser desfeita';
 
   @override
-  String get errorSelectingImage => 'Erro ao selecionar imagem';
+  String get noProducts => 'Sem produtos';
 
   @override
-  String get businessManagement => 'Gerenciamento de Produtos e Notas Fiscais';
+  String get noOrders => 'Sem pedidos';
+
+  @override
+  String get noInvoices => 'Sem faturas';
+
+  @override
+  String get language => 'Idioma';
+
+  @override
+  String get selectLanguage => 'Selecionar idioma';
+
+  @override
+  String get currency => 'Moeda';
+
+  @override
+  String get selectCurrency => 'Selecionar moeda';
+
+  @override
+  String get businessProfile => 'Perfil Comercial';
+
+  @override
+  String get businessName => 'Nome da Empresa';
+
+  @override
+  String get address => 'Endereço';
+
+  @override
+  String get phone => 'Telefone';
+
+  @override
+  String get email => 'E-mail';
+
+  @override
+  String get share => 'Compartilhar';
+
+  @override
+  String get download => 'Baixar';
+
+  @override
+  String get error => 'Erro';
+
+  @override
+  String get addImage => 'Adicionar imagem';
+
+  @override
+  String get changeImage => 'Mudar imagem';
+
+  @override
+  String get businessManagement => 'Gestão de Negócios';
+
+  @override
+  String get productsRegistered => 'Produtos Registrados';
+
+  @override
+  String get ordersPlaced => 'Pedidos Realizados';
+
+  @override
+  String get totalRevenue => 'Receita Total';
 }

@@ -9,9 +9,6 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appName => 'MyBusiness';
-
-  @override
   String get dashboard => 'Dashboard';
 
   @override
@@ -27,61 +24,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settings => 'Settings';
 
   @override
-  String get productsRegistered => 'Products Registered';
+  String get profile => 'Profile';
 
   @override
-  String get ordersPlaced => 'Orders Placed';
+  String get add => 'Add';
 
   @override
-  String get totalRevenue => 'Total Revenue';
+  String get edit => 'Edit';
 
   @override
-  String get addProduct => 'Add';
-
-  @override
-  String get newProduct => 'New Product';
-
-  @override
-  String get editProduct => 'Edit Product';
-
-  @override
-  String get deleteProduct => 'Delete Product';
-
-  @override
-  String get productName => 'Product Name';
-
-  @override
-  String get productNameHint => 'E.g: Classic Burger';
-
-  @override
-  String get price => 'Price';
-
-  @override
-  String get description => 'Description';
-
-  @override
-  String get descriptionHint => 'Product description';
-
-  @override
-  String get category => 'Category';
-
-  @override
-  String get stock => 'Quantity';
-
-  @override
-  String get addImage => 'Add image';
-
-  @override
-  String get tapToSelect => 'Tap to select';
-
-  @override
-  String get selectImage => 'Select image';
-
-  @override
-  String get gallery => 'Gallery';
-
-  @override
-  String get camera => 'Camera';
+  String get delete => 'Delete';
 
   @override
   String get save => 'Save';
@@ -90,109 +42,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cancel => 'Cancel';
 
   @override
-  String get delete => 'Delete';
+  String get name => 'Name';
 
   @override
-  String get edit => 'Edit';
+  String get description => 'Description';
 
   @override
-  String get share => 'Share';
+  String get price => 'Price';
 
   @override
-  String get download => 'Download';
+  String get stock => 'Stock';
 
   @override
-  String get close => 'Close';
-
-  @override
-  String get createOrder => 'Create Order';
-
-  @override
-  String get cart => 'Cart';
-
-  @override
-  String get viewCart => 'View cart';
-
-  @override
-  String get clearCart => 'Clear cart';
-
-  @override
-  String get createInvoice => 'Create Invoice';
-
-  @override
-  String get customerName => 'Customer Name';
-
-  @override
-  String get customerPhone => 'Phone';
-
-  @override
-  String get search => 'Search';
-
-  @override
-  String get searchProducts => 'Search products...';
-
-  @override
-  String get total => 'Total';
-
-  @override
-  String get quantity => 'Quantity';
-
-  @override
-  String get subtotal => 'Subtotal';
-
-  @override
-  String get currency => 'Currency';
-
-  @override
-  String get language => 'Language';
-
-  @override
-  String get businessProfile => 'Business Profile';
-
-  @override
-  String get businessName => 'Business Name';
-
-  @override
-  String get phone => 'Phone';
-
-  @override
-  String get email => 'Email';
-
-  @override
-  String get address => 'Address';
-
-  @override
-  String get noProducts => 'No products registered';
-
-  @override
-  String get noOrders => 'No orders registered';
-
-  @override
-  String get noInvoices => 'No invoices registered';
-
-  @override
-  String get confirmDelete => 'Confirm deletion';
-
-  @override
-  String get deleteConfirmation => 'Are you sure you want to delete this item?';
-
-  @override
-  String get cannotUndo => 'This action cannot be undone';
-
-  @override
-  String get successSaved => 'Successfully saved';
-
-  @override
-  String get productSavedSuccess => 'Product saved successfully';
-
-  @override
-  String get successDeleted => 'Successfully deleted';
-
-  @override
-  String get error => 'Error';
-
-  @override
-  String get requiredField => 'Required field';
+  String get category => 'Category';
 
   @override
   String get food => 'Food';
@@ -207,17 +69,74 @@ class AppLocalizationsEn extends AppLocalizations {
   String get others => 'Others';
 
   @override
-  String get galleryPermissionNeeded => 'Gallery permissions are needed';
+  String get total => 'Total';
 
   @override
-  String get cameraPermissionNeeded => 'Camera permissions are needed';
+  String get confirmDelete => 'Confirm deletion';
 
   @override
-  String get imageSelected => 'Image selected';
+  String get cannotUndo => 'This action cannot be undone';
 
   @override
-  String get errorSelectingImage => 'Error selecting image';
+  String get noProducts => 'No products';
 
   @override
-  String get businessManagement => 'Product and Invoice Management';
+  String get noOrders => 'No orders';
+
+  @override
+  String get noInvoices => 'No invoices';
+
+  @override
+  String get language => 'Language';
+
+  @override
+  String get selectLanguage => 'Select language';
+
+  @override
+  String get currency => 'Currency';
+
+  @override
+  String get selectCurrency => 'Select currency';
+
+  @override
+  String get businessProfile => 'Business Profile';
+
+  @override
+  String get businessName => 'Business Name';
+
+  @override
+  String get address => 'Address';
+
+  @override
+  String get phone => 'Phone';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get share => 'Share';
+
+  @override
+  String get download => 'Download';
+
+  @override
+  String get error => 'Error';
+
+  @override
+  String get addImage => 'Add image';
+
+  @override
+  String get changeImage => 'Change image';
+
+  @override
+  String get businessManagement => 'Business Management';
+
+  @override
+  String get productsRegistered => 'Products Registered';
+
+  @override
+  String get ordersPlaced => 'Orders Placed';
+
+  @override
+  String get totalRevenue => 'Total Revenue';
 }

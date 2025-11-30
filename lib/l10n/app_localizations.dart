@@ -65,7 +65,7 @@ import 'app_localizations_zh.dart';
 /// property.
 abstract class AppLocalizations {
   AppLocalizations(String locale)
-      : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+    : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -88,30 +88,24 @@ abstract class AppLocalizations {
   /// of delegates is preferred or required.
   static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
       <LocalizationsDelegate<dynamic>>[
-    delegate,
-    GlobalMaterialLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-  ];
+        delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ];
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
     Locale('es'),
     Locale('pt'),
-    Locale('zh')
+    Locale('zh'),
   ];
-
-  /// No description provided for @appName.
-  ///
-  /// In es, this message translates to:
-  /// **'MiNegocio'**
-  String get appName;
 
   /// No description provided for @dashboard.
   ///
   /// In es, this message translates to:
-  /// **'Panel Principal'**
+  /// **'Panel'**
   String get dashboard;
 
   /// No description provided for @products.
@@ -138,119 +132,29 @@ abstract class AppLocalizations {
   /// **'Configuración'**
   String get settings;
 
-  /// No description provided for @productsRegistered.
+  /// No description provided for @profile.
   ///
   /// In es, this message translates to:
-  /// **'Productos Registrados'**
-  String get productsRegistered;
+  /// **'Perfil'**
+  String get profile;
 
-  /// No description provided for @ordersPlaced.
-  ///
-  /// In es, this message translates to:
-  /// **'Pedidos Realizados'**
-  String get ordersPlaced;
-
-  /// No description provided for @totalRevenue.
-  ///
-  /// In es, this message translates to:
-  /// **'Ingresos Totales'**
-  String get totalRevenue;
-
-  /// No description provided for @addProduct.
+  /// No description provided for @add.
   ///
   /// In es, this message translates to:
   /// **'Agregar'**
-  String get addProduct;
+  String get add;
 
-  /// No description provided for @newProduct.
+  /// No description provided for @edit.
   ///
   /// In es, this message translates to:
-  /// **'Nuevo Producto'**
-  String get newProduct;
+  /// **'Editar'**
+  String get edit;
 
-  /// No description provided for @editProduct.
+  /// No description provided for @delete.
   ///
   /// In es, this message translates to:
-  /// **'Editar Producto'**
-  String get editProduct;
-
-  /// No description provided for @deleteProduct.
-  ///
-  /// In es, this message translates to:
-  /// **'Eliminar Producto'**
-  String get deleteProduct;
-
-  /// No description provided for @productName.
-  ///
-  /// In es, this message translates to:
-  /// **'Nombre del Producto'**
-  String get productName;
-
-  /// No description provided for @productNameHint.
-  ///
-  /// In es, this message translates to:
-  /// **'Ej: Hamburguesa Clásica'**
-  String get productNameHint;
-
-  /// No description provided for @price.
-  ///
-  /// In es, this message translates to:
-  /// **'Precio'**
-  String get price;
-
-  /// No description provided for @description.
-  ///
-  /// In es, this message translates to:
-  /// **'Descripción'**
-  String get description;
-
-  /// No description provided for @descriptionHint.
-  ///
-  /// In es, this message translates to:
-  /// **'Descripción del producto'**
-  String get descriptionHint;
-
-  /// No description provided for @category.
-  ///
-  /// In es, this message translates to:
-  /// **'Categoría'**
-  String get category;
-
-  /// No description provided for @stock.
-  ///
-  /// In es, this message translates to:
-  /// **'Cantidad'**
-  String get stock;
-
-  /// No description provided for @addImage.
-  ///
-  /// In es, this message translates to:
-  /// **'Agregar imagen'**
-  String get addImage;
-
-  /// No description provided for @tapToSelect.
-  ///
-  /// In es, this message translates to:
-  /// **'Toca para seleccionar'**
-  String get tapToSelect;
-
-  /// No description provided for @selectImage.
-  ///
-  /// In es, this message translates to:
-  /// **'Seleccionar imagen'**
-  String get selectImage;
-
-  /// No description provided for @gallery.
-  ///
-  /// In es, this message translates to:
-  /// **'Galería'**
-  String get gallery;
-
-  /// No description provided for @camera.
-  ///
-  /// In es, this message translates to:
-  /// **'Cámara'**
-  String get camera;
+  /// **'Eliminar'**
+  String get delete;
 
   /// No description provided for @save.
   ///
@@ -264,215 +168,35 @@ abstract class AppLocalizations {
   /// **'Cancelar'**
   String get cancel;
 
-  /// No description provided for @delete.
+  /// No description provided for @name.
   ///
   /// In es, this message translates to:
-  /// **'Eliminar'**
-  String get delete;
+  /// **'Nombre'**
+  String get name;
 
-  /// No description provided for @edit.
+  /// No description provided for @description.
   ///
   /// In es, this message translates to:
-  /// **'Editar'**
-  String get edit;
+  /// **'Descripción'**
+  String get description;
 
-  /// No description provided for @share.
+  /// No description provided for @price.
   ///
   /// In es, this message translates to:
-  /// **'Compartir'**
-  String get share;
+  /// **'Precio'**
+  String get price;
 
-  /// No description provided for @download.
+  /// No description provided for @stock.
   ///
   /// In es, this message translates to:
-  /// **'Descargar'**
-  String get download;
+  /// **'Stock'**
+  String get stock;
 
-  /// No description provided for @close.
+  /// No description provided for @category.
   ///
   /// In es, this message translates to:
-  /// **'Cerrar'**
-  String get close;
-
-  /// No description provided for @createOrder.
-  ///
-  /// In es, this message translates to:
-  /// **'Crear Pedido'**
-  String get createOrder;
-
-  /// No description provided for @cart.
-  ///
-  /// In es, this message translates to:
-  /// **'Carrito'**
-  String get cart;
-
-  /// No description provided for @viewCart.
-  ///
-  /// In es, this message translates to:
-  /// **'Ver carrito'**
-  String get viewCart;
-
-  /// No description provided for @clearCart.
-  ///
-  /// In es, this message translates to:
-  /// **'Vaciar carrito'**
-  String get clearCart;
-
-  /// No description provided for @createInvoice.
-  ///
-  /// In es, this message translates to:
-  /// **'Crear Boleta'**
-  String get createInvoice;
-
-  /// No description provided for @customerName.
-  ///
-  /// In es, this message translates to:
-  /// **'Nombre del Cliente'**
-  String get customerName;
-
-  /// No description provided for @customerPhone.
-  ///
-  /// In es, this message translates to:
-  /// **'Teléfono'**
-  String get customerPhone;
-
-  /// No description provided for @search.
-  ///
-  /// In es, this message translates to:
-  /// **'Buscar'**
-  String get search;
-
-  /// No description provided for @searchProducts.
-  ///
-  /// In es, this message translates to:
-  /// **'Buscar productos...'**
-  String get searchProducts;
-
-  /// No description provided for @total.
-  ///
-  /// In es, this message translates to:
-  /// **'Total'**
-  String get total;
-
-  /// No description provided for @quantity.
-  ///
-  /// In es, this message translates to:
-  /// **'Cantidad'**
-  String get quantity;
-
-  /// No description provided for @subtotal.
-  ///
-  /// In es, this message translates to:
-  /// **'Subtotal'**
-  String get subtotal;
-
-  /// No description provided for @currency.
-  ///
-  /// In es, this message translates to:
-  /// **'Moneda'**
-  String get currency;
-
-  /// No description provided for @language.
-  ///
-  /// In es, this message translates to:
-  /// **'Idioma'**
-  String get language;
-
-  /// No description provided for @businessProfile.
-  ///
-  /// In es, this message translates to:
-  /// **'Perfil del Negocio'**
-  String get businessProfile;
-
-  /// No description provided for @businessName.
-  ///
-  /// In es, this message translates to:
-  /// **'Nombre del Negocio'**
-  String get businessName;
-
-  /// No description provided for @phone.
-  ///
-  /// In es, this message translates to:
-  /// **'Teléfono'**
-  String get phone;
-
-  /// No description provided for @email.
-  ///
-  /// In es, this message translates to:
-  /// **'Email'**
-  String get email;
-
-  /// No description provided for @address.
-  ///
-  /// In es, this message translates to:
-  /// **'Dirección'**
-  String get address;
-
-  /// No description provided for @noProducts.
-  ///
-  /// In es, this message translates to:
-  /// **'No hay productos registrados'**
-  String get noProducts;
-
-  /// No description provided for @noOrders.
-  ///
-  /// In es, this message translates to:
-  /// **'No hay pedidos registrados'**
-  String get noOrders;
-
-  /// No description provided for @noInvoices.
-  ///
-  /// In es, this message translates to:
-  /// **'No hay boletas registradas'**
-  String get noInvoices;
-
-  /// No description provided for @confirmDelete.
-  ///
-  /// In es, this message translates to:
-  /// **'Confirmar eliminación'**
-  String get confirmDelete;
-
-  /// No description provided for @deleteConfirmation.
-  ///
-  /// In es, this message translates to:
-  /// **'¿Estás seguro de eliminar este elemento?'**
-  String get deleteConfirmation;
-
-  /// No description provided for @cannotUndo.
-  ///
-  /// In es, this message translates to:
-  /// **'Esta acción no se puede deshacer'**
-  String get cannotUndo;
-
-  /// No description provided for @successSaved.
-  ///
-  /// In es, this message translates to:
-  /// **'Guardado exitosamente'**
-  String get successSaved;
-
-  /// No description provided for @productSavedSuccess.
-  ///
-  /// In es, this message translates to:
-  /// **'Producto guardado exitosamente'**
-  String get productSavedSuccess;
-
-  /// No description provided for @successDeleted.
-  ///
-  /// In es, this message translates to:
-  /// **'Eliminado exitosamente'**
-  String get successDeleted;
-
-  /// No description provided for @error.
-  ///
-  /// In es, this message translates to:
-  /// **'Error'**
-  String get error;
-
-  /// No description provided for @requiredField.
-  ///
-  /// In es, this message translates to:
-  /// **'Campo requerido'**
-  String get requiredField;
+  /// **'Categoría'**
+  String get category;
 
   /// No description provided for @food.
   ///
@@ -498,35 +222,149 @@ abstract class AppLocalizations {
   /// **'Otros'**
   String get others;
 
-  /// No description provided for @galleryPermissionNeeded.
+  /// No description provided for @total.
   ///
   /// In es, this message translates to:
-  /// **'Se necesitan permisos para acceder a la galería'**
-  String get galleryPermissionNeeded;
+  /// **'Total'**
+  String get total;
 
-  /// No description provided for @cameraPermissionNeeded.
+  /// No description provided for @confirmDelete.
   ///
   /// In es, this message translates to:
-  /// **'Se necesitan permisos para usar la cámara'**
-  String get cameraPermissionNeeded;
+  /// **'Confirmar eliminación'**
+  String get confirmDelete;
 
-  /// No description provided for @imageSelected.
+  /// No description provided for @cannotUndo.
   ///
   /// In es, this message translates to:
-  /// **'Imagen seleccionada'**
-  String get imageSelected;
+  /// **'Esta acción no se puede deshacer'**
+  String get cannotUndo;
 
-  /// No description provided for @errorSelectingImage.
+  /// No description provided for @noProducts.
   ///
   /// In es, this message translates to:
-  /// **'Error al seleccionar imagen'**
-  String get errorSelectingImage;
+  /// **'No hay productos'**
+  String get noProducts;
+
+  /// No description provided for @noOrders.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay pedidos'**
+  String get noOrders;
+
+  /// No description provided for @noInvoices.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay boletas'**
+  String get noInvoices;
+
+  /// No description provided for @language.
+  ///
+  /// In es, this message translates to:
+  /// **'Idioma'**
+  String get language;
+
+  /// No description provided for @selectLanguage.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccionar idioma'**
+  String get selectLanguage;
+
+  /// No description provided for @currency.
+  ///
+  /// In es, this message translates to:
+  /// **'Moneda'**
+  String get currency;
+
+  /// No description provided for @selectCurrency.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccionar moneda'**
+  String get selectCurrency;
+
+  /// No description provided for @businessProfile.
+  ///
+  /// In es, this message translates to:
+  /// **'Perfil del Negocio'**
+  String get businessProfile;
+
+  /// No description provided for @businessName.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre del Negocio'**
+  String get businessName;
+
+  /// No description provided for @address.
+  ///
+  /// In es, this message translates to:
+  /// **'Dirección'**
+  String get address;
+
+  /// No description provided for @phone.
+  ///
+  /// In es, this message translates to:
+  /// **'Teléfono'**
+  String get phone;
+
+  /// No description provided for @email.
+  ///
+  /// In es, this message translates to:
+  /// **'Email'**
+  String get email;
+
+  /// No description provided for @share.
+  ///
+  /// In es, this message translates to:
+  /// **'Compartir'**
+  String get share;
+
+  /// No description provided for @download.
+  ///
+  /// In es, this message translates to:
+  /// **'Descargar'**
+  String get download;
+
+  /// No description provided for @error.
+  ///
+  /// In es, this message translates to:
+  /// **'Error'**
+  String get error;
+
+  /// No description provided for @addImage.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar imagen'**
+  String get addImage;
+
+  /// No description provided for @changeImage.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambiar imagen'**
+  String get changeImage;
 
   /// No description provided for @businessManagement.
   ///
   /// In es, this message translates to:
-  /// **'Gestión de Productos y Boletas'**
+  /// **'Gestión de Negocios'**
   String get businessManagement;
+
+  /// No description provided for @productsRegistered.
+  ///
+  /// In es, this message translates to:
+  /// **'Productos Registrados'**
+  String get productsRegistered;
+
+  /// No description provided for @ordersPlaced.
+  ///
+  /// In es, this message translates to:
+  /// **'Pedidos Realizados'**
+  String get ordersPlaced;
+
+  /// No description provided for @totalRevenue.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresos Totales'**
+  String get totalRevenue;
 }
 
 class _AppLocalizationsDelegate
@@ -560,8 +398,9 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
   }
 
   throw FlutterError(
-      'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
-      'an issue with the localizations generation tool. Please file an issue '
-      'on GitHub with a reproducible sample app and the gen-l10n configuration '
-      'that was used.');
+    'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+    'an issue with the localizations generation tool. Please file an issue '
+    'on GitHub with a reproducible sample app and the gen-l10n configuration '
+    'that was used.',
+  );
 }
