@@ -28,148 +28,158 @@ class DashboardScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackground,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              // Header con gradiente
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(
-                  horizontal: horizontalPadding,
-                  vertical: isTablet ? 28.h : 24.h,
+      body: Column(
+        children: [
+          // ✅ HEADER COMPACTO - ALTURA FIJA 56px
+          Container(
+            width: double.infinity,
+            height: 56.h,
+            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+            decoration: BoxDecoration(
+              color: theme.primary,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
                 ),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: theme.isDark 
-                        ? [theme.primary.withOpacity(0.7), theme.primaryDark.withOpacity(0.7)]
-                        : [theme.primary, theme.primaryDark],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
+              ],
+            ),
+            child: SafeArea(
+              bottom: false,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          businessProvider.profile.businessName.isEmpty
+                              ? 'Mi Negocio'
+                              : businessProvider.profile.businessName,
+                          style: TextStyle(
+                            fontSize: isTablet ? 20.sp : 18.sp,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        Text(
+                          l10n.businessManagement,
+                          style: TextStyle(
+                            fontSize: 12.sp,
+                            color: Colors.white.withOpacity(0.9),
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      businessProvider.profile.businessName.isEmpty
-                          ? 'Mi Negocio'  // ✅ ÚNICO CAMBIO: Agregado espacio
-                          : businessProvider.profile.businessName,
-                      style: TextStyle(
-                        fontSize: isTablet ? 28.sp : 24.sp,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    SizedBox(height: 6.h),
-                    Text(
-                      l10n.businessManagement,
-                      style: TextStyle(
-                        fontSize: isTablet ? 16.sp : 14.sp,
-                        color: Colors.white.withOpacity(0.9),
-                      ),
-                    ),
-                  ],
-                ),
+                ],
               ),
-
-              // Contenido principal
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: horizontalPadding,
-                  vertical: isTablet ? 32.h : 24.h,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Título "Accesos Rápidos"
-                    Text(
-                      'Accesos Rápidos',
-                      style: TextStyle(
-                        fontSize: isTablet ? 20.sp : 18.sp,
-                        fontWeight: FontWeight.bold,
-                        color: theme.textPrimary,
-                      ),
-                    ),
-                    SizedBox(height: isTablet ? 20.h : 16.h),
-
-                    // Opciones en fila vertical
-                    _QuickAccessTile(
-                      label: l10n.products,
-                      icon: Icons.inventory_2,
-                      color: theme.success,
-                      isTablet: isTablet,
-                      theme: theme,
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => const ProductsScreen()),
-                        );
-                      },
-                    ),
-                    SizedBox(height: verticalSpacing),
-
-                    _QuickAccessTile(
-                      label: l10n.orders,
-                      icon: Icons.shopping_cart,
-                      color: theme.primary,
-                      isTablet: isTablet,
-                      theme: theme,
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => const OrdersScreen()),
-                        );
-                      },
-                    ),
-                    SizedBox(height: verticalSpacing),
-
-                    _QuickAccessTile(
-                      label: l10n.invoices,
-                      icon: Icons.receipt_long,
-                      color: theme.warning,
-                      isTablet: isTablet,
-                      theme: theme,
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => const InvoicesScreen()),
-                        );
-                      },
-                    ),
-                    SizedBox(height: verticalSpacing),
-
-                    _QuickAccessTile(
-                      label: l10n.settings,
-                      icon: Icons.settings,
-                      color: theme.info,
-                      isTablet: isTablet,
-                      theme: theme,
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => const SettingsScreen()),
-                        );
-                      },
-                    ),
-
-                    // Alerta de stock bajo
-                    if (productProvider.lowStockProducts.isNotEmpty) ...[
-                      SizedBox(height: isTablet ? 40.h : 32.h),
-                      _buildLowStockAlert(
-                        context,
-                        productProvider,
-                        l10n,
-                        isTablet,
-                        theme,
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
+
+          // ✅ CONTENIDO SCROLLEABLE
+          Expanded(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.symmetric(
+                horizontal: horizontalPadding,
+                vertical: isTablet ? 32.h : 24.h,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Título "Accesos Rápidos"
+                  Text(
+                    'Accesos Rápidos',
+                    style: TextStyle(
+                      fontSize: isTablet ? 20.sp : 18.sp,
+                      fontWeight: FontWeight.bold,
+                      color: theme.textPrimary,
+                    ),
+                  ),
+                  SizedBox(height: isTablet ? 20.h : 16.h),
+
+                  // Opciones en fila vertical
+                  _QuickAccessTile(
+                    label: l10n.products,
+                    icon: Icons.inventory_2,
+                    color: theme.success,
+                    isTablet: isTablet,
+                    theme: theme,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const ProductsScreen()),
+                      );
+                    },
+                  ),
+                  SizedBox(height: verticalSpacing),
+
+                  _QuickAccessTile(
+                    label: l10n.orders,
+                    icon: Icons.shopping_cart,
+                    color: theme.primary,
+                    isTablet: isTablet,
+                    theme: theme,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const OrdersScreen()),
+                      );
+                    },
+                  ),
+                  SizedBox(height: verticalSpacing),
+
+                  _QuickAccessTile(
+                    label: l10n.invoices,
+                    icon: Icons.receipt_long,
+                    color: theme.warning,
+                    isTablet: isTablet,
+                    theme: theme,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const InvoicesScreen()),
+                      );
+                    },
+                  ),
+                  SizedBox(height: verticalSpacing),
+
+                  _QuickAccessTile(
+                    label: l10n.settings,
+                    icon: Icons.settings,
+                    color: theme.info,
+                    isTablet: isTablet,
+                    theme: theme,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const SettingsScreen()),
+                      );
+                    },
+                  ),
+
+                  // Alerta de stock bajo
+                  if (productProvider.lowStockProducts.isNotEmpty) ...[
+                    SizedBox(height: isTablet ? 40.h : 32.h),
+                    _buildLowStockAlert(
+                      context,
+                      productProvider,
+                      l10n,
+                      isTablet,
+                      theme,
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

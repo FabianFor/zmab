@@ -86,7 +86,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
         backgroundColor: theme.appBarBackground,
         foregroundColor: theme.appBarForeground,
         elevation: 2,
-        toolbarHeight: 56.h, // ✅ ALTURA FIJA Y CONSISTENTE
+        toolbarHeight: 56.h,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, size: 24.sp),
           onPressed: () => Navigator.pop(context),
@@ -94,7 +94,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
         title: Text(
           l10n.products,
           style: TextStyle(
-            fontSize: isTablet ? 20.sp : 18.sp, // ✅ TAMAÑO PROPORCIONAL
+            fontSize: isTablet ? 20.sp : 18.sp,
             fontWeight: FontWeight.w600,
           ),
           maxLines: 1,
@@ -226,7 +226,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
   }
 }
 
-// ✅ DIÁLOGO COMPLETAMENTE CORREGIDO
 class AddProductDialog extends StatefulWidget {
   final Product? product;
 
@@ -399,13 +398,13 @@ class _AddProductDialogState extends State<AddProductDialog> {
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: EdgeInsets.symmetric(
-        horizontal: isTablet ? 80.w : 20.w,
+        horizontal: isTablet ? 40.w : 20.w, // ✅ REDUCIDO
         vertical: 20.h,
       ),
       child: Container(
         constraints: BoxConstraints(
           maxHeight: screenHeight * 0.9,
-          maxWidth: isTablet ? 600.w : double.infinity,
+          maxWidth: isTablet ? 500 : double.infinity, // ✅ SIN .w
         ),
         decoration: BoxDecoration(
           color: theme.cardBackground,
@@ -414,10 +413,12 @@ class _AddProductDialogState extends State<AddProductDialog> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // ✅ HEADER CONSISTENTE CON ALTURA FIJA
+            // ✅ HEADER CON PADDING ADECUADO
             Container(
-              height: 56.h, // ✅ MISMA ALTURA QUE AppBar
-              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              padding: EdgeInsets.symmetric(
+                horizontal: 20.w,
+                vertical: 16.h, // ✅ SIN ALTURA FIJA
+              ),
               decoration: BoxDecoration(
                 color: theme.primary,
                 borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
@@ -434,7 +435,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
                     child: Text(
                       widget.product == null ? l10n.addProduct : l10n.editProduct,
                       style: TextStyle(
-                        fontSize: isTablet ? 20.sp : 18.sp, // ✅ MISMO TAMAÑO QUE AppBar
+                        fontSize: 18.sp, // ✅ TAMAÑO FIJO
                         fontWeight: FontWeight.w600,
                         color: Colors.white,
                       ),
@@ -465,8 +466,8 @@ class _AddProductDialogState extends State<AddProductDialog> {
                         child: GestureDetector(
                           onTap: _pickImage,
                           child: Container(
-                            width: 140.w,
-                            height: 140.w,
+                            width: 120.w, // ✅ REDUCIDO
+                            height: 120.w,
                             decoration: BoxDecoration(
                               color: theme.surfaceColor,
                               borderRadius: BorderRadius.circular(16.r),
@@ -482,8 +483,8 @@ class _AddProductDialogState extends State<AddProductDialog> {
                                         borderRadius: BorderRadius.circular(14.r),
                                         child: Image.file(
                                           File(_imagePath),
-                                          width: 140.w,
-                                          height: 140.w,
+                                          width: 120.w,
+                                          height: 120.w,
                                           fit: BoxFit.cover,
                                         ),
                                       ),
@@ -496,7 +497,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
                                             shape: BoxShape.circle,
                                           ),
                                           child: IconButton(
-                                            icon: Icon(Icons.edit, color: Colors.white, size: 20.sp),
+                                            icon: Icon(Icons.edit, color: Colors.white, size: 18.sp),
                                             onPressed: _pickImage,
                                             padding: EdgeInsets.all(4.w),
                                           ),
@@ -509,14 +510,14 @@ class _AddProductDialogState extends State<AddProductDialog> {
                                     children: [
                                       Icon(
                                         Icons.add_photo_alternate,
-                                        size: 48.sp,
+                                        size: 40.sp,
                                         color: theme.primary,
                                       ),
-                                      SizedBox(height: 8.h),
+                                      SizedBox(height: 6.h),
                                       Text(
                                         l10n.addImage,
                                         style: TextStyle(
-                                          fontSize: 14.sp,
+                                          fontSize: 12.sp,
                                           color: theme.textSecondary,
                                           fontWeight: FontWeight.w500,
                                         ),
@@ -526,15 +527,15 @@ class _AddProductDialogState extends State<AddProductDialog> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 24.h),
+                      SizedBox(height: 20.h),
 
                       // CAMPO NOMBRE
                       TextFormField(
                         controller: _nameController,
-                        style: TextStyle(color: theme.textPrimary, fontSize: 16.sp),
+                        style: TextStyle(color: theme.textPrimary, fontSize: 15.sp),
                         decoration: InputDecoration(
                           labelText: l10n.name,
-                          labelStyle: TextStyle(color: theme.textSecondary, fontSize: 14.sp),
+                          labelStyle: TextStyle(color: theme.textSecondary, fontSize: 13.sp),
                           prefixIcon: Icon(Icons.shopping_bag, color: theme.iconColor, size: 20.sp),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
                           enabledBorder: OutlineInputBorder(
@@ -547,7 +548,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
                           ),
                           filled: true,
                           fillColor: theme.inputFillColor,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
                         ),
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
@@ -559,16 +560,16 @@ class _AddProductDialogState extends State<AddProductDialog> {
                           return null;
                         },
                       ),
-                      SizedBox(height: 16.h),
+                      SizedBox(height: 14.h),
 
                       // CAMPO DESCRIPCIÓN
                       TextFormField(
                         controller: _descriptionController,
-                        style: TextStyle(color: theme.textPrimary, fontSize: 16.sp),
+                        style: TextStyle(color: theme.textPrimary, fontSize: 15.sp),
                         maxLines: 2,
                         decoration: InputDecoration(
                           labelText: l10n.description,
-                          labelStyle: TextStyle(color: theme.textSecondary, fontSize: 14.sp),
+                          labelStyle: TextStyle(color: theme.textSecondary, fontSize: 13.sp),
                           prefixIcon: Icon(Icons.description, color: theme.iconColor, size: 20.sp),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
                           enabledBorder: OutlineInputBorder(
@@ -581,10 +582,10 @@ class _AddProductDialogState extends State<AddProductDialog> {
                           ),
                           filled: true,
                           fillColor: theme.inputFillColor,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
                         ),
                       ),
-                      SizedBox(height: 16.h),
+                      SizedBox(height: 14.h),
 
                       // FILA DE PRECIO Y STOCK
                       Row(
@@ -592,11 +593,11 @@ class _AddProductDialogState extends State<AddProductDialog> {
                           Expanded(
                             child: TextFormField(
                               controller: _priceController,
-                              style: TextStyle(color: theme.textPrimary, fontSize: 16.sp),
+                              style: TextStyle(color: theme.textPrimary, fontSize: 15.sp),
                               keyboardType: TextInputType.numberWithOptions(decimal: true),
                               decoration: InputDecoration(
                                 labelText: l10n.price,
-                                labelStyle: TextStyle(color: theme.textSecondary, fontSize: 14.sp),
+                                labelStyle: TextStyle(color: theme.textSecondary, fontSize: 13.sp),
                                 prefixIcon: Icon(Icons.attach_money, color: theme.iconColor, size: 20.sp),
                                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
                                 enabledBorder: OutlineInputBorder(
@@ -609,7 +610,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
                                 ),
                                 filled: true,
                                 fillColor: theme.inputFillColor,
-                                contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+                                contentPadding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
                               ),
                               validator: (value) {
                                 if (value == null || value.trim().isEmpty) {
@@ -626,11 +627,11 @@ class _AddProductDialogState extends State<AddProductDialog> {
                           Expanded(
                             child: TextFormField(
                               controller: _stockController,
-                              style: TextStyle(color: theme.textPrimary, fontSize: 16.sp),
+                              style: TextStyle(color: theme.textPrimary, fontSize: 15.sp),
                               keyboardType: TextInputType.number,
                               decoration: InputDecoration(
                                 labelText: l10n.stock,
-                                labelStyle: TextStyle(color: theme.textSecondary, fontSize: 14.sp),
+                                labelStyle: TextStyle(color: theme.textSecondary, fontSize: 13.sp),
                                 prefixIcon: Icon(Icons.inventory, color: theme.iconColor, size: 20.sp),
                                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
                                 enabledBorder: OutlineInputBorder(
@@ -643,7 +644,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
                                 ),
                                 filled: true,
                                 fillColor: theme.inputFillColor,
-                                contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+                                contentPadding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
                               ),
                               validator: (value) {
                                 if (value == null || value.trim().isEmpty) {
@@ -658,7 +659,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
                           ),
                         ],
                       ),
-                      SizedBox(height: 24.h),
+                      SizedBox(height: 20.h),
 
                       // BOTONES
                       Row(
@@ -669,12 +670,12 @@ class _AddProductDialogState extends State<AddProductDialog> {
                               style: OutlinedButton.styleFrom(
                                 foregroundColor: theme.textPrimary,
                                 side: BorderSide(color: theme.borderColor),
-                                padding: EdgeInsets.symmetric(vertical: 16.h),
+                                padding: EdgeInsets.symmetric(vertical: 14.h),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12.r),
                                 ),
                               ),
-                              child: Text(l10n.cancel, style: TextStyle(fontSize: 16.sp)),
+                              child: Text(l10n.cancel, style: TextStyle(fontSize: 15.sp)),
                             ),
                           ),
                           SizedBox(width: 12.w),
@@ -685,7 +686,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: theme.success,
                                 foregroundColor: Colors.white,
-                                padding: EdgeInsets.symmetric(vertical: 16.h),
+                                padding: EdgeInsets.symmetric(vertical: 14.h),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12.r),
                                 ),
@@ -699,7 +700,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
                                         strokeWidth: 2,
                                       ),
                                     )
-                                  : Text(l10n.save, style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold)),
+                                  : Text(l10n.save, style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.bold)),
                             ),
                           ),
                         ],
