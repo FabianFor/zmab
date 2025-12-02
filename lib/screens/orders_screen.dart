@@ -231,105 +231,96 @@ Widget _buildCreateOrderTab(bool isTablet, AppLocalizations l10n, ThemeHelper th
       ? productProvider.products
       : productProvider.searchProducts(_productSearchQuery);
 
-  // ✅ MÁS ESPACIO EN TABLET
-  final cardPadding = isTablet ? 16.w : 12.w;
-  final cardSpacing = isTablet ? 16.h : 12.h;
-  final imageSizeTablet = isTablet ? 100.w : 70.w;
-  final contentPadding = isTablet ? 24.w : 16.w;
-
   return Column(
     children: [
-      // Formulario de cliente - MÁS ESPACIO
+      // ✅ FORMULARIO ULTRA COMPACTO
       Container(
-        padding: EdgeInsets.all(contentPadding),
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
         color: theme.cardBackground,
         child: Form(
           key: _formKey,
-          child: Column(
+          child: Row(
             children: [
-              TextFormField(
-                controller: _customerNameController,
-                style: TextStyle(color: theme.textPrimary, fontSize: isTablet ? 16.sp : 14.sp),
-                decoration: InputDecoration(
-                  labelText: l10n.customerNameRequired,
-                  labelStyle: TextStyle(color: theme.textSecondary, fontSize: isTablet ? 16.sp : 14.sp),
-                  prefixIcon: Icon(Icons.person, color: theme.iconColor, size: isTablet ? 24.sp : 20.sp),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.r),
+              Expanded(
+                flex: 2,
+                child: TextFormField(
+                  controller: _customerNameController,
+                  style: TextStyle(color: theme.textPrimary, fontSize: 14.sp),
+                  decoration: InputDecoration(
+                    labelText: 'Cliente *',
+                    labelStyle: TextStyle(color: theme.textSecondary, fontSize: 13.sp),
+                    prefixIcon: Icon(Icons.person, color: theme.iconColor, size: 18.sp),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.r)),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.r),
+                      borderSide: BorderSide(color: theme.borderColor),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.r),
+                      borderSide: BorderSide(color: theme.primary, width: 2),
+                    ),
+                    filled: true,
+                    fillColor: theme.inputFillColor,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+                    isDense: true,
                   ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.r),
-                    borderSide: BorderSide(color: theme.borderColor),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.r),
-                    borderSide: BorderSide(color: theme.primary, width: 2),
-                  ),
-                  filled: true,
-                  fillColor: theme.inputFillColor,
-                  contentPadding: EdgeInsets.symmetric(
-                    horizontal: 16.w,
-                    vertical: isTablet ? 18.h : 14.h,
-                  ),
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'Requerido';
+                    }
+                    return null;
+                  },
+                  textCapitalization: TextCapitalization.words,
                 ),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return l10n.nameRequired;
-                  }
-                  return null;
-                },
-                textCapitalization: TextCapitalization.words,
               ),
-              SizedBox(height: isTablet ? 16.h : 12.h),
-              TextFormField(
-                controller: _customerPhoneController,
-                style: TextStyle(color: theme.textPrimary, fontSize: isTablet ? 16.sp : 14.sp),
-                decoration: InputDecoration(
-                  labelText: l10n.phoneOptional,
-                  labelStyle: TextStyle(color: theme.textSecondary, fontSize: isTablet ? 16.sp : 14.sp),
-                  prefixIcon: Icon(Icons.phone, color: theme.iconColor, size: isTablet ? 24.sp : 20.sp),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.r),
+              SizedBox(width: 8.w),
+              Expanded(
+                child: TextFormField(
+                  controller: _customerPhoneController,
+                  style: TextStyle(color: theme.textPrimary, fontSize: 14.sp),
+                  decoration: InputDecoration(
+                    labelText: 'Teléfono',
+                    labelStyle: TextStyle(color: theme.textSecondary, fontSize: 13.sp),
+                    prefixIcon: Icon(Icons.phone, color: theme.iconColor, size: 18.sp),
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.r)),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.r),
+                      borderSide: BorderSide(color: theme.borderColor),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.r),
+                      borderSide: BorderSide(color: theme.primary, width: 2),
+                    ),
+                    filled: true,
+                    fillColor: theme.inputFillColor,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+                    isDense: true,
                   ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.r),
-                    borderSide: BorderSide(color: theme.borderColor),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.r),
-                    borderSide: BorderSide(color: theme.primary, width: 2),
-                  ),
-                  filled: true,
-                  fillColor: theme.inputFillColor,
-                  contentPadding: EdgeInsets.symmetric(
-                    horizontal: 16.w,
-                    vertical: isTablet ? 18.h : 14.h,
-                  ),
+                  keyboardType: TextInputType.phone,
                 ),
-                keyboardType: TextInputType.phone,
               ),
             ],
           ),
         ),
       ),
 
-      // Buscador de productos - MÁS ESPACIO
+      // Buscador
       Padding(
-        padding: EdgeInsets.all(contentPadding),
+        padding: EdgeInsets.all(16.w),
         child: TextField(
           onChanged: (value) {
             setState(() {
               _productSearchQuery = value;
             });
           },
-          style: TextStyle(color: theme.textPrimary, fontSize: isTablet ? 16.sp : 14.sp),
+          style: TextStyle(color: theme.textPrimary, fontSize: 14.sp),
           decoration: InputDecoration(
             hintText: l10n.searchProducts,
-            hintStyle: TextStyle(color: theme.textHint, fontSize: isTablet ? 16.sp : 14.sp),
-            prefixIcon: Icon(Icons.search, color: theme.iconColor, size: isTablet ? 24.sp : 20.sp),
+            hintStyle: TextStyle(color: theme.textHint, fontSize: 14.sp),
+            prefixIcon: Icon(Icons.search, color: theme.iconColor, size: 20.sp),
             suffixIcon: _productSearchQuery.isNotEmpty
                 ? IconButton(
-                    icon: Icon(Icons.clear, color: theme.iconColor, size: isTablet ? 24.sp : 20.sp),
+                    icon: Icon(Icons.clear, color: theme.iconColor, size: 20.sp),
                     onPressed: () {
                       setState(() {
                         _productSearchQuery = '';
@@ -337,9 +328,7 @@ Widget _buildCreateOrderTab(bool isTablet, AppLocalizations l10n, ThemeHelper th
                     },
                   )
                 : null,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12.r),
-            ),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.r),
               borderSide: BorderSide(color: theme.borderColor),
@@ -350,84 +339,64 @@ Widget _buildCreateOrderTab(bool isTablet, AppLocalizations l10n, ThemeHelper th
             ),
             filled: true,
             fillColor: theme.inputFillColor,
-            contentPadding: EdgeInsets.symmetric(
-              horizontal: 16.w,
-              vertical: isTablet ? 18.h : 14.h,
-            ),
+            contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
           ),
         ),
       ),
 
-      // Lista de productos - MÁS ESPACIO
+      // Lista de productos
       Expanded(
         child: filteredProducts.isEmpty
             ? Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      Icons.inventory_2_outlined,
-                      size: isTablet ? 120.sp : 80.sp,
-                      color: theme.iconColorLight,
-                    ),
-                    SizedBox(height: isTablet ? 24.h : 16.h),
+                    Icon(Icons.inventory_2_outlined, size: 80.sp, color: theme.iconColorLight),
+                    SizedBox(height: 16.h),
                     Text(
                       l10n.noProductsAvailable,
-                      style: TextStyle(
-                        fontSize: isTablet ? 22.sp : 18.sp,
-                        color: theme.textSecondary,
-                      ),
+                      style: TextStyle(fontSize: 18.sp, color: theme.textSecondary),
                     ),
                   ],
                 ),
               )
             : ListView.builder(
-                padding: EdgeInsets.symmetric(horizontal: contentPadding),
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
                 itemCount: filteredProducts.length,
                 itemBuilder: (context, index) {
                   final product = filteredProducts[index];
                   final inCart = _cart[product.id] ?? 0;
 
                   return Card(
-                    margin: EdgeInsets.only(bottom: cardSpacing),
+                    margin: EdgeInsets.only(bottom: 12.h),
                     color: theme.cardBackground,
                     elevation: theme.isDark ? 4 : 2,
                     child: Padding(
-                      padding: EdgeInsets.all(cardPadding),
+                      padding: EdgeInsets.all(12.w),
                       child: Row(
                         children: [
-                          // Imagen - MÁS GRANDE EN TABLET
                           Container(
-                            width: imageSizeTablet,
-                            height: imageSizeTablet,
+                            width: 70.w,
+                            height: 70.w,
                             decoration: BoxDecoration(
                               color: theme.surfaceColor,
-                              borderRadius: BorderRadius.circular(12.r),
+                              borderRadius: BorderRadius.circular(8.r),
                             ),
                             child: product.imagePath.isNotEmpty
                                 ? ClipRRect(
-                                    borderRadius: BorderRadius.circular(12.r),
+                                    borderRadius: BorderRadius.circular(8.r),
                                     child: Image.file(
                                       File(product.imagePath),
                                       fit: BoxFit.cover,
                                       errorBuilder: (context, error, stackTrace) {
-                                        return Icon(
-                                          Icons.broken_image,
-                                          color: theme.iconColorLight,
-                                          size: isTablet ? 40.sp : 30.sp,
-                                        );
+                                        return Icon(Icons.broken_image, color: theme.iconColorLight, size: 30.sp);
                                       },
                                     ),
                                   )
-                                : Icon(
-                                    Icons.inventory_2,
-                                    color: theme.iconColorLight,
-                                    size: isTablet ? 40.sp : 30.sp,
-                                  ),
+                                : Icon(Icons.inventory_2, color: theme.iconColorLight, size: 30.sp),
                           ),
-                          SizedBox(width: isTablet ? 20.w : 12.w),
+                          SizedBox(width: 12.w),
 
-                          // Info - MÁS GRANDE EN TABLET
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -435,42 +404,38 @@ Widget _buildCreateOrderTab(bool isTablet, AppLocalizations l10n, ThemeHelper th
                                 Text(
                                   product.name,
                                   style: TextStyle(
-                                    fontSize: isTablet ? 18.sp : 16.sp,
+                                    fontSize: 16.sp,
                                     fontWeight: FontWeight.bold,
                                     color: theme.textPrimary,
                                   ),
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                 ),
-                                SizedBox(height: isTablet ? 8.h : 4.h),
+                                SizedBox(height: 4.h),
                                 Text(
                                   settingsProvider.formatPrice(product.price),
                                   style: TextStyle(
-                                    fontSize: isTablet ? 20.sp : 16.sp,
+                                    fontSize: 16.sp,
                                     fontWeight: FontWeight.bold,
                                     color: theme.success,
                                   ),
                                 ),
-                                SizedBox(height: isTablet ? 6.h : 4.h),
                                 Text(
                                   '${l10n.stock}: ${product.stock}',
                                   style: TextStyle(
-                                    fontSize: isTablet ? 14.sp : 12.sp,
-                                    color: product.stock <= 5
-                                        ? theme.error
-                                        : theme.textSecondary,
+                                    fontSize: 12.sp,
+                                    color: product.stock <= 5 ? theme.error : theme.textSecondary,
                                   ),
                                 ),
                               ],
                             ),
                           ),
 
-                          // Controles - MÁS GRANDES EN TABLET
                           if (inCart > 0)
                             Container(
                               decoration: BoxDecoration(
                                 color: theme.primaryWithOpacity(0.1),
-                                borderRadius: BorderRadius.circular(12.r),
+                                borderRadius: BorderRadius.circular(8.r),
                               ),
                               child: Row(
                                 children: [
@@ -478,49 +443,37 @@ Widget _buildCreateOrderTab(bool isTablet, AppLocalizations l10n, ThemeHelper th
                                     onPressed: () => _removeFromCart(product.id),
                                     icon: const Icon(Icons.remove),
                                     color: theme.primary,
-                                    iconSize: isTablet ? 24.sp : 20.sp,
-                                    padding: EdgeInsets.all(isTablet ? 12.w : 8.w),
+                                    iconSize: 20.sp,
+                                    padding: EdgeInsets.all(8.w),
                                   ),
                                   Text(
                                     '$inCart',
                                     style: TextStyle(
-                                      fontSize: isTablet ? 20.sp : 16.sp,
+                                      fontSize: 16.sp,
                                       fontWeight: FontWeight.bold,
                                       color: theme.textPrimary,
                                     ),
                                   ),
                                   IconButton(
-                                    onPressed: inCart < product.stock
-                                        ? () => _addToCart(product.id)
-                                        : null,
+                                    onPressed: inCart < product.stock ? () => _addToCart(product.id) : null,
                                     icon: const Icon(Icons.add),
                                     color: theme.primary,
-                                    iconSize: isTablet ? 24.sp : 20.sp,
-                                    padding: EdgeInsets.all(isTablet ? 12.w : 8.w),
+                                    iconSize: 20.sp,
+                                    padding: EdgeInsets.all(8.w),
                                   ),
                                 ],
                               ),
                             )
                           else
                             ElevatedButton.icon(
-                              onPressed: product.stock > 0
-                                  ? () => _addToCart(product.id)
-                                  : null,
-                              icon: Icon(Icons.add_shopping_cart, size: isTablet ? 22.sp : 18.sp),
-                              label: Text(
-                                l10n.add,
-                                style: TextStyle(fontSize: isTablet ? 16.sp : 14.sp),
-                              ),
+                              onPressed: product.stock > 0 ? () => _addToCart(product.id) : null,
+                              icon: Icon(Icons.add_shopping_cart, size: 18.sp),
+                              label: Text(l10n.add, style: TextStyle(fontSize: 14.sp)),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: theme.primary,
                                 foregroundColor: Colors.white,
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: isTablet ? 20.w : 12.w,
-                                  vertical: isTablet ? 14.h : 10.h,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12.r),
-                                ),
+                                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
                               ),
                             ),
                         ],
@@ -531,10 +484,10 @@ Widget _buildCreateOrderTab(bool isTablet, AppLocalizations l10n, ThemeHelper th
               ),
       ),
 
-      // Resumen y botón - MÁS ESPACIO
+      // Resumen y botón
       if (_cart.isNotEmpty)
         Container(
-          padding: EdgeInsets.all(contentPadding),
+          padding: EdgeInsets.all(16.w),
           decoration: BoxDecoration(
             color: theme.cardBackground,
             boxShadow: theme.cardShadow,
@@ -547,24 +500,22 @@ Widget _buildCreateOrderTab(bool isTablet, AppLocalizations l10n, ThemeHelper th
                   Text(
                     l10n.totalItems(_cart.values.fold(0, (sum, qty) => sum + qty)),
                     style: TextStyle(
-                      fontSize: isTablet ? 20.sp : 18.sp,
+                      fontSize: 18.sp,
                       fontWeight: FontWeight.bold,
                       color: theme.textPrimary,
                     ),
                   ),
                   Text(
-                    settingsProvider.formatPrice(
-                      _calculateTotal(productProvider),
-                    ),
+                    settingsProvider.formatPrice(_calculateTotal(productProvider)),
                     style: TextStyle(
-                      fontSize: isTablet ? 28.sp : 24.sp,
+                      fontSize: 24.sp,
                       fontWeight: FontWeight.bold,
                       color: theme.success,
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: isTablet ? 16.h : 12.h),
+              SizedBox(height: 12.h),
               Row(
                 children: [
                   Expanded(
@@ -574,38 +525,28 @@ Widget _buildCreateOrderTab(bool isTablet, AppLocalizations l10n, ThemeHelper th
                           _cart.clear();
                         });
                       },
-                      icon: Icon(Icons.clear, size: isTablet ? 22.sp : 18.sp),
-                      label: Text(
-                        l10n.clear,
-                        style: TextStyle(fontSize: isTablet ? 16.sp : 14.sp),
-                      ),
+                      icon: Icon(Icons.clear, size: 18.sp),
+                      label: Text(l10n.clear, style: TextStyle(fontSize: 14.sp)),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: theme.error,
                         side: BorderSide(color: theme.error),
-                        padding: EdgeInsets.symmetric(vertical: isTablet ? 18.h : 14.h),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.r),
-                        ),
+                        padding: EdgeInsets.symmetric(vertical: 14.h),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
                       ),
                     ),
                   ),
-                  SizedBox(width: isTablet ? 16.w : 12.w),
+                  SizedBox(width: 12.w),
                   Expanded(
                     flex: 2,
                     child: ElevatedButton.icon(
                       onPressed: _createOrderAndInvoice,
-                      icon: Icon(Icons.check_circle, size: isTablet ? 22.sp : 18.sp),
-                      label: Text(
-                        l10n.createOrder,
-                        style: TextStyle(fontSize: isTablet ? 16.sp : 14.sp),
-                      ),
+                      icon: Icon(Icons.check_circle, size: 18.sp),
+                      label: Text(l10n.createOrder, style: TextStyle(fontSize: 14.sp)),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: theme.success,
                         foregroundColor: Colors.white,
-                        padding: EdgeInsets.symmetric(vertical: isTablet ? 18.h : 14.h),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12.r),
-                        ),
+                        padding: EdgeInsets.symmetric(vertical: 14.h),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
                       ),
                     ),
                   ),

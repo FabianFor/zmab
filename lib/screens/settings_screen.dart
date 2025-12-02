@@ -208,232 +208,213 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  void _showLanguageDialog(BuildContext context, bool isTablet, ThemeHelper theme) {
-    final l10n = AppLocalizations.of(context)!;
-    final settingsProvider = context.read<SettingsProvider>();
-    final screenHeight = MediaQuery.of(context).size.height;
+void _showLanguageDialog(BuildContext context, bool isTablet, ThemeHelper theme) {
+  final l10n = AppLocalizations.of(context)!;
+  final settingsProvider = context.read<SettingsProvider>();
+  final screenHeight = MediaQuery.of(context).size.height;
 
-    showDialog(
-      context: context,
-      builder: (context) => Dialog(
-        backgroundColor: theme.cardBackground,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.r),
+  showDialog(
+    context: context,
+    builder: (context) => Dialog(
+      backgroundColor: theme.cardBackground,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
+      insetPadding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 40.h),
+      child: Container(
+        constraints: BoxConstraints(
+          maxWidth: isTablet ? 500.w : 400.w,
+          maxHeight: screenHeight * 0.7,
         ),
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            maxWidth: isTablet ? 500.w : 400.w,
-            maxHeight: screenHeight * 0.7,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Header
-              Container(
-                padding: EdgeInsets.all(isTablet ? 24.w : 20.w),
-                decoration: BoxDecoration(
-                  color: theme.primary,
-                  borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(20.r),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Header
+            Container(
+              padding: EdgeInsets.all(isTablet ? 24.w : 20.w),
+              decoration: BoxDecoration(
+                color: theme.primary,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.language, color: Colors.white, size: isTablet ? 28.sp : 24.sp),
+                  SizedBox(width: isTablet ? 16.w : 12.w),
+                  Expanded(
+                    child: Text(
+                      l10n.selectLanguage,
+                      style: TextStyle(
+                        fontSize: isTablet ? 22.sp : 20.sp,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.language,
-                      color: Colors.white,
-                      size: isTablet ? 28.sp : 24.sp,
-                    ),
-                    SizedBox(width: isTablet ? 16.w : 12.w),
-                    Expanded(
-                      child: Text(
-                        l10n.selectLanguage,
-                        style: TextStyle(
-                          fontSize: isTablet ? 22.sp : 20.sp,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.close, color: Colors.white),
-                      onPressed: () => Navigator.pop(context),
-                      iconSize: isTablet ? 26.sp : 24.sp,
-                    ),
-                  ],
-                ),
+                  IconButton(
+                    icon: Icon(Icons.close, color: Colors.white, size: isTablet ? 26.sp : 24.sp),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
               ),
-              
-              // Lista de idiomas
-              Flexible(
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  padding: EdgeInsets.symmetric(vertical: 8.h),
-                  itemCount: SettingsProvider.supportedLanguages.length,
-                  itemBuilder: (context, index) {
-                    final entry = SettingsProvider.supportedLanguages.entries.elementAt(index);
-                    final isSelected = settingsProvider.locale.languageCode == entry.key;
-                    
-                    return ListTile(
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: isTablet ? 28.w : 24.w,
-                        vertical: isTablet ? 12.h : 8.h,
+            ),
+            
+            // Lista de idiomas
+            Flexible(
+              child: ListView.builder(
+                shrinkWrap: true,
+                padding: EdgeInsets.symmetric(vertical: 8.h),
+                itemCount: SettingsProvider.supportedLanguages.length,
+                itemBuilder: (context, index) {
+                  final entry = SettingsProvider.supportedLanguages.entries.elementAt(index);
+                  final isSelected = settingsProvider.locale.languageCode == entry.key;
+                  
+                  return ListTile(
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: isTablet ? 28.w : 24.w,
+                      vertical: isTablet ? 12.h : 8.h,
+                    ),
+                    leading: Text(
+                      entry.value['flag']!,
+                      style: TextStyle(fontSize: isTablet ? 32.sp : 28.sp),
+                    ),
+                    title: Text(
+                      entry.value['name']!,
+                      style: TextStyle(
+                        fontSize: isTablet ? 18.sp : 16.sp,
+                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                        color: theme.textPrimary,
                       ),
-                      leading: Text(
-                        entry.value['flag']!,
-                        style: TextStyle(fontSize: isTablet ? 32.sp : 28.sp),
-                      ),
-                      title: Text(
-                        entry.value['name']!,
-                        style: TextStyle(
-                          fontSize: isTablet ? 18.sp : 16.sp,
-                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                          color: theme.textPrimary,
-                        ),
-                      ),
-                      trailing: isSelected 
-                          ? Icon(
-                              Icons.check_circle,
-                              color: theme.primary,
-                              size: isTablet ? 28.sp : 24.sp,
-                            )
-                          : null,
-                      selected: isSelected,
-                      selectedTileColor: theme.primaryWithOpacity(0.1),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.r),
-                      ),
-                      onTap: () {
-                        settingsProvider.setLanguage(entry.key);
-                        Navigator.pop(context);
-                      },
-                    );
-                  },
-                ),
+                    ),
+                    trailing: isSelected 
+                        ? Icon(
+                            Icons.check_circle,
+                            color: theme.primary,
+                            size: isTablet ? 28.sp : 24.sp,
+                          )
+                        : null,
+                    selected: isSelected,
+                    selectedTileColor: theme.primaryWithOpacity(0.1),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
+                    onTap: () {
+                      settingsProvider.setLanguage(entry.key);
+                      Navigator.pop(context);
+                    },
+                  );
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
-  void _showCurrencyDialog(BuildContext context, bool isTablet, ThemeHelper theme) {
-    final l10n = AppLocalizations.of(context)!;
-    final settingsProvider = context.read<SettingsProvider>();
-    final screenHeight = MediaQuery.of(context).size.height;
 
-    showDialog(
-      context: context,
-      builder: (context) => Dialog(
-        backgroundColor: theme.cardBackground,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.r),
+void _showCurrencyDialog(BuildContext context, bool isTablet, ThemeHelper theme) {
+  final l10n = AppLocalizations.of(context)!;
+  final settingsProvider = context.read<SettingsProvider>();
+  final screenHeight = MediaQuery.of(context).size.height;
+
+  showDialog(
+    context: context,
+    builder: (context) => Dialog(
+      backgroundColor: theme.cardBackground,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
+      insetPadding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 40.h),
+      child: Container(
+        constraints: BoxConstraints(
+          maxWidth: isTablet ? 600.w : 450.w,
+          maxHeight: screenHeight * 0.8,
         ),
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            maxWidth: isTablet ? 600.w : 450.w,
-            maxHeight: screenHeight * 0.8,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Header
-              Container(
-                padding: EdgeInsets.all(isTablet ? 24.w : 20.w),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF9C27B0),
-                  borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(20.r),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Header
+            Container(
+              padding: EdgeInsets.all(isTablet ? 24.w : 20.w),
+              decoration: BoxDecoration(
+                color: const Color(0xFF9C27B0),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.attach_money, color: Colors.white, size: isTablet ? 28.sp : 24.sp),
+                  SizedBox(width: isTablet ? 16.w : 12.w),
+                  Expanded(
+                    child: Text(
+                      l10n.selectCurrency,
+                      style: TextStyle(
+                        fontSize: isTablet ? 22.sp : 20.sp,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.attach_money,
-                      color: Colors.white,
-                      size: isTablet ? 28.sp : 24.sp,
-                    ),
-                    SizedBox(width: isTablet ? 16.w : 12.w),
-                    Expanded(
-                      child: Text(
-                        l10n.selectCurrency,
-                        style: TextStyle(
-                          fontSize: isTablet ? 22.sp : 20.sp,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.close, color: Colors.white),
-                      onPressed: () => Navigator.pop(context),
-                      iconSize: isTablet ? 26.sp : 24.sp,
-                    ),
-                  ],
-                ),
+                  IconButton(
+                    icon: Icon(Icons.close, color: Colors.white, size: isTablet ? 26.sp : 24.sp),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
               ),
-              
-              // Lista de monedas
-              Flexible(
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  padding: EdgeInsets.symmetric(vertical: 8.h),
-                  itemCount: SettingsProvider.supportedCurrencies.length,
-                  itemBuilder: (context, index) {
-                    final entry = SettingsProvider.supportedCurrencies.entries.elementAt(index);
-                    final isSelected = settingsProvider.currencyCode == entry.key;
-                    
-                    return ListTile(
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: isTablet ? 28.w : 24.w,
-                        vertical: isTablet ? 12.h : 8.h,
+            ),
+            
+            // Lista de monedas
+            Flexible(
+              child: ListView.builder(
+                shrinkWrap: true,
+                padding: EdgeInsets.symmetric(vertical: 8.h),
+                itemCount: SettingsProvider.supportedCurrencies.length,
+                itemBuilder: (context, index) {
+                  final entry = SettingsProvider.supportedCurrencies.entries.elementAt(index);
+                  final isSelected = settingsProvider.currencyCode == entry.key;
+                  
+                  return ListTile(
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: isTablet ? 28.w : 24.w,
+                      vertical: isTablet ? 12.h : 8.h,
+                    ),
+                    leading: Text(
+                      entry.value['flag']!,
+                      style: TextStyle(fontSize: isTablet ? 32.sp : 28.sp),
+                    ),
+                    title: Text(
+                      entry.value['name']!,
+                      style: TextStyle(
+                        fontSize: isTablet ? 18.sp : 16.sp,
+                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                        color: theme.textPrimary,
                       ),
-                      leading: Text(
-                        entry.value['flag']!,
-                        style: TextStyle(fontSize: isTablet ? 32.sp : 28.sp),
+                    ),
+                    subtitle: Text(
+                      entry.value['symbol']!,
+                      style: TextStyle(
+                        fontSize: isTablet ? 16.sp : 14.sp,
+                        color: theme.textSecondary,
                       ),
-                      title: Text(
-                        entry.value['name']!,
-                        style: TextStyle(
-                          fontSize: isTablet ? 18.sp : 16.sp,
-                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                          color: theme.textPrimary,
-                        ),
-                      ),
-                      subtitle: Text(
-                        entry.value['symbol']!,
-                        style: TextStyle(
-                          fontSize: isTablet ? 16.sp : 14.sp,
-                          color: theme.textSecondary,
-                        ),
-                      ),
-                      trailing: isSelected 
-                          ? Icon(
-                              Icons.check_circle,
-                              color: const Color(0xFF9C27B0),
-                              size: isTablet ? 28.sp : 24.sp,
-                            )
-                          : null,
-                      selected: isSelected,
-                      selectedTileColor: const Color(0xFF9C27B0).withOpacity(0.1),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.r),
-                      ),
-                      onTap: () {
-                        settingsProvider.setCurrency(entry.key);
-                        Navigator.pop(context);
-                      },
-                    );
-                  },
-                ),
+                    ),
+                    trailing: isSelected 
+                        ? Icon(
+                            Icons.check_circle,
+                            color: const Color(0xFF9C27B0),
+                            size: isTablet ? 28.sp : 24.sp,
+                          )
+                        : null,
+                    selected: isSelected,
+                    selectedTileColor: const Color(0xFF9C27B0).withOpacity(0.1),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
+                    onTap: () {
+                      settingsProvider.setCurrency(entry.key);
+                      Navigator.pop(context);
+                    },
+                  );
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
   String _getDarkModeText(AppLocalizations l10n) {
     switch (l10n.localeName) {

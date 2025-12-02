@@ -344,32 +344,30 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
       });
     }
   }
-// CONTINUACIÓN DE invoices_screen.dart
-// PEGA ESTOS MÉTODOS DENTRO DE LA CLASE _InvoicesScreenState
-
-// REEMPLAZA la sección _showInvoiceDetails en invoices_screen.dart
-// Busca: void _showInvoiceDetails(BuildContext context, invoice) {
-// Y REEMPLAZA TODO ESE MÉTODO con esto:
+// ✅ REEMPLAZA COMPLETAMENTE _showInvoiceDetails en invoices_screen.dart
 
 void _showInvoiceDetails(BuildContext context, invoice) {
   final l10n = AppLocalizations.of(context)!;
   final theme = ThemeHelper(context);
   final settingsProvider = Provider.of<SettingsProvider>(context, listen: false);
   final businessProvider = Provider.of<BusinessProvider>(context, listen: false);
+  final screenWidth = MediaQuery.of(context).size.width;
+  final screenHeight = MediaQuery.of(context).size.height;
+  final isTablet = screenWidth > 600;
 
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
     builder: (context) => Container(
-      height: MediaQuery.of(context).size.height * 0.9,
+      height: screenHeight * 0.9,
       decoration: BoxDecoration(
         color: theme.cardBackground,
         borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
       ),
       child: Column(
         children: [
-          // ✅ SOLO EL INDICADOR DE ARRASTRE (sin header duplicado)
+          // Indicador de arrastre
           Container(
             margin: EdgeInsets.only(top: 12.h),
             width: 40.w,
@@ -379,24 +377,21 @@ void _showInvoiceDetails(BuildContext context, invoice) {
               borderRadius: BorderRadius.circular(2.r),
             ),
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: isTablet ? 20.h : 16.h),
           
-          // ✅ BUSCADOR Y CALENDARIO EN LA MISMA LÍNEA
+          // Buscador y calendario alineados
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.w),
+            padding: EdgeInsets.symmetric(horizontal: isTablet ? 24.w : 20.w),
             child: Row(
               children: [
-                // Buscador
                 Expanded(
                   child: TextField(
                     style: TextStyle(color: theme.textPrimary, fontSize: 14.sp),
                     decoration: InputDecoration(
-                      hintText: _getSearchByCustomerText(l10n),
+                      hintText: 'Buscar...',
                       hintStyle: TextStyle(color: theme.textHint, fontSize: 14.sp),
                       prefixIcon: Icon(Icons.search, size: 20.sp, color: theme.iconColor),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12.r),
-                      ),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12.r),
                         borderSide: BorderSide(color: theme.borderColor),
@@ -407,40 +402,42 @@ void _showInvoiceDetails(BuildContext context, invoice) {
                       ),
                       filled: true,
                       fillColor: theme.inputFillColor,
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: 12.w,
-                        vertical: 12.h,
-                      ),
+                      contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+                      isDense: true,
                     ),
                   ),
                 ),
                 SizedBox(width: 12.w),
-                // Calendario
-                IconButton(
-                  onPressed: () async {
-                    final DateTime? picked = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(2020),
-                      lastDate: DateTime.now(),
-                    );
-                    // Aquí podrías agregar lógica de filtrado si quieres
-                  },
-                  icon: Icon(Icons.calendar_today, color: theme.primary),
-                  style: IconButton.styleFrom(
-                    backgroundColor: theme.primaryWithOpacity(0.1),
-                    padding: EdgeInsets.all(12.w),
+                Container(
+                  height: 48.h,
+                  width: 48.w,
+                  decoration: BoxDecoration(
+                    color: theme.primaryWithOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12.r),
+                    border: Border.all(color: theme.borderColor),
+                  ),
+                  child: IconButton(
+                    onPressed: () async {
+                      final DateTime? picked = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2020),
+                        lastDate: DateTime.now(),
+                      );
+                    },
+                    icon: Icon(Icons.calendar_today, color: theme.primary, size: 20.sp),
+                    padding: EdgeInsets.zero,
                   ),
                 ),
               ],
             ),
           ),
-          SizedBox(height: 16.h),
+          SizedBox(height: isTablet ? 24.h : 20.h),
           
-          // Contenido del detalle
+          // Contenido scrolleable
           Expanded(
             child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              padding: EdgeInsets.symmetric(horizontal: isTablet ? 24.w : 20.w),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -455,9 +452,9 @@ void _showInvoiceDetails(BuildContext context, invoice) {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '${_getInvoiceText(l10n)} #${invoice.invoiceNumber}',
+                          'Boleta #${invoice.invoiceNumber}',
                           style: TextStyle(
-                            fontSize: 20.sp,
+                            fontSize: isTablet ? 22.sp : 20.sp,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
                           ),
@@ -465,7 +462,7 @@ void _showInvoiceDetails(BuildContext context, invoice) {
                         Text(
                           settingsProvider.formatPrice(invoice.total),
                           style: TextStyle(
-                            fontSize: 20.sp,
+                            fontSize: isTablet ? 22.sp : 20.sp,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
                           ),
@@ -478,10 +475,7 @@ void _showInvoiceDetails(BuildContext context, invoice) {
                   // Fecha
                   Text(
                     DateFormat('dd/MM/yyyy HH:mm').format(invoice.createdAt),
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                      color: theme.textSecondary,
-                    ),
+                    style: TextStyle(fontSize: 14.sp, color: theme.textSecondary),
                   ),
                   SizedBox(height: 20.h),
                   
@@ -497,16 +491,13 @@ void _showInvoiceDetails(BuildContext context, invoice) {
                   if (invoice.customerPhone.isNotEmpty)
                     Text(
                       invoice.customerPhone,
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        color: theme.textSecondary,
-                      ),
+                      style: TextStyle(fontSize: 14.sp, color: theme.textSecondary),
                     ),
                   SizedBox(height: 24.h),
                   
                   // Productos
                   Text(
-                    '${_getProductsText(l10n)}:',
+                    'Productos:',
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.bold,
@@ -523,10 +514,7 @@ void _showInvoiceDetails(BuildContext context, invoice) {
                           Expanded(
                             child: Text(
                               '${item.productName} x${item.quantity}',
-                              style: TextStyle(
-                                fontSize: 14.sp,
-                                color: theme.textPrimary,
-                              ),
+                              style: TextStyle(fontSize: 14.sp, color: theme.textPrimary),
                             ),
                           ),
                           Text(
@@ -549,7 +537,7 @@ void _showInvoiceDetails(BuildContext context, invoice) {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        '${l10n.total}:',
+                        'Total:',
                         style: TextStyle(
                           fontSize: 18.sp,
                           fontWeight: FontWeight.bold,
@@ -566,68 +554,71 @@ void _showInvoiceDetails(BuildContext context, invoice) {
                       ),
                     ],
                   ),
+                  SizedBox(height: 20.h),
                 ],
               ),
             ),
           ),
           
           // Botones de acción
-          Padding(
-            padding: EdgeInsets.all(20.w),
-            child: Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: () => _handleShareInvoice(
-                      context,
-                      invoice,
-                      businessProvider,
-                      settingsProvider,
-                    ),
-                    icon: Icon(Icons.share, size: 18.sp),
-                    label: Text(l10n.share, style: TextStyle(fontSize: 14.sp)),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: theme.success,
-                      foregroundColor: Colors.white,
-                      padding: EdgeInsets.symmetric(vertical: 14.h),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.r),
+          SafeArea(
+            child: Padding(
+              padding: EdgeInsets.all(isTablet ? 24.w : 20.w),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () => _handleShareInvoice(
+                        context,
+                        invoice,
+                        businessProvider,
+                        settingsProvider,
+                      ),
+                      icon: Icon(Icons.share, size: 18.sp),
+                      label: Text(l10n.share, style: TextStyle(fontSize: 14.sp)),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: theme.success,
+                        foregroundColor: Colors.white,
+                        padding: EdgeInsets.symmetric(vertical: 14.h),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
                       ),
                     ),
                   ),
-                ),
-                SizedBox(width: 8.w),
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: () => _handleDownloadInvoice(
-                      context,
-                      invoice,
-                      businessProvider,
-                      settingsProvider,
-                    ),
-                    icon: Icon(Icons.download, size: 18.sp),
-                    label: Text(l10n.download, style: TextStyle(fontSize: 14.sp)),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: theme.primary,
-                      side: BorderSide(color: theme.borderColor),
-                      padding: EdgeInsets.symmetric(vertical: 14.h),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.r),
+                  SizedBox(width: 8.w),
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () => _handleDownloadInvoice(
+                        context,
+                        invoice,
+                        businessProvider,
+                        settingsProvider,
+                      ),
+                      icon: Icon(Icons.download, size: 18.sp),
+                      label: Text(l10n.download, style: TextStyle(fontSize: 14.sp)),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: theme.primary,
+                        side: BorderSide(color: theme.borderColor),
+                        padding: EdgeInsets.symmetric(vertical: 14.h),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
                       ),
                     ),
                   ),
-                ),
-                SizedBox(width: 8.w),
-                IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    _confirmDeleteInvoice(context, invoice);
-                  },
-                  icon: Icon(Icons.delete, size: 24.sp),
-                  color: theme.error,
-                  tooltip: l10n.delete,
-                ),
-              ],
+                  SizedBox(width: 8.w),
+                  IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      _confirmDeleteInvoice(context, invoice);
+                    },
+                    icon: Icon(Icons.delete, size: 24.sp),
+                    color: theme.error,
+                    tooltip: l10n.delete,
+                    style: IconButton.styleFrom(
+                      backgroundColor: theme.errorWithOpacity(0.1),
+                      padding: EdgeInsets.all(12.w),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],

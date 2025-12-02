@@ -217,6 +217,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
 }
 
 // DIÁLOGO CORREGIDO
+// ✅ REEMPLAZA SOLO LA CLASE AddProductDialog en products_screen.dart
+
 class AddProductDialog extends StatefulWidget {
   final Product? product;
 
@@ -384,24 +386,25 @@ class _AddProductDialogState extends State<AddProductDialog> {
     final theme = ThemeHelper(context);
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    final isLargeScreen = screenWidth > 600;
-    final isVerySmall = screenWidth < 360;
 
     return Dialog(
       backgroundColor: theme.cardBackground,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
+      insetPadding: EdgeInsets.symmetric(
+        horizontal: screenWidth > 600 ? 40.w : 20.w,
+        vertical: 40.h,
+      ),
       child: Container(
-        width: isLargeScreen ? 600.w : screenWidth * 0.92,
+        width: screenWidth > 600 ? 600.w : screenWidth * 0.9,
         constraints: BoxConstraints(
-          maxHeight: screenHeight * 0.88,
-          minHeight: 400.h,
+          maxHeight: screenHeight * 0.85,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             // Header
             Container(
-              padding: EdgeInsets.all(isLargeScreen ? 24.w : (isVerySmall ? 16.w : 20.w)),
+              padding: EdgeInsets.all(20.w),
               decoration: BoxDecoration(
                 color: theme.primary,
                 borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
@@ -413,7 +416,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
                     child: Text(
                       widget.product == null ? l10n.addProduct : l10n.editProduct,
                       style: TextStyle(
-                        fontSize: isVerySmall ? 16.sp : (isLargeScreen ? 22.sp : 20.sp),
+                        fontSize: 20.sp,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
@@ -423,11 +426,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
                   ),
                   IconButton(
                     onPressed: () => Navigator.pop(context),
-                    icon: Icon(
-                      Icons.close,
-                      color: Colors.white,
-                      size: isVerySmall ? 20.sp : 24.sp,
-                    ),
+                    icon: Icon(Icons.close, color: Colors.white, size: 24.sp),
                   ),
                 ],
               ),
@@ -436,20 +435,19 @@ class _AddProductDialogState extends State<AddProductDialog> {
             // Form
             Flexible(
               child: SingleChildScrollView(
-                padding: EdgeInsets.all(isLargeScreen ? 24.w : (isVerySmall ? 16.w : 20.w)),
+                padding: EdgeInsets.all(20.w),
                 child: Form(
                   key: _formKey,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
                     children: [
                       // Nombre
                       TextFormField(
                         controller: _nameController,
-                        style: TextStyle(fontSize: isVerySmall ? 12.sp : 14.sp, color: theme.textPrimary),
+                        style: TextStyle(fontSize: 14.sp, color: theme.textPrimary),
                         decoration: InputDecoration(
                           labelText: l10n.name,
-                          labelStyle: TextStyle(fontSize: isVerySmall ? 12.sp : 14.sp, color: theme.textSecondary),
+                          labelStyle: TextStyle(fontSize: 14.sp, color: theme.textSecondary),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12.r),
@@ -459,13 +457,10 @@ class _AddProductDialogState extends State<AddProductDialog> {
                             borderRadius: BorderRadius.circular(12.r),
                             borderSide: BorderSide(color: theme.primary, width: 2),
                           ),
-                          prefixIcon: Icon(Icons.label, size: isVerySmall ? 18.sp : 20.sp, color: theme.iconColor),
+                          prefixIcon: Icon(Icons.label, size: 20.sp, color: theme.iconColor),
                           filled: true,
                           fillColor: theme.inputFillColor,
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: 16.w,
-                            vertical: isVerySmall ? 12.h : 14.h,
-                          ),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
                         ),
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
@@ -483,10 +478,10 @@ class _AddProductDialogState extends State<AddProductDialog> {
                       // Descripción
                       TextFormField(
                         controller: _descriptionController,
-                        style: TextStyle(fontSize: isVerySmall ? 12.sp : 14.sp, color: theme.textPrimary),
+                        style: TextStyle(fontSize: 14.sp, color: theme.textPrimary),
                         decoration: InputDecoration(
                           labelText: l10n.description,
-                          labelStyle: TextStyle(fontSize: isVerySmall ? 12.sp : 14.sp, color: theme.textSecondary),
+                          labelStyle: TextStyle(fontSize: 14.sp, color: theme.textSecondary),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12.r),
@@ -496,94 +491,91 @@ class _AddProductDialogState extends State<AddProductDialog> {
                             borderRadius: BorderRadius.circular(12.r),
                             borderSide: BorderSide(color: theme.primary, width: 2),
                           ),
-                          prefixIcon: Icon(Icons.description, size: isVerySmall ? 18.sp : 20.sp, color: theme.iconColor),
+                          prefixIcon: Icon(Icons.description, size: 20.sp, color: theme.iconColor),
                           filled: true,
                           fillColor: theme.inputFillColor,
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: 16.w,
-                            vertical: isVerySmall ? 12.h : 14.h,
-                          ),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
                         ),
-                        maxLines: 3,
+                        maxLines: 2,
                         textCapitalization: TextCapitalization.sentences,
                       ),
                       SizedBox(height: 16.h),
 
-                      // Precio
-                      TextFormField(
-                        controller: _priceController,
-                        style: TextStyle(fontSize: isVerySmall ? 12.sp : 14.sp, color: theme.textPrimary),
-                        decoration: InputDecoration(
-                          labelText: l10n.price,
-                          labelStyle: TextStyle(fontSize: isVerySmall ? 12.sp : 14.sp, color: theme.textSecondary),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12.r),
-                            borderSide: BorderSide(color: theme.borderColor),
+                      // Precio y Stock en fila
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextFormField(
+                              controller: _priceController,
+                              style: TextStyle(fontSize: 14.sp, color: theme.textPrimary),
+                              decoration: InputDecoration(
+                                labelText: l10n.price,
+                                labelStyle: TextStyle(fontSize: 14.sp, color: theme.textSecondary),
+                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12.r),
+                                  borderSide: BorderSide(color: theme.borderColor),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12.r),
+                                  borderSide: BorderSide(color: theme.primary, width: 2),
+                                ),
+                                prefixIcon: Icon(Icons.attach_money, size: 20.sp, color: theme.iconColor),
+                                filled: true,
+                                fillColor: theme.inputFillColor,
+                                contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+                              ),
+                              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return l10n.priceRequired;
+                                }
+                                final price = double.tryParse(value);
+                                if (price == null || price <= 0) {
+                                  return l10n.invalidPrice;
+                                }
+                                return null;
+                              },
+                            ),
                           ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12.r),
-                            borderSide: BorderSide(color: theme.primary, width: 2),
+                          SizedBox(width: 12.w),
+                          Expanded(
+                            child: TextFormField(
+                              controller: _stockController,
+                              style: TextStyle(fontSize: 14.sp, color: theme.textPrimary),
+                              decoration: InputDecoration(
+                                labelText: l10n.stock,
+                                labelStyle: TextStyle(fontSize: 14.sp, color: theme.textSecondary),
+                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12.r),
+                                  borderSide: BorderSide(color: theme.borderColor),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12.r),
+                                  borderSide: BorderSide(color: theme.primary, width: 2),
+                                ),
+                                prefixIcon: Icon(Icons.inventory, size: 20.sp, color: theme.iconColor),
+                                filled: true,
+                                fillColor: theme.inputFillColor,
+                                contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+                              ),
+                              keyboardType: TextInputType.number,
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return l10n.stockRequired;
+                                }
+                                final stock = int.tryParse(value);
+                                if (stock == null || stock < 0) {
+                                  return l10n.invalidStock;
+                                }
+                                return null;
+                              },
+                            ),
                           ),
-                          prefixIcon: Icon(Icons.attach_money, size: isVerySmall ? 18.sp : 20.sp, color: theme.iconColor),
-                          filled: true,
-                          fillColor: theme.inputFillColor,
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: 16.w,
-                            vertical: isVerySmall ? 12.h : 14.h,
-                          ),
-                        ),
-                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return l10n.priceRequired;
-                          }
-                          final price = double.tryParse(value);
-                          if (price == null || price <= 0) {
-                            return l10n.invalidPrice;
-                          }
-                          return null;
-                        },
+                        ],
                       ),
                       SizedBox(height: 16.h),
-
-                      // Stock
-                      TextFormField(
-                        controller: _stockController,
-                        style: TextStyle(fontSize: isVerySmall ? 12.sp : 14.sp, color: theme.textPrimary),
-                        decoration: InputDecoration(
-                          labelText: l10n.stock,
-                          labelStyle: TextStyle(fontSize: isVerySmall ? 12.sp : 14.sp, color: theme.textSecondary),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12.r),
-                            borderSide: BorderSide(color: theme.borderColor),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12.r),
-                            borderSide: BorderSide(color: theme.primary, width: 2),
-                          ),
-                          prefixIcon: Icon(Icons.inventory, size: isVerySmall ? 18.sp : 20.sp, color: theme.iconColor),
-                          filled: true,
-                          fillColor: theme.inputFillColor,
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: 16.w,
-                            vertical: isVerySmall ? 12.h : 14.h,
-                          ),
-                        ),
-                        keyboardType: TextInputType.number,
-                        validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return l10n.stockRequired;
-                          }
-                          final stock = int.tryParse(value);
-                          if (stock == null || stock < 0) {
-                            return l10n.invalidStock;
-                          }
-                          return null;
-                        },
-                      ),
-                      SizedBox(height: 20.h),
 
                       // Imagen preview
                       if (_imagePath.isNotEmpty)
@@ -591,8 +583,8 @@ class _AddProductDialogState extends State<AddProductDialog> {
                           child: Stack(
                             children: [
                               Container(
-                                width: isVerySmall ? 120.w : 150.w,
-                                height: isVerySmall ? 120.w : 150.w,
+                                width: 120.w,
+                                height: 120.w,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(12.r),
                                   image: DecorationImage(
@@ -612,7 +604,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
                                     foregroundColor: Colors.white,
                                     padding: EdgeInsets.all(8.w),
                                   ),
-                                  iconSize: isVerySmall ? 16.sp : 20.sp,
+                                  iconSize: 18.sp,
                                 ),
                               ),
                             ],
@@ -623,15 +615,15 @@ class _AddProductDialogState extends State<AddProductDialog> {
                       // Botón para agregar imagen
                       OutlinedButton.icon(
                         onPressed: _pickImage,
-                        icon: Icon(Icons.image, size: isVerySmall ? 18.sp : 20.sp),
+                        icon: Icon(Icons.image, size: 20.sp),
                         label: Text(
                           _imagePath.isEmpty ? l10n.addImage : l10n.changeImage,
-                          style: TextStyle(fontSize: isVerySmall ? 12.sp : 14.sp),
+                          style: TextStyle(fontSize: 14.sp),
                         ),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: theme.primary,
                           side: BorderSide(color: theme.borderColor),
-                          minimumSize: Size(double.infinity, isVerySmall ? 44.h : 50.h),
+                          minimumSize: Size(double.infinity, 48.h),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
                         ),
                       ),
@@ -643,7 +635,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
 
             // Botones
             Padding(
-              padding: EdgeInsets.all(isLargeScreen ? 24.w : (isVerySmall ? 16.w : 20.w)),
+              padding: EdgeInsets.all(20.w),
               child: Row(
                 children: [
                   Expanded(
@@ -652,13 +644,10 @@ class _AddProductDialogState extends State<AddProductDialog> {
                       style: OutlinedButton.styleFrom(
                         foregroundColor: theme.textPrimary,
                         side: BorderSide(color: theme.borderColor),
-                        padding: EdgeInsets.symmetric(vertical: isVerySmall ? 14.h : 16.h),
+                        padding: EdgeInsets.symmetric(vertical: 16.h),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
                       ),
-                      child: Text(
-                        l10n.cancel,
-                        style: TextStyle(fontSize: isVerySmall ? 12.sp : 14.sp),
-                      ),
+                      child: Text(l10n.cancel, style: TextStyle(fontSize: 14.sp)),
                     ),
                   ),
                   SizedBox(width: 12.w),
@@ -668,7 +657,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: theme.buttonPrimary,
                         foregroundColor: Colors.white,
-                        padding: EdgeInsets.symmetric(vertical: isVerySmall ? 14.h : 16.h),
+                        padding: EdgeInsets.symmetric(vertical: 16.h),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
                       ),
                       child: _isSubmitting
@@ -680,10 +669,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
                                 strokeWidth: 2,
                               ),
                             )
-                          : Text(
-                              l10n.save,
-                              style: TextStyle(fontSize: isVerySmall ? 12.sp : 14.sp),
-                            ),
+                          : Text(l10n.save, style: TextStyle(fontSize: 14.sp)),
                     ),
                   ),
                 ],
