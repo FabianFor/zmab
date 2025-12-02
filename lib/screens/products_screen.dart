@@ -216,9 +216,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
   }
 }
 
-// DIÁLOGO CORREGIDO
-// ✅ REEMPLAZA SOLO LA CLASE AddProductDialog en products_screen.dart
-
+// ✅ DIÁLOGO COMPLETAMENTE CORREGIDO PARA TABLET Y MÓVIL
 class AddProductDialog extends StatefulWidget {
   final Product? product;
 
@@ -386,37 +384,37 @@ class _AddProductDialogState extends State<AddProductDialog> {
     final theme = ThemeHelper(context);
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
+    final isTablet = screenWidth > 600;
 
     return Dialog(
       backgroundColor: theme.cardBackground,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
       insetPadding: EdgeInsets.symmetric(
-        horizontal: screenWidth > 600 ? 40.w : 20.w,
-        vertical: 40.h,
+        horizontal: isTablet ? 60.w : 20.w,
+        vertical: isTablet ? 60.h : 30.h,
       ),
       child: Container(
-        width: screenWidth > 600 ? 600.w : screenWidth * 0.9,
+        width: isTablet ? 600.w : screenWidth * 0.9,
         constraints: BoxConstraints(
-          maxHeight: screenHeight * 0.85,
+          maxHeight: screenHeight * 0.9,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             // Header
             Container(
-              padding: EdgeInsets.all(20.w),
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
               decoration: BoxDecoration(
                 color: theme.primary,
                 borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
               ),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
                     child: Text(
                       widget.product == null ? l10n.addProduct : l10n.editProduct,
                       style: TextStyle(
-                        fontSize: 20.sp,
+                        fontSize: isTablet ? 22.sp : 18.sp,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
@@ -426,20 +424,21 @@ class _AddProductDialogState extends State<AddProductDialog> {
                   ),
                   IconButton(
                     onPressed: () => Navigator.pop(context),
-                    icon: Icon(Icons.close, color: Colors.white, size: 24.sp),
+                    icon: Icon(Icons.close, color: Colors.white, size: isTablet ? 28.sp : 24.sp),
+                    padding: EdgeInsets.zero,
                   ),
                 ],
               ),
             ),
 
-            // Form
+            // Formulario scrolleable
             Flexible(
               child: SingleChildScrollView(
-                padding: EdgeInsets.all(20.w),
+                padding: EdgeInsets.all(isTablet ? 24.w : 20.w),
                 child: Form(
                   key: _formKey,
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       // Nombre
                       TextFormField(
@@ -577,14 +576,14 @@ class _AddProductDialogState extends State<AddProductDialog> {
                       ),
                       SizedBox(height: 16.h),
 
-                      // Imagen preview
+                      // Vista previa de imagen
                       if (_imagePath.isNotEmpty)
                         Center(
                           child: Stack(
                             children: [
                               Container(
-                                width: 120.w,
-                                height: 120.w,
+                                width: isTablet ? 140.w : 120.w,
+                                height: isTablet ? 140.w : 120.w,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(12.r),
                                   image: DecorationImage(
@@ -594,17 +593,17 @@ class _AddProductDialogState extends State<AddProductDialog> {
                                 ),
                               ),
                               Positioned(
-                                top: 5,
-                                right: 5,
+                                top: 4,
+                                right: 4,
                                 child: IconButton(
                                   onPressed: () => setState(() => _imagePath = ''),
                                   icon: const Icon(Icons.close),
                                   style: IconButton.styleFrom(
                                     backgroundColor: Colors.red,
                                     foregroundColor: Colors.white,
-                                    padding: EdgeInsets.all(8.w),
+                                    padding: EdgeInsets.all(6.w),
                                   ),
-                                  iconSize: 18.sp,
+                                  iconSize: 16.sp,
                                 ),
                               ),
                             ],
@@ -612,7 +611,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
                         ),
                       if (_imagePath.isNotEmpty) SizedBox(height: 16.h),
 
-                      // Botón para agregar imagen
+                      // Botón imagen
                       OutlinedButton.icon(
                         onPressed: _pickImage,
                         icon: Icon(Icons.image, size: 20.sp),
@@ -623,7 +622,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
                         style: OutlinedButton.styleFrom(
                           foregroundColor: theme.primary,
                           side: BorderSide(color: theme.borderColor),
-                          minimumSize: Size(double.infinity, 48.h),
+                          minimumSize: Size(double.infinity, isTablet ? 52.h : 48.h),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
                         ),
                       ),
@@ -633,9 +632,9 @@ class _AddProductDialogState extends State<AddProductDialog> {
               ),
             ),
 
-            // Botones
+            // Botones de acción
             Padding(
-              padding: EdgeInsets.all(20.w),
+              padding: EdgeInsets.all(isTablet ? 24.w : 20.w),
               child: Row(
                 children: [
                   Expanded(
@@ -644,7 +643,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
                       style: OutlinedButton.styleFrom(
                         foregroundColor: theme.textPrimary,
                         side: BorderSide(color: theme.borderColor),
-                        padding: EdgeInsets.symmetric(vertical: 16.h),
+                        padding: EdgeInsets.symmetric(vertical: isTablet ? 18.h : 16.h),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
                       ),
                       child: Text(l10n.cancel, style: TextStyle(fontSize: 14.sp)),
@@ -657,7 +656,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: theme.buttonPrimary,
                         foregroundColor: Colors.white,
-                        padding: EdgeInsets.symmetric(vertical: 16.h),
+                        padding: EdgeInsets.symmetric(vertical: isTablet ? 18.h : 16.h),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
                       ),
                       child: _isSubmitting

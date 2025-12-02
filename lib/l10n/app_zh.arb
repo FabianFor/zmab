@@ -80,5 +80,8 @@
   "imageSelectedSuccess": "图片选择成功",
   "retry": "重试",
   "permissionsDenied": "权限被拒绝",
-  "close": "关闭"
+  "close": "关闭",
+  "cart": "购物车",
+  "viewCart": "查看购物车"
+
 }

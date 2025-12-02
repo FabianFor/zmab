@@ -231,4 +231,10 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get close => '关闭';
+
+  @override
+  String get cart => '购物车';
+
+  @override
+  String get viewCart => '查看购物车';
 }

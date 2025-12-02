@@ -231,4 +231,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get close => 'Close';
+
+  @override
+  String get cart => 'Cart';
+
+  @override
+  String get viewCart => 'View Cart';
 }

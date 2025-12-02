@@ -80,5 +80,8 @@
   "imageSelectedSuccess": "Imagem selecionada com sucesso",
   "retry": "Tentar novamente",
   "permissionsDenied": "Permissões negadas",
-  "close": "Fechar"
+  "close": "Fechar",
+  "cart": "Carrinho",
+  "viewCart": "Ver Carrinho"
+
 }

@@ -23,7 +23,6 @@ class OrdersScreen extends StatefulWidget {
 class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   
-  final _formKey = GlobalKey<FormState>();
   final _customerNameController = TextEditingController();
   final _customerPhoneController = TextEditingController();
   final Map<String, int> _cart = {};
@@ -72,13 +71,138 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
     return total;
   }
 
+  // ✅ DIÁLOGO PARA PEDIR DATOS DEL CLIENTE AL FINALIZAR
+  Future<void> _showCustomerDialog() async {
+    final l10n = AppLocalizations.of(context)!;
+    final theme = ThemeHelper(context);
+    
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        final formKey = GlobalKey<FormState>();
+        
+        return Dialog(
+          backgroundColor: theme.cardBackground,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
+          child: Padding(
+            padding: EdgeInsets.all(20.w),
+            child: Form(
+              key: formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    'Datos del Cliente',
+                    style: TextStyle(
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.bold,
+                      color: theme.textPrimary,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 20.h),
+                  
+                  TextFormField(
+                    controller: _customerNameController,
+                    autofocus: true,
+                    style: TextStyle(color: theme.textPrimary, fontSize: 16.sp),
+                    decoration: InputDecoration(
+                      labelText: 'Nombre *',
+                      labelStyle: TextStyle(color: theme.textSecondary, fontSize: 14.sp),
+                      prefixIcon: Icon(Icons.person, color: theme.iconColor, size: 20.sp),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.r),
+                        borderSide: BorderSide(color: theme.borderColor),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.r),
+                        borderSide: BorderSide(color: theme.primary, width: 2),
+                      ),
+                      filled: true,
+                      fillColor: theme.inputFillColor,
+                    ),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Nombre requerido';
+                      }
+                      return null;
+                    },
+                    textCapitalization: TextCapitalization.words,
+                  ),
+                  SizedBox(height: 16.h),
+                  
+                  TextFormField(
+                    controller: _customerPhoneController,
+                    style: TextStyle(color: theme.textPrimary, fontSize: 16.sp),
+                    decoration: InputDecoration(
+                      labelText: 'Teléfono (opcional)',
+                      labelStyle: TextStyle(color: theme.textSecondary, fontSize: 14.sp),
+                      prefixIcon: Icon(Icons.phone, color: theme.iconColor, size: 20.sp),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.r),
+                        borderSide: BorderSide(color: theme.borderColor),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.r),
+                        borderSide: BorderSide(color: theme.primary, width: 2),
+                      ),
+                      filled: true,
+                      fillColor: theme.inputFillColor,
+                    ),
+                    keyboardType: TextInputType.phone,
+                  ),
+                  SizedBox(height: 24.h),
+                  
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () => Navigator.pop(context),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: theme.textPrimary,
+                            side: BorderSide(color: theme.borderColor),
+                            padding: EdgeInsets.symmetric(vertical: 16.h),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+                          ),
+                          child: Text(l10n.cancel, style: TextStyle(fontSize: 16.sp)),
+                        ),
+                      ),
+                      SizedBox(width: 12.w),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            if (formKey.currentState!.validate()) {
+                              Navigator.pop(context);
+                              _createOrderAndInvoice();
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: theme.success,
+                            foregroundColor: Colors.white,
+                            padding: EdgeInsets.symmetric(vertical: 16.h),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+                          ),
+                          child: Text('Confirmar', style: TextStyle(fontSize: 16.sp)),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> _createOrderAndInvoice() async {
     final l10n = AppLocalizations.of(context)!;
     
-    if (!_formKey.currentState!.validate()) {
-      return;
-    }
-
     if (_cart.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -217,186 +341,368 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
         controller: _tabController,
         children: [
           _buildCreateOrderTab(isTablet, l10n, theme),
-          const InvoicesScreen(),
+          const InvoicesScreenContent(), // ✅ Cambiar aquí
         ],
       ),
     );
   }
 
-Widget _buildCreateOrderTab(bool isTablet, AppLocalizations l10n, ThemeHelper theme) {
-  final productProvider = context.watch<ProductProvider>();
-  final settingsProvider = context.watch<SettingsProvider>();
+  // ✅ SIN FORMULARIO ARRIBA - MÁS ESPACIO PARA PRODUCTOS
+  Widget _buildCreateOrderTab(bool isTablet, AppLocalizations l10n, ThemeHelper theme) {
+    final productProvider = context.watch<ProductProvider>();
+    final settingsProvider = context.watch<SettingsProvider>();
 
-  final filteredProducts = _productSearchQuery.isEmpty
-      ? productProvider.products
-      : productProvider.searchProducts(_productSearchQuery);
+    final filteredProducts = _productSearchQuery.isEmpty
+        ? productProvider.products
+        : productProvider.searchProducts(_productSearchQuery);
 
-  return Column(
-    children: [
-      // ✅ FORMULARIO ULTRA COMPACTO
-      Container(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-        color: theme.cardBackground,
-        child: Form(
-          key: _formKey,
-          child: Row(
-            children: [
-              Expanded(
-                flex: 2,
-                child: TextFormField(
-                  controller: _customerNameController,
-                  style: TextStyle(color: theme.textPrimary, fontSize: 14.sp),
-                  decoration: InputDecoration(
-                    labelText: 'Cliente *',
-                    labelStyle: TextStyle(color: theme.textSecondary, fontSize: 13.sp),
-                    prefixIcon: Icon(Icons.person, color: theme.iconColor, size: 18.sp),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.r)),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.r),
-                      borderSide: BorderSide(color: theme.borderColor),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.r),
-                      borderSide: BorderSide(color: theme.primary, width: 2),
-                    ),
-                    filled: true,
-                    fillColor: theme.inputFillColor,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
-                    isDense: true,
+    return Column(
+      children: [
+        // Buscador de productos
+        Padding(
+          padding: EdgeInsets.all(16.w),
+          child: TextField(
+            onChanged: (value) {
+              setState(() {
+                _productSearchQuery = value;
+              });
+            },
+            style: TextStyle(color: theme.textPrimary, fontSize: 14.sp),
+            decoration: InputDecoration(
+              hintText: l10n.searchProducts,
+              hintStyle: TextStyle(color: theme.textHint, fontSize: 14.sp),
+              prefixIcon: Icon(Icons.search, color: theme.iconColor, size: 20.sp),
+              suffixIcon: _productSearchQuery.isNotEmpty
+                  ? IconButton(
+                      icon: Icon(Icons.clear, color: theme.iconColor, size: 20.sp),
+                      onPressed: () {
+                        setState(() {
+                          _productSearchQuery = '';
+                        });
+                      },
+                    )
+                  : null,
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12.r),
+                borderSide: BorderSide(color: theme.borderColor),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12.r),
+                borderSide: BorderSide(color: theme.primary, width: 2),
+              ),
+              filled: true,
+              fillColor: theme.inputFillColor,
+              contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+            ),
+          ),
+        ),
+
+        // ✅ BOTÓN VER CARRITO (solo visible si hay items)
+        if (_cart.isNotEmpty)
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 16.w),
+            child: ElevatedButton.icon(
+              onPressed: () => _showCartPreview(productProvider, settingsProvider, l10n, theme),
+              icon: Icon(Icons.shopping_cart, size: 18.sp),
+              label: Text(
+                '${l10n.viewCart} (${_cart.values.fold(0, (sum, qty) => sum + qty)})',
+                style: TextStyle(fontSize: 14.sp),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: theme.primary,
+                foregroundColor: Colors.white,
+                minimumSize: Size(double.infinity, 44.h),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+              ),
+            ),
+          ),
+        if (_cart.isNotEmpty) SizedBox(height: 12.h),
+
+        // ✅ LISTA DE PRODUCTOS (MÁS ESPACIO)
+        Expanded(
+          child: filteredProducts.isEmpty
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.inventory_2_outlined, size: 80.sp, color: theme.iconColorLight),
+                      SizedBox(height: 16.h),
+                      Text(
+                        l10n.noProductsAvailable,
+                        style: TextStyle(fontSize: 18.sp, color: theme.textSecondary),
+                      ),
+                    ],
                   ),
-                  validator: (value) {
-                    if (value == null || value.trim().isEmpty) {
-                      return 'Requerido';
-                    }
-                    return null;
+                )
+              : ListView.builder(
+                  padding: EdgeInsets.symmetric(horizontal: 16.w),
+                  itemCount: filteredProducts.length,
+                  itemBuilder: (context, index) {
+                    final product = filteredProducts[index];
+                    final inCart = _cart[product.id] ?? 0;
+
+                    return Card(
+                      margin: EdgeInsets.only(bottom: 12.h),
+                      color: theme.cardBackground,
+                      elevation: theme.isDark ? 4 : 2,
+                      child: Padding(
+                        padding: EdgeInsets.all(12.w),
+                        child: Row(
+                          children: [
+                            // Imagen
+                            Container(
+                              width: 70.w,
+                              height: 70.w,
+                              decoration: BoxDecoration(
+                                color: theme.surfaceColor,
+                                borderRadius: BorderRadius.circular(8.r),
+                              ),
+                              child: product.imagePath.isNotEmpty
+                                  ? ClipRRect(
+                                      borderRadius: BorderRadius.circular(8.r),
+                                      child: Image.file(
+                                        File(product.imagePath),
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (context, error, stackTrace) {
+                                          return Icon(Icons.broken_image, color: theme.iconColorLight, size: 30.sp);
+                                        },
+                                      ),
+                                    )
+                                  : Icon(Icons.inventory_2, color: theme.iconColorLight, size: 30.sp),
+                            ),
+                            SizedBox(width: 12.w),
+
+                            // Info del producto
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    product.name,
+                                    style: TextStyle(
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.bold,
+                                      color: theme.textPrimary,
+                                    ),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  SizedBox(height: 4.h),
+                                  Text(
+                                    settingsProvider.formatPrice(product.price),
+                                    style: TextStyle(
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.bold,
+                                      color: theme.success,
+                                    ),
+                                  ),
+                                  Text(
+                                    '${l10n.stock}: ${product.stock}',
+                                    style: TextStyle(
+                                      fontSize: 12.sp,
+                                      color: product.stock <= 5 ? theme.error : theme.textSecondary,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            // Botones de agregar/quitar
+                            if (inCart > 0)
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: theme.primaryWithOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(8.r),
+                                ),
+                                child: Row(
+                                  children: [
+                                    IconButton(
+                                      onPressed: () => _removeFromCart(product.id),
+                                      icon: const Icon(Icons.remove),
+                                      color: theme.primary,
+                                      iconSize: 20.sp,
+                                      padding: EdgeInsets.all(8.w),
+                                    ),
+                                    Text(
+                                      '$inCart',
+                                      style: TextStyle(
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.bold,
+                                        color: theme.textPrimary,
+                                      ),
+                                    ),
+                                    IconButton(
+                                      onPressed: inCart < product.stock ? () => _addToCart(product.id) : null,
+                                      icon: const Icon(Icons.add),
+                                      color: theme.primary,
+                                      iconSize: 20.sp,
+                                      padding: EdgeInsets.all(8.w),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            else
+                              ElevatedButton.icon(
+                                onPressed: product.stock > 0 ? () => _addToCart(product.id) : null,
+                                icon: Icon(Icons.add_shopping_cart, size: 18.sp),
+                                label: Text(l10n.add, style: TextStyle(fontSize: 14.sp)),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: theme.primary,
+                                  foregroundColor: Colors.white,
+                                  padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    );
                   },
-                  textCapitalization: TextCapitalization.words,
                 ),
-              ),
-              SizedBox(width: 8.w),
-              Expanded(
-                child: TextFormField(
-                  controller: _customerPhoneController,
-                  style: TextStyle(color: theme.textPrimary, fontSize: 14.sp),
-                  decoration: InputDecoration(
-                    labelText: 'Teléfono',
-                    labelStyle: TextStyle(color: theme.textSecondary, fontSize: 13.sp),
-                    prefixIcon: Icon(Icons.phone, color: theme.iconColor, size: 18.sp),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.r)),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.r),
-                      borderSide: BorderSide(color: theme.borderColor),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8.r),
-                      borderSide: BorderSide(color: theme.primary, width: 2),
-                    ),
-                    filled: true,
-                    fillColor: theme.inputFillColor,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
-                    isDense: true,
-                  ),
-                  keyboardType: TextInputType.phone,
-                ),
-              ),
-            ],
-          ),
         ),
-      ),
 
-      // Buscador
-      Padding(
-        padding: EdgeInsets.all(16.w),
-        child: TextField(
-          onChanged: (value) {
-            setState(() {
-              _productSearchQuery = value;
-            });
-          },
-          style: TextStyle(color: theme.textPrimary, fontSize: 14.sp),
-          decoration: InputDecoration(
-            hintText: l10n.searchProducts,
-            hintStyle: TextStyle(color: theme.textHint, fontSize: 14.sp),
-            prefixIcon: Icon(Icons.search, color: theme.iconColor, size: 20.sp),
-            suffixIcon: _productSearchQuery.isNotEmpty
-                ? IconButton(
-                    icon: Icon(Icons.clear, color: theme.iconColor, size: 20.sp),
-                    onPressed: () {
-                      setState(() {
-                        _productSearchQuery = '';
-                      });
-                    },
-                  )
-                : null,
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12.r),
-              borderSide: BorderSide(color: theme.borderColor),
+        // Panel inferior (resumen + botones)
+        if (_cart.isNotEmpty)
+          Container(
+            padding: EdgeInsets.all(16.w),
+            decoration: BoxDecoration(
+              color: theme.cardBackground,
+              boxShadow: theme.cardShadow,
             ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12.r),
-              borderSide: BorderSide(color: theme.primary, width: 2),
-            ),
-            filled: true,
-            fillColor: theme.inputFillColor,
-            contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-          ),
-        ),
-      ),
-
-      // Lista de productos
-      Expanded(
-        child: filteredProducts.isEmpty
-            ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Icon(Icons.inventory_2_outlined, size: 80.sp, color: theme.iconColorLight),
-                    SizedBox(height: 16.h),
                     Text(
-                      l10n.noProductsAvailable,
-                      style: TextStyle(fontSize: 18.sp, color: theme.textSecondary),
+                      l10n.totalItems(_cart.values.fold(0, (sum, qty) => sum + qty)),
+                      style: TextStyle(
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.bold,
+                        color: theme.textPrimary,
+                      ),
+                    ),
+                    Text(
+                      settingsProvider.formatPrice(_calculateTotal(productProvider)),
+                      style: TextStyle(
+                        fontSize: 24.sp,
+                        fontWeight: FontWeight.bold,
+                        color: theme.success,
+                      ),
                     ),
                   ],
                 ),
-              )
-            : ListView.builder(
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                itemCount: filteredProducts.length,
+                SizedBox(height: 12.h),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: () {
+                          setState(() {
+                            _cart.clear();
+                          });
+                        },
+                        icon: Icon(Icons.clear, size: 18.sp),
+                        label: Text(l10n.clear, style: TextStyle(fontSize: 14.sp)),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: theme.error,
+                          side: BorderSide(color: theme.error),
+                          padding: EdgeInsets.symmetric(vertical: 14.h),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 12.w),
+                    Expanded(
+                      flex: 2,
+                      child: ElevatedButton.icon(
+                        onPressed: _showCustomerDialog,
+                        icon: Icon(Icons.check_circle, size: 18.sp),
+                        label: Text(l10n.createOrder, style: TextStyle(fontSize: 14.sp)),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: theme.success,
+                          foregroundColor: Colors.white,
+                          padding: EdgeInsets.symmetric(vertical: 14.h),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
+
+  // Vista previa del carrito
+  void _showCartPreview(ProductProvider productProvider, SettingsProvider settingsProvider, AppLocalizations l10n, ThemeHelper theme) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        height: MediaQuery.of(context).size.height * 0.7,
+        decoration: BoxDecoration(
+          color: theme.cardBackground,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+        ),
+        child: Column(
+          children: [
+            Container(
+              margin: EdgeInsets.only(top: 12.h),
+              width: 40.w,
+              height: 4.h,
+              decoration: BoxDecoration(
+                color: theme.iconColorLight,
+                borderRadius: BorderRadius.circular(2.r),
+              ),
+            ),
+            SizedBox(height: 16.h),
+
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    l10n.cart,
+                    style: TextStyle(
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.bold,
+                      color: theme.textPrimary,
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: Icon(Icons.close, color: theme.iconColor, size: 24.sp),
+                  ),
+                ],
+              ),
+            ),
+
+            Divider(color: theme.dividerColor),
+
+            Expanded(
+              child: ListView.builder(
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
+                itemCount: _cart.length,
                 itemBuilder: (context, index) {
-                  final product = filteredProducts[index];
-                  final inCart = _cart[product.id] ?? 0;
+                  final productId = _cart.keys.elementAt(index);
+                  final quantity = _cart[productId]!;
+                  final product = productProvider.getProductById(productId);
+
+                  if (product == null) return const SizedBox.shrink();
 
                   return Card(
                     margin: EdgeInsets.only(bottom: 12.h),
-                    color: theme.cardBackground,
-                    elevation: theme.isDark ? 4 : 2,
+                    color: theme.surfaceColor,
                     child: Padding(
                       padding: EdgeInsets.all(12.w),
                       child: Row(
                         children: [
-                          Container(
-                            width: 70.w,
-                            height: 70.w,
-                            decoration: BoxDecoration(
-                              color: theme.surfaceColor,
-                              borderRadius: BorderRadius.circular(8.r),
-                            ),
-                            child: product.imagePath.isNotEmpty
-                                ? ClipRRect(
-                                    borderRadius: BorderRadius.circular(8.r),
-                                    child: Image.file(
-                                      File(product.imagePath),
-                                      fit: BoxFit.cover,
-                                      errorBuilder: (context, error, stackTrace) {
-                                        return Icon(Icons.broken_image, color: theme.iconColorLight, size: 30.sp);
-                                      },
-                                    ),
-                                  )
-                                : Icon(Icons.inventory_2, color: theme.iconColorLight, size: 30.sp),
-                          ),
-                          SizedBox(width: 12.w),
-
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -413,96 +719,43 @@ Widget _buildCreateOrderTab(bool isTablet, AppLocalizations l10n, ThemeHelper th
                                 ),
                                 SizedBox(height: 4.h),
                                 Text(
-                                  settingsProvider.formatPrice(product.price),
-                                  style: TextStyle(
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.bold,
-                                    color: theme.success,
-                                  ),
-                                ),
-                                Text(
-                                  '${l10n.stock}: ${product.stock}',
-                                  style: TextStyle(
-                                    fontSize: 12.sp,
-                                    color: product.stock <= 5 ? theme.error : theme.textSecondary,
-                                  ),
+                                  '${settingsProvider.formatPrice(product.price)} x $quantity',
+                                  style: TextStyle(fontSize: 14.sp, color: theme.textSecondary),
                                 ),
                               ],
                             ),
                           ),
-
-                          if (inCart > 0)
-                            Container(
-                              decoration: BoxDecoration(
-                                color: theme.primaryWithOpacity(0.1),
-                                borderRadius: BorderRadius.circular(8.r),
-                              ),
-                              child: Row(
-                                children: [
-                                  IconButton(
-                                    onPressed: () => _removeFromCart(product.id),
-                                    icon: const Icon(Icons.remove),
-                                    color: theme.primary,
-                                    iconSize: 20.sp,
-                                    padding: EdgeInsets.all(8.w),
-                                  ),
-                                  Text(
-                                    '$inCart',
-                                    style: TextStyle(
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.bold,
-                                      color: theme.textPrimary,
-                                    ),
-                                  ),
-                                  IconButton(
-                                    onPressed: inCart < product.stock ? () => _addToCart(product.id) : null,
-                                    icon: const Icon(Icons.add),
-                                    color: theme.primary,
-                                    iconSize: 20.sp,
-                                    padding: EdgeInsets.all(8.w),
-                                  ),
-                                ],
-                              ),
-                            )
-                          else
-                            ElevatedButton.icon(
-                              onPressed: product.stock > 0 ? () => _addToCart(product.id) : null,
-                              icon: Icon(Icons.add_shopping_cart, size: 18.sp),
-                              label: Text(l10n.add, style: TextStyle(fontSize: 14.sp)),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: theme.primary,
-                                foregroundColor: Colors.white,
-                                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
-                              ),
+                          Text(
+                            settingsProvider.formatPrice(product.price * quantity),
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.bold,
+                              color: theme.success,
                             ),
+                          ),
                         ],
                       ),
                     ),
                   );
                 },
               ),
-      ),
+            ),
 
-      // Resumen y botón
-      if (_cart.isNotEmpty)
-        Container(
-          padding: EdgeInsets.all(16.w),
-          decoration: BoxDecoration(
-            color: theme.cardBackground,
-            boxShadow: theme.cardShadow,
-          ),
-          child: Column(
-            children: [
-              Row(
+            Container(
+              padding: EdgeInsets.all(20.w),
+              decoration: BoxDecoration(
+                color: theme.primary,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+              ),
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    l10n.totalItems(_cart.values.fold(0, (sum, qty) => sum + qty)),
+                    'Total:',
                     style: TextStyle(
-                      fontSize: 18.sp,
+                      fontSize: 20.sp,
                       fontWeight: FontWeight.bold,
-                      color: theme.textPrimary,
+                      color: Colors.white,
                     ),
                   ),
                   Text(
@@ -510,52 +763,15 @@ Widget _buildCreateOrderTab(bool isTablet, AppLocalizations l10n, ThemeHelper th
                     style: TextStyle(
                       fontSize: 24.sp,
                       fontWeight: FontWeight.bold,
-                      color: theme.success,
+                      color: Colors.white,
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 12.h),
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton.icon(
-                      onPressed: () {
-                        setState(() {
-                          _cart.clear();
-                        });
-                      },
-                      icon: Icon(Icons.clear, size: 18.sp),
-                      label: Text(l10n.clear, style: TextStyle(fontSize: 14.sp)),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: theme.error,
-                        side: BorderSide(color: theme.error),
-                        padding: EdgeInsets.symmetric(vertical: 14.h),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 12.w),
-                  Expanded(
-                    flex: 2,
-                    child: ElevatedButton.icon(
-                      onPressed: _createOrderAndInvoice,
-                      icon: Icon(Icons.check_circle, size: 18.sp),
-                      label: Text(l10n.createOrder, style: TextStyle(fontSize: 14.sp)),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: theme.success,
-                        foregroundColor: Colors.white,
-                        padding: EdgeInsets.symmetric(vertical: 14.h),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
-    ],
-  );
-}
+      ),
+    );
+  }
 }

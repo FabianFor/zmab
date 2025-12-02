@@ -545,6 +545,18 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Cerrar'**
   String get close;
+
+  /// No description provided for @cart.
+  ///
+  /// In es, this message translates to:
+  /// **'Carrito'**
+  String get cart;
+
+  /// No description provided for @viewCart.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver Carrito'**
+  String get viewCart;
 }
 
 class _AppLocalizationsDelegate

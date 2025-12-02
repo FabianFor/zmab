@@ -231,4 +231,10 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get close => 'Fechar';
+
+  @override
+  String get cart => 'Carrinho';
+
+  @override
+  String get viewCart => 'Ver Carrinho';
 }
