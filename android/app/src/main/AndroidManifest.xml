@@ -1,21 +1,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     
-    <!-- ✅ PERMISOS PARA GALERÍA - COMPATIBLE CON TODAS LAS VERSIONES DE ANDROID -->
-    
-    <!-- Para Android 13+ (API 33+) -->
+    <!-- Leer galería (para fotos de productos) -->
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/>
-    
-    <!-- Para Android 10-12 (API 29-32) -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
                      android:maxSdkVersion="32"/>
     
-    <!-- Internet (para futuras funcionalidades) -->
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- Escribir (para guardar boletas en galería) -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+                     android:maxSdkVersion="29"/>
     
-    <!-- ✅ DECLARAR QUE LA APP FUNCIONA EN ANDROID 13+ -->
-    <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="33"/>
+    <!-- Internet -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
         android:label="MiNegocio"
@@ -33,10 +30,6 @@
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize">
             
-            <!-- Specifies an Android theme to apply to this Activity as soon as
-                 the Android process has started. This theme is visible to the user
-                 while the Flutter UI initializes. After that, this theme continues
-                 to determine the Window background behind the Flutter UI. -->
             <meta-data
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
@@ -48,14 +41,11 @@
             </intent-filter>
         </activity>
         
-        <!-- Don't delete the meta-data below.
-             This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
     
-    <!-- ✅ QUERIES PARA ANDROID 11+ (permite acceso a galería) -->
     <queries>
         <intent>
             <action android:name="android.intent.action.VIEW" />
@@ -64,6 +54,13 @@
         <intent>
             <action android:name="android.intent.action.PICK"/>
             <data android:mimeType="image/*"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.GET_CONTENT"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.SEND" />
+            <data android:mimeType="image/*" />
         </intent>
     </queries>
 </manifest>
