@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:open_file/open_file.dart'; // ✅ NUEVO IMPORT
 import '../l10n/app_localizations.dart';
 import '../core/utils/theme_helper.dart';
 import '../providers/invoice_provider.dart';
@@ -10,7 +11,7 @@ import '../providers/business_provider.dart';
 import '../providers/settings_provider.dart';
 import '../models/business_profile.dart';
 import '../services/invoice_image_generator.dart';
-import '../services/invoice_pdf_generator.dart'; // ✅ NUEVO IMPORT
+import '../services/invoice_pdf_generator.dart';
 import '../services/permission_handler.dart';
 import '../services/gallery_saver.dart';
 
@@ -728,7 +729,7 @@ class _InvoicesScreenContentState extends State<InvoicesScreenContent> {
     );
   }
 
-  // ✅ MÉTODO MODIFICADO PARA COMPARTIR
+  // ✅ COMPARTIR CON FORMATO CONFIGURADO
   Future<void> _handleShareInvoice(
     BuildContext context,
     dynamic invoice,
@@ -767,9 +768,9 @@ class _InvoicesScreenContentState extends State<InvoicesScreenContent> {
 
     try {
       String filePath;
+      bool isPdf = settingsProvider.downloadFormat == 'pdf';
       
-      // ✅ VERIFICAR FORMATO CONFIGURADO
-      if (settingsProvider.downloadFormat == 'pdf') {
+      if (isPdf) {
         filePath = await InvoicePdfGenerator.generatePdf(
           invoice: invoice,
           businessProfile: businessProvider.profile ?? BusinessProfile(
@@ -815,7 +816,7 @@ class _InvoicesScreenContentState extends State<InvoicesScreenContent> {
     }
   }
 
-  // ✅ MÉTODO MODIFICADO PARA DESCARGAR
+  // ✅ DESCARGAR EN DCIM/MiNegocio CON BOTÓN "VER"
   Future<void> _handleDownloadInvoice(
     BuildContext context,
     dynamic invoice,
@@ -854,9 +855,10 @@ class _InvoicesScreenContentState extends State<InvoicesScreenContent> {
 
     try {
       String filePath;
+      bool isPdf = settingsProvider.downloadFormat == 'pdf';
       
-      // ✅ VERIFICAR FORMATO CONFIGURADO
-      if (settingsProvider.downloadFormat == 'pdf') {
+      // Generar archivo (imagen o PDF)
+      if (isPdf) {
         filePath = await InvoicePdfGenerator.generatePdf(
           invoice: invoice,
           businessProfile: businessProvider.profile ?? BusinessProfile(
@@ -883,20 +885,52 @@ class _InvoicesScreenContentState extends State<InvoicesScreenContent> {
         );
       }
 
+      // ✅ Guardar en DCIM/MiNegocio
       final savedPath = await GallerySaver.saveInvoiceToGallery(
-        tempImagePath: filePath,
+        tempFilePath: filePath,
         invoiceNumber: invoice.invoiceNumber,
+        isPdf: isPdf,
       );
 
       if (context.mounted) {
         Navigator.pop(context);
+        
+        // ✅ Snackbar con botón "Ver"
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-              '✅ ${l10n.savedToGallery}',
-              style: TextStyle(fontSize: 14.sp),
+            content: Row(
+              children: [
+                Icon(Icons.check_circle, color: Colors.white, size: 20.sp),
+                SizedBox(width: 8.w),
+                Expanded(
+                  child: Text(
+                    '✅ Guardado en Galería → Álbum "MiNegocio"',
+                    style: TextStyle(fontSize: 14.sp),
+                  ),
+                ),
+              ],
             ),
             backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+            action: SnackBarAction(
+              label: 'Ver',
+              textColor: Colors.white,
+              onPressed: () async {
+                try {
+                  await OpenFile.open(savedPath);
+                } catch (e) {
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('No se pudo abrir el archivo'),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                }
+              },
+            ),
+            duration: Duration(seconds: 5),
           ),
         );
       }

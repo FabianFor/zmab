@@ -1,31 +1,29 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools">
     
-    <!-- ✅ PERMISOS CORREGIDOS PARA GOOGLE PLAY -->
+    <!-- ✅ PERMISOS PARA TODAS LAS VERSIONES DE ANDROID -->
     
-    <!-- Para Android 13+ (API 33+) - Fotos y videos -->
+    <!-- Para Android 13+ (API 33+) - SOLO LECTURA -->
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/>
     
-    <!-- Para Android 10-12 (API 29-32) - Storage scoped -->
+    <!-- Para Android 10-12 (API 29-32) - LECTURA (escritura en DCIM no requiere) -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
                      android:maxSdkVersion="32"/>
     
-    <!-- Para Android 6-9 (API 23-28) - Storage legacy -->
+    <!-- Para Android 6-9 (API 23-28) - ESCRITURA -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
                      android:maxSdkVersion="28"
                      tools:ignore="ScopedStorage"/>
     
-    <!-- Internet (para funciones futuras) -->
+    <!-- Internet -->
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
         android:label="MiNegocio"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher"
-        android:requestLegacyExternalStorage="true"
-        android:preserveLegacyExternalStorage="true">
+        android:icon="@mipmap/ic_launcher">
         
         <activity
             android:name=".MainActivity"
@@ -44,7 +42,7 @@
             
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                ategory android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         
@@ -52,7 +50,7 @@
             android:name="flutterEmbedding"
             android:value="2" />
         
-        <!-- ✅ PROVIDER para FileProvider (compartir archivos) -->
+        <!-- FileProvider para compartir archivos -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
@@ -64,7 +62,6 @@
         </provider>
     </application>
     
-    <!-- ✅ QUERIES actualizados -->
     <queries>
         <!-- Para abrir galería -->
         <intent>
@@ -87,10 +84,7 @@
         <!-- Para compartir -->
         <intent>
             <action android:name="android.intent.action.SEND" />
-            <data android:mimeType="image/*" />
+            <data android:mimeType="*/*" />
         </intent>
-        
-        <!-- Para WhatsApp (opcional) -->
-        <package android:name="com.whatsapp" />
     </queries>
 </manifest>

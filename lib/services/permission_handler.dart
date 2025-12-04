@@ -1,127 +1,133 @@
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/foundation.dart';
 
+/// 🔒 Manejador de permisos compatible con TODAS las versiones de Android
 class AppPermissionHandler {
+  
+  /// 📋 Solicitar permisos de almacenamiento según la versión de Android
   static Future<bool> requestStoragePermission(BuildContext context) async {
     try {
-      // Obtener versión de Android
       final androidInfo = await DeviceInfoPlugin().androidInfo;
       final sdkInt = androidInfo.version.sdkInt;
       
-      print('📱 Android SDK: $sdkInt');
+      if (kDebugMode) {
+        print('📱 Android SDK: $sdkInt');
+      }
       
       PermissionStatus status;
 
+      // ==========================================
+      // ANDROID 13+ (API 33+)
+      // ==========================================
       if (sdkInt >= 33) {
-        // Android 13+ (API 33+)
-        status = await Permission.photos.status;
-        print('📋 Estado actual photos: $status');
-        
-        // ✅ SI YA ESTÁ CONCEDIDO, NO PEDIR DE NUEVO
-        if (status.isGranted || status.isLimited) {
-          print('✅ Permiso photos ya concedido');
-          return true;
+        // En Android 13+, se usa READ_MEDIA_IMAGES
+        // PERO para escribir en DCIM NO se necesita permiso
+        if (kDebugMode) {
+          print('✅ Android 13+: No se necesita permiso para DCIM');
         }
+        return true;
         
-        // Solo pedir si no está concedido
-        status = await Permission.photos.request();
-        print('📋 Nuevo estado photos: $status');
+      // ==========================================
+      // ANDROID 10-12 (API 29-32)
+      // ==========================================
+      } else if (sdkInt >= 29) {
+        // Scoped Storage: NO se necesita permiso para DCIM/Pictures
+        if (kDebugMode) {
+          print('✅ Android 10-12: No se necesita permiso para DCIM');
+        }
+        return true;
         
-      } else if (sdkInt >= 30) {
-        // Android 11-12 (API 30-32)
+      // ==========================================
+      // ANDROID 6-9 (API 23-28)
+      // ==========================================
+      } else if (sdkInt >= 23) {
+        // Legacy Storage: SÍ necesita WRITE_EXTERNAL_STORAGE
         status = await Permission.storage.status;
-        print('📋 Estado actual storage: $status');
         
-        // ✅ SI YA ESTÁ CONCEDIDO, NO PEDIR DE NUEVO
+        if (kDebugMode) {
+          print('📋 Estado WRITE_EXTERNAL_STORAGE: $status');
+        }
+        
         if (status.isGranted) {
-          print('✅ Permiso storage ya concedido');
+          if (kDebugMode) {
+            print('✅ Permiso ya concedido');
+          }
           return true;
         }
         
+        // Pedir permiso
         status = await Permission.storage.request();
-        print('📋 Nuevo estado storage: $status');
         
+        if (kDebugMode) {
+          print('📋 Nuevo estado: $status');
+        }
+        
+        // Si fue denegado permanentemente
+        if (status.isPermanentlyDenied) {
+          if (context.mounted) {
+            _showSettingsDialog(context);
+          }
+          return false;
+        }
+        
+        return status.isGranted;
+        
+      // ==========================================
+      // ANDROID 5 y anteriores (API < 23)
+      // ==========================================
       } else {
-        // Android 10 y anteriores
-        status = await Permission.storage.status;
-        print('📋 Estado actual storage: $status');
-        
-        // ✅ SI YA ESTÁ CONCEDIDO, NO PEDIR DE NUEVO
-        if (status.isGranted) {
-          print('✅ Permiso storage ya concedido');
-          return true;
+        // No necesita runtime permissions
+        if (kDebugMode) {
+          print('✅ Android < 6: No necesita runtime permissions');
         }
-        
-        status = await Permission.storage.request();
-        print('📋 Nuevo estado storage: $status');
-      }
-
-      // Verificar si fue denegado permanentemente
-      if (status.isPermanentlyDenied) {
-        print('⚠️ Permiso denegado permanentemente');
-        if (context.mounted) {
-          _showPermissionDialog(context);
-        }
-        return false;
-      }
-
-      // Verificar si fue concedido
-      if (status.isGranted || status.isLimited) {
-        print('✅ Permiso concedido');
         return true;
       }
-
-      // Si llegamos aquí, fue denegado pero no permanentemente
-      if (status.isDenied) {
-        print('❌ Permiso denegado (no permanente)');
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('⚠️ Necesitas dar permiso para seleccionar imágenes'),
-              backgroundColor: Colors.orange,
-              duration: Duration(seconds: 2),
-            ),
-          );
-        }
-        return false;
+      
+    } catch (e, stackTrace) {
+      if (kDebugMode) {
+        print('❌ Error al solicitar permisos: $e');
+        print('Stack: $stackTrace');
       }
-
-      return false;
       
-    } catch (e) {
-      print('❌ Error al solicitar permisos: $e');
-      
-      // Fallback: intentar abrir galería sin permisos explícitos
+      // En caso de error, intentar de todos modos
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('⚠️ Intenta seleccionar la imagen de todos modos'),
+            content: Text('⚠️ Continuando sin verificar permisos...'),
             backgroundColor: Colors.orange,
             duration: Duration(seconds: 2),
           ),
         );
       }
-      return true; // Intentar de todos modos
+      return true;
     }
   }
 
-  static void _showPermissionDialog(BuildContext context) {
+  /// ⚙️ Mostrar diálogo para ir a configuración
+  static void _showSettingsDialog(BuildContext context) {
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: const Row(
           children: [
-            Icon(Icons.warning_amber_rounded, color: Colors.orange),
+            Icon(Icons.warning_amber_rounded, color: Colors.orange, size: 28),
             SizedBox(width: 12),
-            Expanded(child: Text('Permisos necesarios')),
+            Expanded(
+              child: Text(
+                'Permiso denegado',
+                style: TextStyle(fontSize: 18),
+              ),
+            ),
           ],
         ),
         content: const Text(
-          'Esta app necesita acceso a tus fotos para agregar imágenes a los productos.\n\n'
+          'Para guardar boletas en la galería, necesitas habilitar el permiso de almacenamiento.\n\n'
           'Ve a:\n'
-          'Configuración → Apps → MiNegocio → Permisos → Fotos y multimedia',
+          'Configuración → Apps → MiNegocio → Permisos → Almacenamiento',
           style: TextStyle(fontSize: 14),
         ),
         actions: [

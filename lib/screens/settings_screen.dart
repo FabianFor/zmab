@@ -76,7 +76,7 @@ class SettingsScreen extends StatelessWidget {
 
               SizedBox(height: isTablet ? 14.h : 16.h),
 
-              // IDIOMA (SIN BANDERA EN LA CARD)
+              // IDIOMA (SIN BANDERA)
               _buildSettingCard(
                 context: context,
                 theme: theme,
@@ -91,7 +91,7 @@ class SettingsScreen extends StatelessWidget {
 
               SizedBox(height: isTablet ? 14.h : 16.h),
 
-              // MONEDA (CON BANDERA EN LA CARD)
+              // MONEDA (CON BANDERA)
               _buildSettingCard(
                 context: context,
                 theme: theme,
@@ -231,7 +231,7 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  // ✅ DIÁLOGO DE IDIOMA (SIN BANDERAS)
+  // DIÁLOGO DE IDIOMA (SIN BANDERAS)
   void _showLanguageDialog(BuildContext context, bool isTablet, ThemeHelper theme) {
     final l10n = AppLocalizations.of(context)!;
     final settingsProvider = context.read<SettingsProvider>();
@@ -328,7 +328,7 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  // ✅ DIÁLOGO DE MONEDA (CON BANDERAS Y NOMBRES TRADUCIDOS)
+  // ✅ DIÁLOGO DE MONEDA (CORREGIDO)
   void _showCurrencyDialog(BuildContext context, bool isTablet, ThemeHelper theme) {
     final l10n = AppLocalizations.of(context)!;
     final settingsProvider = context.read<SettingsProvider>();
@@ -377,7 +377,7 @@ class SettingsScreen extends StatelessWidget {
                 ),
               ),
               
-              // Lista de monedas (CON BANDERAS Y TRADUCIDAS)
+              // Lista de monedas (CON NOMBRES CORRECTOS)
               Flexible(
                 child: ListView.builder(
                   shrinkWrap: true,
@@ -387,6 +387,12 @@ class SettingsScreen extends StatelessWidget {
                     final entry = SettingsProvider.supportedCurrencies.entries.elementAt(index);
                     final currencyCode = entry.key;
                     final isSelected = settingsProvider.currencyCode == currencyCode;
+                    
+                    // ✅ FIX: Obtener el nombre ESPECÍFICO de cada moneda
+                    final currencyName = settingsProvider.getCurrencyNameForCode(
+                      currencyCode,
+                      settingsProvider.locale.languageCode,
+                    );
                     
                     return ListTile(
                       contentPadding: EdgeInsets.symmetric(
@@ -398,7 +404,7 @@ class SettingsScreen extends StatelessWidget {
                         style: TextStyle(fontSize: isTablet ? 28.sp : 28.sp),
                       ),
                       title: Text(
-                        settingsProvider.getCurrencyName(settingsProvider.locale.languageCode),
+                        currencyName, // ✅ AHORA MUESTRA EL NOMBRE CORRECTO
                         style: TextStyle(
                           fontSize: isTablet ? 16.sp : 16.sp,
                           fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
@@ -437,7 +443,7 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  // ✅ DIÁLOGO PARA FORMATO DE DESCARGA
+  // DIÁLOGO DE FORMATO DE DESCARGA
   void _showDownloadFormatDialog(BuildContext context, bool isTablet, ThemeHelper theme) {
     final l10n = AppLocalizations.of(context)!;
     final settingsProvider = context.read<SettingsProvider>();

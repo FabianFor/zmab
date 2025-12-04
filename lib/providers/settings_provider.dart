@@ -3,11 +3,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsProvider with ChangeNotifier {
   // Configuración de moneda
-  String _currencyCode = 'USD'; // ✅ DEFAULT USD
-  String _currencySymbol = '\$'; // ✅ DEFAULT $
+  String _currencyCode = 'USD';
+  String _currencySymbol = '\$';
   
   // Configuración de idioma
-  Locale _locale = const Locale('en'); // ✅ DEFAULT INGLÉS
+  Locale _locale = const Locale('en');
   
   // Configuración de tema
   ThemeMode _themeMode = ThemeMode.light;
@@ -23,7 +23,6 @@ class SettingsProvider with ChangeNotifier {
   
   bool get isDarkMode => _themeMode == ThemeMode.dark;
 
-  // ✅ MONEDAS SIN NOMBRES (se traducen dinámicamente)
   static const Map<String, Map<String, String>> supportedCurrencies = {
     'PEN': {'symbol': 'S/', 'flag': '🇵🇪'},
     'USD': {'symbol': '\$', 'flag': '🇺🇸'},
@@ -139,8 +138,13 @@ class SettingsProvider with ChangeNotifier {
     }
   }
 
-  // ✅ MÉTODO PARA OBTENER NOMBRE DE MONEDA TRADUCIDO
+  // ✅ MÉTODO PARA OBTENER NOMBRE DE LA MONEDA ACTUAL
   String getCurrencyName(String languageCode) {
+    return getCurrencyNameForCode(_currencyCode, languageCode);
+  }
+
+  // ✅ NUEVO: MÉTODO PARA OBTENER NOMBRE DE CUALQUIER MONEDA
+  String getCurrencyNameForCode(String code, String languageCode) {
     final names = {
       'PEN': {
         'es': 'Sol Peruano',
@@ -210,7 +214,7 @@ class SettingsProvider with ChangeNotifier {
       },
     };
 
-    return names[_currencyCode]?[languageCode] ?? 'Unknown';
+    return names[code]?[languageCode] ?? code;
   }
 
   String get currentCurrencyName {
