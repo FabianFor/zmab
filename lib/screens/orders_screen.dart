@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:async'; // ← NUEVO para debounce
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -27,6 +28,7 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
   final _customerPhoneController = TextEditingController();
   final Map<String, int> _cart = {};
   String _productSearchQuery = '';
+  Timer? _debounce; // ← NUEVO: Para debounce en búsqueda
 
   @override
   void initState() {
@@ -39,6 +41,7 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
     _tabController.dispose();
     _customerNameController.dispose();
     _customerPhoneController.dispose();
+    _debounce?.cancel(); // ← NUEVO: Cancelar timer
     super.dispose();
   }
 
@@ -80,7 +83,7 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
       context: context,
       barrierDismissible: false,
       builder: (context) {
-        final formKey = GlobalKey<FormState>();
+        final formKey = GlobalKey<FormState>(); // ✅ NUEVO GlobalKey cada vez
         
         return Dialog(
           backgroundColor: theme.cardBackground,
@@ -128,9 +131,17 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
                       if (value == null || value.trim().isEmpty) {
                         return l10n.nameRequiredField;
                       }
+                      // ✅ NUEVO: Validación de longitud
+                      if (value.trim().length < 2) {
+                        return 'El nombre debe tener al menos 2 caracteres';
+                      }
+                      if (value.trim().length > 100) {
+                        return 'El nombre es demasiado largo';
+                      }
                       return null;
                     },
                     textCapitalization: TextCapitalization.words,
+                    maxLength: 100, // ✅ NUEVO: Límite de caracteres
                   ),
                   SizedBox(height: 16.h),
                   
@@ -154,6 +165,14 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
                       fillColor: theme.inputFillColor,
                     ),
                     keyboardType: TextInputType.phone,
+                    maxLength: 20, // ✅ NUEVO: Límite de caracteres
+                    validator: (value) {
+                      // ✅ NUEVO: Validación opcional pero consistente
+                      if (value != null && value.isNotEmpty && value.length < 7) {
+                        return 'Número de teléfono inválido';
+                      }
+                      return null;
+                    },
                   ),
                   SizedBox(height: isTablet ? 20.h : 24.h),
                   
@@ -203,110 +222,160 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
   Future<void> _createOrderAndInvoice() async {
     final l10n = AppLocalizations.of(context)!;
     
+    // ✅ MEJOR: Validación temprana
     if (_cart.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('❌ ${l10n.addToOrder}'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('❌ ${l10n.addToOrder}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
       return;
     }
 
-    final productProvider = context.read<ProductProvider>();
-    final orderProvider = context.read<OrderProvider>();
-    final invoiceProvider = context.read<InvoiceProvider>();
-
-    for (var entry in _cart.entries) {
-      final product = productProvider.getProductById(entry.key);
-      if (product == null || product.stock < entry.value) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('❌ ${l10n.insufficientStock} ${product?.name ?? "producto"}'),
-            backgroundColor: Colors.red,
-          ),
-        );
-        return;
-      }
+    // ✅ NUEVO: Mostrar loading
+    if (mounted) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
     }
 
-    final items = <OrderItem>[];
-    for (var entry in _cart.entries) {
-      final product = productProvider.getProductById(entry.key)!;
-      items.add(OrderItem(
-        productId: product.id,
-        productName: product.name,
-        quantity: entry.value,
-        price: product.price,
-        total: product.price * entry.value,
-      ));
-    }
+    try {
+      final productProvider = context.read<ProductProvider>();
+      final orderProvider = context.read<OrderProvider>();
+      final invoiceProvider = context.read<InvoiceProvider>();
 
-    final subtotal = _calculateTotal(productProvider);
-    final tax = 0.0;
-    final total = subtotal + tax;
-
-    final order = Order(
-      id: const Uuid().v4(),
-      orderNumber: orderProvider.orders.length + 1,
-      customerName: _customerNameController.text.trim(),
-      customerPhone: _customerPhoneController.text.trim(),
-      items: items,
-      subtotal: subtotal,
-      tax: tax,
-      total: total,
-      status: 'pending',
-      createdAt: DateTime.now(),
-    );
-
-    final invoice = Invoice(
-      id: const Uuid().v4(),
-      invoiceNumber: invoiceProvider.invoices.length + 1,
-      customerName: _customerNameController.text.trim(),
-      customerPhone: _customerPhoneController.text.trim(),
-      items: items,
-      createdAt: DateTime.now(),
-      total: total,
-    );
-
-    final orderSuccess = await orderProvider.addOrder(order);
-    final invoiceSuccess = await invoiceProvider.addInvoice(invoice);
-
-    if (orderSuccess && invoiceSuccess) {
+      // ✅ MEJOR: Validar stock antes de crear orden
       for (var entry in _cart.entries) {
-        final product = productProvider.getProductById(entry.key)!;
-        await productProvider.updateStock(
-          product.id,
-          product.stock - entry.value,
-        );
+        final product = productProvider.getProductById(entry.key);
+        if (product == null || product.stock < entry.value) {
+          if (mounted) {
+            Navigator.pop(context); // Cerrar loading
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('❌ ${l10n.insufficientStock} ${product?.name ?? "producto"}'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+          return;
+        }
       }
 
-      if (mounted) {
-        setState(() {
-          _cart.clear();
-          _customerNameController.clear();
-          _customerPhoneController.clear();
-          _productSearchQuery = '';
-        });
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('✅ ${l10n.orderCreatedSuccess}'),
-            backgroundColor: Colors.green,
-          ),
-        );
-
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const InvoicesScreen()),
-        );
+      // ✅ MEJOR: Crear items con validación
+      final items = <OrderItem>[];
+      for (var entry in _cart.entries) {
+        final product = productProvider.getProductById(entry.key);
+        if (product == null) continue; // Skip si el producto fue eliminado
+        
+        items.add(OrderItem(
+          productId: product.id,
+          productName: product.name,
+          quantity: entry.value,
+          price: product.price,
+          total: product.price * entry.value,
+        ));
       }
-    } else {
+
+      final subtotal = _calculateTotal(productProvider);
+      final tax = 0.0;
+      final total = subtotal + tax;
+
+      final order = Order(
+        id: const Uuid().v4(),
+        orderNumber: orderProvider.orders.length + 1,
+        customerName: _customerNameController.text.trim(),
+        customerPhone: _customerPhoneController.text.trim(),
+        items: items,
+        subtotal: subtotal,
+        tax: tax,
+        total: total,
+        status: 'pending',
+        createdAt: DateTime.now(),
+      );
+
+      final invoice = Invoice(
+        id: const Uuid().v4(),
+        invoiceNumber: invoiceProvider.invoices.length + 1,
+        customerName: _customerNameController.text.trim(),
+        customerPhone: _customerPhoneController.text.trim(),
+        items: items,
+        createdAt: DateTime.now(),
+        total: total,
+      );
+
+      // ✅ MEJOR: Crear orden y boleta
+      final orderSuccess = await orderProvider.addOrder(order);
+      final invoiceSuccess = await invoiceProvider.addInvoice(invoice);
+
+      if (orderSuccess && invoiceSuccess) {
+        // ✅ MEJOR: Actualizar stock
+        for (var entry in _cart.entries) {
+          final product = productProvider.getProductById(entry.key);
+          if (product != null) {
+            await productProvider.updateStock(
+              product.id,
+              product.stock - entry.value,
+            );
+          }
+        }
+
+        if (mounted) {
+          Navigator.pop(context); // Cerrar loading
+          
+          setState(() {
+            _cart.clear();
+            _customerNameController.clear();
+            _customerPhoneController.clear();
+            _productSearchQuery = '';
+          });
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Row(
+                children: [
+                  Icon(Icons.check_circle, color: Colors.white, size: 20.sp),
+                  SizedBox(width: 8.w),
+                  Expanded(child: Text('✅ ${l10n.orderCreatedSuccess}')),
+                ],
+              ),
+              backgroundColor: Colors.green,
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => const InvoicesScreen()),
+          );
+        }
+      } else {
+        if (mounted) {
+          Navigator.pop(context); // Cerrar loading
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('❌ ${l10n.orderCreatedError}'),
+              backgroundColor: Colors.red,
+              duration: Duration(seconds: 3),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      // ✅ NUEVO: Manejo de errores
       if (mounted) {
+        Navigator.pop(context); // Cerrar loading
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('❌ ${l10n.orderCreatedError}'),
+            content: Text('❌ Error inesperado: ${e.toString()}'),
             backgroundColor: Colors.red,
+            duration: Duration(seconds: 4),
           ),
         );
       }
@@ -363,13 +432,17 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
 
     return Column(
       children: [
-        // Buscador de productos
+        // ✅ MEJORADO: Buscador con debounce
         Padding(
           padding: EdgeInsets.all(16.w),
           child: TextField(
             onChanged: (value) {
-              setState(() {
-                _productSearchQuery = value;
+              // ✅ NUEVO: Debounce de 300ms
+              if (_debounce?.isActive ?? false) _debounce!.cancel();
+              _debounce = Timer(const Duration(milliseconds: 300), () {
+                setState(() {
+                  _productSearchQuery = value;
+                });
               });
             },
             style: TextStyle(color: theme.textPrimary, fontSize: 14.sp),
@@ -455,7 +528,7 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
                         padding: EdgeInsets.all(isTablet ? 10.w : 12.w),
                         child: Row(
                           children: [
-                            // Imagen
+                            // ✅ OPTIMIZADO: Imagen con cacheWidth
                             Container(
                               width: isTablet ? 60.w : 70.w,
                               height: isTablet ? 60.w : 70.w,
@@ -467,14 +540,13 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
                                   ? ClipRRect(
                                       borderRadius: BorderRadius.circular(8.r),
                                       child: Image.file(
-  File(product.imagePath),
-  fit: BoxFit.cover,
-  cacheWidth: 240,
-  cacheHeight: 240,
-  errorBuilder: (context, error, stackTrace) {
-    return Icon(Icons.broken_image, size: 30.sp, color: theme.iconColorLight);
-  },
-)
+                                        File(product.imagePath),
+                                        fit: BoxFit.cover,
+                                        cacheWidth: 210, // ✅ NUEVO: 70w × 3 para pantallas HD
+                                        errorBuilder: (context, error, stackTrace) {
+                                          return Icon(Icons.broken_image, size: 30.sp, color: theme.iconColorLight);
+                                        },
+                                      ),
                                     )
                                   : Icon(Icons.inventory_2, color: theme.iconColorLight, size: 30.sp),
                             ),
@@ -492,7 +564,7 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
                                       fontWeight: FontWeight.bold,
                                       color: theme.textPrimary,
                                     ),
-                                    maxLines: 3,
+                                    maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                   SizedBox(height: 4.h),

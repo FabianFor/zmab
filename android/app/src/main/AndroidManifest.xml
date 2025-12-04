@@ -1,16 +1,22 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools">
     
-    <!-- Leer galería (para fotos de productos) -->
+    <!-- ✅ PERMISOS CORREGIDOS PARA GOOGLE PLAY -->
+    
+    <!-- Para Android 13+ (API 33+) - Fotos y videos -->
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/>
+    
+    <!-- Para Android 10-12 (API 29-32) - Storage scoped -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
                      android:maxSdkVersion="32"/>
     
-    <!-- Escribir (para guardar boletas en galería) -->
+    <!-- Para Android 6-9 (API 23-28) - Storage legacy -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-                     android:maxSdkVersion="29"/>
+                     android:maxSdkVersion="28"
+                     tools:ignore="ScopedStorage"/>
     
-    <!-- Internet -->
+    <!-- Internet (para funciones futuras) -->
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
@@ -18,7 +24,8 @@
         android:label="MiNegocio"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
-        android:requestLegacyExternalStorage="true">
+        android:requestLegacyExternalStorage="true"
+        android:preserveLegacyExternalStorage="true">
         
         <activity
             android:name=".MainActivity"
@@ -44,23 +51,46 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        
+        <!-- ✅ PROVIDER para FileProvider (compartir archivos) -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
     </application>
     
+    <!-- ✅ QUERIES actualizados -->
     <queries>
-        <intent>
-            <action android:name="android.intent.action.VIEW" />
-            <data android:scheme="content" />
-        </intent>
+        <!-- Para abrir galería -->
         <intent>
             <action android:name="android.intent.action.PICK"/>
             <data android:mimeType="image/*"/>
         </intent>
+        
+        <!-- Para obtener contenido -->
         <intent>
             <action android:name="android.intent.action.GET_CONTENT"/>
+            <data android:mimeType="image/*"/>
         </intent>
+        
+        <!-- Para ver archivos -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="content" />
+        </intent>
+        
+        <!-- Para compartir -->
         <intent>
             <action android:name="android.intent.action.SEND" />
             <data android:mimeType="image/*" />
         </intent>
+        
+        <!-- Para WhatsApp (opcional) -->
+        <package android:name="com.whatsapp" />
     </queries>
 </manifest>
