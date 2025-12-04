@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter/foundation.dart';
 
 class ErrorSnackBar {
-  static void show(BuildContext context, String message) {
+  static void show(BuildContext context, String message, {dynamic error}) {
+    // ✅ SEGURO: No mostrar detalles técnicos en producción
+    final displayMessage = kDebugMode && error != null 
+        ? '$message: $error'
+        : message;
+    
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
@@ -11,7 +17,7 @@ class ErrorSnackBar {
             SizedBox(width: 12.w),
             Expanded(
               child: Text(
-                message,
+                displayMessage,
                 style: TextStyle(fontSize: 14.sp),
               ),
             ),

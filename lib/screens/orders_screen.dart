@@ -467,12 +467,14 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
                                   ? ClipRRect(
                                       borderRadius: BorderRadius.circular(8.r),
                                       child: Image.file(
-                                        File(product.imagePath),
-                                        fit: BoxFit.cover,
-                                        errorBuilder: (context, error, stackTrace) {
-                                          return Icon(Icons.broken_image, color: theme.iconColorLight, size: 30.sp);
-                                        },
-                                      ),
+  File(product.imagePath),
+  fit: BoxFit.cover,
+  cacheWidth: 240,
+  cacheHeight: 240,
+  errorBuilder: (context, error, stackTrace) {
+    return Icon(Icons.broken_image, size: 30.sp, color: theme.iconColorLight);
+  },
+)
                                     )
                                   : Icon(Icons.inventory_2, color: theme.iconColorLight, size: 30.sp),
                             ),

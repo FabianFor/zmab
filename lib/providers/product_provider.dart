@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,7 +10,9 @@ class ProductProvider with ChangeNotifier {
   bool _isLoading = false;
   String? _error;
   bool _isInitialized = false;
-  bool _isSaving = false; // ✅ NUEVO: Prevenir operaciones concurrentes
+  
+  // ✅ CORREGIDO: Usar Completer en lugar de busy-wait
+  Completer<bool>? _saveCompleter;
 
   List<Product> get products => _products;
   bool get isLoading => _isLoading;
@@ -21,7 +24,7 @@ class ProductProvider with ChangeNotifier {
 
   Future<void> loadProducts() async {
     if (_isInitialized) {
-      AppLogger.info('Productos ya en caché, no se recarga');
+      AppLogger.info('Productos ya en caché');
       return;
     }
 
@@ -38,15 +41,15 @@ class ProductProvider with ChangeNotifier {
         _products = decodedList
             .map((item) => Product.fromJson(item as Map<String, dynamic>))
             .toList();
-        AppLogger.success('${_products.length} productos cargados desde disco');
+        AppLogger.success('${_products.length} productos cargados');
       } else {
         _products = [];
-        AppLogger.info('No hay productos guardados, lista vacía');
+        AppLogger.info('No hay productos guardados');
       }
 
       _isInitialized = true;
     } catch (e, stackTrace) {
-      _error = 'Error al cargar productos: $e';
+      _error = 'Error al cargar productos';
       AppLogger.error(_error!, e, stackTrace);
       _products = [];
     } finally {
@@ -56,17 +59,13 @@ class ProductProvider with ChangeNotifier {
   }
 
   Future<bool> _saveProducts() async {
-    // ✅ PREVENIR RACE CONDITIONS
-    if (_isSaving) {
-      AppLogger.warning('Ya hay una operación de guardado en curso, esperando...');
-      // Esperar a que termine la operación actual
-      while (_isSaving) {
-        await Future.delayed(const Duration(milliseconds: 100));
-      }
-      return true;
+    // ✅ CORREGIDO: Usar Completer para evitar race conditions
+    if (_saveCompleter != null && !_saveCompleter!.isCompleted) {
+      AppLogger.info('Esperando guardado anterior');
+      return await _saveCompleter!.future;
     }
 
-    _isSaving = true;
+    _saveCompleter = Completer<bool>();
     
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -77,66 +76,72 @@ class ProductProvider with ChangeNotifier {
       final bool saved = await prefs.setString('products', encodedData);
       
       if (saved) {
-        AppLogger.success('${_products.length} productos guardados exitosamente');
-        
-        // ✅ VALIDACIÓN: Verificar que se guardó
-        final String? verification = prefs.getString('products');
-        if (verification != null) {
-          AppLogger.info('Verificación: datos guardados correctamente');
-          return true;
-        } else {
-          AppLogger.error('ERROR: No se pudo verificar el guardado');
-          return false;
-        }
+        AppLogger.success('Productos guardados');
+        _saveCompleter!.complete(true);
+        return true;
       } else {
-        AppLogger.error('ERROR: SharedPreferences retornó false');
+        AppLogger.error('Error al guardar productos');
+        _saveCompleter!.complete(false);
         return false;
       }
     } catch (e, stackTrace) {
-      AppLogger.error('Error crítico al guardar productos', e, stackTrace);
-      _error = 'Error al guardar: $e';
+      AppLogger.error('Error crítico al guardar', e, stackTrace);
+      _error = 'Error al guardar productos';
+      _saveCompleter!.complete(false);
       notifyListeners();
       return false;
-    } finally {
-      _isSaving = false;
     }
   }
 
   Future<bool> addProduct(Product product) async {
-    // ✅ VALIDACIONES ESTRICTAS
-    if (product.name.trim().isEmpty) {
+    // ✅ VALIDACIONES con sanitización
+    final sanitizedName = _sanitizeInput(product.name.trim());
+    if (sanitizedName.isEmpty) {
       _error = 'El nombre del producto no puede estar vacío';
       notifyListeners();
       return false;
     }
 
-    if (product.price <= 0) {
-      _error = 'El precio debe ser mayor a 0';
+    if (sanitizedName.length > 100) {
+      _error = 'El nombre es demasiado largo (máx. 100 caracteres)';
       notifyListeners();
       return false;
     }
 
-    if (product.stock < 0) {
-      _error = 'El stock no puede ser negativo';
+    if (product.price <= 0 || product.price > 999999999) {
+      _error = 'Precio inválido';
+      notifyListeners();
+      return false;
+    }
+
+    if (product.stock < 0 || product.stock > 999999) {
+      _error = 'Stock inválido';
       notifyListeners();
       return false;
     }
 
     try {
-      AppLogger.info('🔄 Agregando producto: ${product.name}');
+      AppLogger.info('Agregando producto');
       
-      // ✅ OPERACIÓN ATÓMICA
-      _products.add(product);
-      notifyListeners(); // Notificar antes de guardar para UI responsiva
+      final sanitizedProduct = Product(
+        id: product.id,
+        name: sanitizedName,
+        description: _sanitizeInput(product.description.trim()),
+        price: product.price,
+        stock: product.stock,
+        imagePath: product.imagePath,
+      );
+      
+      _products.add(sanitizedProduct);
+      notifyListeners();
       
       final bool saved = await _saveProducts();
       
       if (saved) {
         _error = null;
-        AppLogger.success('Producto agregado y guardado: ${product.name}');
+        AppLogger.success('Producto agregado');
         return true;
       } else {
-        // ✅ ROLLBACK: Revertir cambio si no se guardó
         _products.removeLast();
         _error = 'No se pudo guardar el producto';
         notifyListeners();
@@ -144,9 +149,8 @@ class ProductProvider with ChangeNotifier {
         return false;
       }
     } catch (e, stackTrace) {
-      // ✅ ROLLBACK EN CASO DE ERROR
       _products.removeLast();
-      _error = 'Error al agregar producto: $e';
+      _error = 'Error al agregar producto';
       AppLogger.error(_error!, e, stackTrace);
       notifyListeners();
       return false;
@@ -154,21 +158,28 @@ class ProductProvider with ChangeNotifier {
   }
 
   Future<bool> updateProduct(Product updatedProduct) async {
-    // ✅ VALIDACIONES
-    if (updatedProduct.name.trim().isEmpty) {
+    // ✅ VALIDACIONES con sanitización
+    final sanitizedName = _sanitizeInput(updatedProduct.name.trim());
+    if (sanitizedName.isEmpty) {
       _error = 'El nombre del producto no puede estar vacío';
       notifyListeners();
       return false;
     }
 
-    if (updatedProduct.price <= 0) {
-      _error = 'El precio debe ser mayor a 0';
+    if (sanitizedName.length > 100) {
+      _error = 'El nombre es demasiado largo';
       notifyListeners();
       return false;
     }
 
-    if (updatedProduct.stock < 0) {
-      _error = 'El stock no puede ser negativo';
+    if (updatedProduct.price <= 0 || updatedProduct.price > 999999999) {
+      _error = 'Precio inválido';
+      notifyListeners();
+      return false;
+    }
+
+    if (updatedProduct.stock < 0 || updatedProduct.stock > 999999) {
+      _error = 'Stock inválido';
       notifyListeners();
       return false;
     }
@@ -181,21 +192,27 @@ class ProductProvider with ChangeNotifier {
         return false;
       }
 
-      // ✅ GUARDAR ESTADO ANTERIOR PARA ROLLBACK
       final oldProduct = _products[index];
       
-      // ✅ OPERACIÓN ATÓMICA
-      _products[index] = updatedProduct;
-      notifyListeners(); // UI responsiva
+      final sanitizedProduct = Product(
+        id: updatedProduct.id,
+        name: sanitizedName,
+        description: _sanitizeInput(updatedProduct.description.trim()),
+        price: updatedProduct.price,
+        stock: updatedProduct.stock,
+        imagePath: updatedProduct.imagePath,
+      );
+      
+      _products[index] = sanitizedProduct;
+      notifyListeners();
       
       final bool saved = await _saveProducts();
       
       if (saved) {
         _error = null;
-        AppLogger.success('Producto actualizado: ${updatedProduct.name}');
+        AppLogger.success('Producto actualizado');
         return true;
       } else {
-        // ✅ ROLLBACK
         _products[index] = oldProduct;
         _error = 'No se pudo guardar la actualización';
         notifyListeners();
@@ -203,7 +220,7 @@ class ProductProvider with ChangeNotifier {
         return false;
       }
     } catch (e, stackTrace) {
-      _error = 'Error al actualizar producto: $e';
+      _error = 'Error al actualizar producto';
       AppLogger.error(_error!, e, stackTrace);
       notifyListeners();
       return false;
@@ -219,33 +236,30 @@ class ProductProvider with ChangeNotifier {
         return;
       }
 
-      // ✅ GUARDAR PARA ROLLBACK
       final removed = _products.removeAt(index);
-      notifyListeners(); // UI responsiva
+      notifyListeners();
       
       final bool saved = await _saveProducts();
       
       if (saved) {
         _error = null;
-        AppLogger.success('Producto eliminado: ${removed.name}');
+        AppLogger.success('Producto eliminado');
       } else {
-        // ✅ ROLLBACK
         _products.insert(index, removed);
         _error = 'No se pudo eliminar el producto';
         notifyListeners();
         AppLogger.error('Rollback: producto no eliminado');
       }
     } catch (e, stackTrace) {
-      _error = 'Error al eliminar producto: $e';
+      _error = 'Error al eliminar producto';
       AppLogger.error(_error!, e, stackTrace);
       notifyListeners();
     }
   }
 
   Future<bool> updateStock(String productId, int newStock) async {
-    // ✅ VALIDACIÓN
-    if (newStock < 0) {
-      _error = 'El stock no puede ser negativo';
+    if (newStock < 0 || newStock > 999999) {
+      _error = 'Stock inválido';
       notifyListeners();
       return false;
     }
@@ -258,7 +272,6 @@ class ProductProvider with ChangeNotifier {
         return false;
       }
 
-      // ✅ GUARDAR ESTADO ANTERIOR
       final oldStock = _products[index].stock;
       
       _products[index] = _products[index].copyWith(stock: newStock);
@@ -268,17 +281,16 @@ class ProductProvider with ChangeNotifier {
       
       if (saved) {
         _error = null;
-        AppLogger.success('Stock actualizado: ${_products[index].name}');
+        AppLogger.success('Stock actualizado');
         return true;
       } else {
-        // ✅ ROLLBACK
         _products[index] = _products[index].copyWith(stock: oldStock);
         notifyListeners();
         AppLogger.error('Rollback: stock no actualizado');
         return false;
       }
     } catch (e, stackTrace) {
-      _error = 'Error al actualizar stock: $e';
+      _error = 'Error al actualizar stock';
       AppLogger.error(_error!, e, stackTrace);
       notifyListeners();
       return false;
@@ -288,7 +300,7 @@ class ProductProvider with ChangeNotifier {
   List<Product> searchProducts(String query) {
     if (query.isEmpty) return _products;
     
-    final lowerQuery = query.toLowerCase();
+    final lowerQuery = _sanitizeInput(query.toLowerCase());
     return _products.where((product) {
       return product.name.toLowerCase().contains(lowerQuery) ||
              product.description.toLowerCase().contains(lowerQuery);
@@ -299,7 +311,7 @@ class ProductProvider with ChangeNotifier {
     try {
       return _products.firstWhere((p) => p.id == id);
     } catch (e) {
-      AppLogger.warning('Producto no encontrado: $id');
+      AppLogger.warning('Producto no encontrado');
       return null;
     }
   }
@@ -309,9 +321,19 @@ class ProductProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // Forzar recarga completa
   Future<void> reload() async {
     _isInitialized = false;
     await loadProducts();
+  }
+
+  // ✅ SANITIZACIÓN DE INPUTS
+  String _sanitizeInput(String input) {
+    // Remover caracteres de control
+    input = input.replaceAll(RegExp(r'[\x00-\x1F\x7F]'), '');
+    // Limitar longitud
+    if (input.length > 500) {
+      input = input.substring(0, 500);
+    }
+    return input;
   }
 }
