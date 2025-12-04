@@ -94,7 +94,7 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Text(
-                    'Datos del Cliente',
+                    l10n.customerData,
                     style: TextStyle(
                       fontSize: isTablet ? 18.sp : 20.sp,
                       fontWeight: FontWeight.bold,
@@ -109,7 +109,7 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
                     autofocus: true,
                     style: TextStyle(color: theme.textPrimary, fontSize: 16.sp),
                     decoration: InputDecoration(
-                      labelText: 'Nombre *',
+                      labelText: l10n.nameField,
                       labelStyle: TextStyle(color: theme.textSecondary, fontSize: 14.sp),
                       prefixIcon: Icon(Icons.person, color: theme.iconColor, size: 20.sp),
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
@@ -126,7 +126,7 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
                     ),
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
-                        return 'Nombre requerido';
+                        return l10n.nameRequiredField;
                       }
                       return null;
                     },
@@ -138,7 +138,7 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
                     controller: _customerPhoneController,
                     style: TextStyle(color: theme.textPrimary, fontSize: 16.sp),
                     decoration: InputDecoration(
-                      labelText: 'Teléfono (opcional)',
+                      labelText: l10n.phoneField,
                       labelStyle: TextStyle(color: theme.textSecondary, fontSize: 14.sp),
                       prefixIcon: Icon(Icons.phone, color: theme.iconColor, size: 20.sp),
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.r)),
@@ -186,7 +186,7 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
                             padding: EdgeInsets.symmetric(vertical: 16.h),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
                           ),
-                          child: Text('Confirmar', style: TextStyle(fontSize: 16.sp)),
+                          child: Text(l10n.confirm, style: TextStyle(fontSize: 16.sp)),
                         ),
                       ),
                     ],
@@ -757,7 +757,7 @@ class _OrdersScreenState extends State<OrdersScreen> with SingleTickerProviderSt
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Total:',
+                    '${l10n.total}:',
                     style: TextStyle(
                       fontSize: isTablet ? 18.sp : 20.sp,
                       fontWeight: FontWeight.bold,

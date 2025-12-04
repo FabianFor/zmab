@@ -275,7 +275,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('⚠️ ${l10n.permissionsDenied}'),
+              content: Text(l10n.permissionsDenied),
               backgroundColor: Colors.orange,
             ),
           );
@@ -299,7 +299,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
           
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('✅ ${l10n.imageSelectedSuccess}'),
+              content: Text(l10n.imageSelectedSuccess),
               backgroundColor: Colors.green,
               duration: const Duration(seconds: 1),
             ),
@@ -310,7 +310,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('❌ ${l10n.error}: ${e.toString()}'),
+            content: Text('${l10n.error}: ${e.toString()}'),
             backgroundColor: Colors.red,
             duration: const Duration(seconds: 3),
           ),
@@ -356,8 +356,8 @@ class _AddProductDialogState extends State<AddProductDialog> {
             SnackBar(
               content: Text(
                 widget.product == null
-                    ? '✅ ${l10n.productAddedSuccess}'
-                    : '✅ ${l10n.productUpdatedSuccess}',
+                    ? l10n.productAddedSuccess
+                    : l10n.productUpdatedSuccess,
               ),
               backgroundColor: Colors.green,
             ),
@@ -365,7 +365,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(productProvider.error ?? '❌ ${l10n.error}'),
+              content: Text(productProvider.error ?? l10n.error),
               backgroundColor: Colors.red,
               duration: const Duration(seconds: 3),
             ),
@@ -378,7 +378,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
         
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('❌ ${l10n.error}: $e'),
+            content: Text('${l10n.error}: $e'),
             backgroundColor: Colors.red,
             duration: const Duration(seconds: 3),
           ),

@@ -155,5 +155,72 @@
   "emailLabel": "Correo",
   "productList": "Lista de productos",
   "unitPrice": "Unitario",
-  "totalPrice": "Total"
+  "totalPrice": "Total",
+  "receipt": "Boleta",
+  "receiptNumber": "Boleta #{number}",
+  "@receiptNumber": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "productsSuffix": "Productos:",
+  "totalSuffix": "Total:",
+  "deleteReceipt": "Eliminar boleta",
+  "deleteReceiptConfirm": "¿Estás seguro de eliminar la Boleta #{number}?\n\nEsta acción no se puede deshacer.",
+  "@deleteReceiptConfirm": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "receiptDeleted": "Boleta eliminada",
+  "warningNeedPermissionsToShare": "⚠️ Se necesitan permisos para compartir",
+  "warningNeedPermissionsToDownload": "⚠️ Se necesitan permisos para descargar",
+  "successSavedToGallery": "✅ Guardado en galería",
+  "searchByCustomerOrNumber": "Buscar por cliente o número...",
+  "resultsCount": "{count} resultado(s)",
+  "@resultsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noReceiptsFound": "No se encontraron boletas",
+  "productsCountLabel": "{count} producto(s)",
+  "@productsCountLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "warningPermissionsDenied": "⚠️ Permisos denegados",
+  "successImageSelected": "✅ Imagen seleccionada correctamente",
+  "errorOccurred": "❌ Error",
+  "successProductAdded": "✅ Producto agregado exitosamente",
+  "successProductUpdated": "✅ Producto actualizado exitosamente",
+  "errorWithMessage": "❌ Error: {message}",
+  "@errorWithMessage": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "successOrderCreated": "✅ Pedido y boleta creados exitosamente",
+  "errorOrderCreation": "❌ Error al crear pedido",
+  "errorAddToOrder": "❌ Agrega al menos un producto al pedido",
+  "errorInsufficientStock": "❌ Stock insuficiente para {product}",
+  "@errorInsufficientStock": {
+    "placeholders": {
+      "product": {
+        "type": "String"
+      }
+    }
+  },
+  "totalLabel": "Total:"
 }

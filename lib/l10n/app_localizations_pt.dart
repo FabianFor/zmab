@@ -18,7 +18,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get orders => 'Pedidos';
 
   @override
-  String get invoices => 'Faturas';
+  String get invoices => 'Notas Fiscais';
 
   @override
   String get settings => 'Configurações';
@@ -84,7 +84,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get noOrders => 'Sem pedidos';
 
   @override
-  String get noInvoices => 'Sem faturas';
+  String get noInvoices => 'Sem notas fiscais';
 
   @override
   String get language => 'Idioma';
@@ -99,10 +99,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get selectCurrency => 'Selecionar moeda';
 
   @override
-  String get businessProfile => 'Perfil Comercial';
+  String get businessProfile => 'Perfil do Negócio';
 
   @override
-  String get businessName => 'Nome da Empresa';
+  String get businessName => 'Nome do Negócio';
 
   @override
   String get address => 'Endereço';
@@ -111,7 +111,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get phone => 'Telefone';
 
   @override
-  String get email => 'E-mail';
+  String get email => 'Email';
 
   @override
   String get share => 'Compartilhar';
@@ -203,13 +203,13 @@ class AppLocalizationsPt extends AppLocalizations {
   String get clear => 'Limpar';
 
   @override
-  String get orderCreatedSuccess => 'Pedido e fatura criados com sucesso';
+  String get orderCreatedSuccess => 'Pedido e nota fiscal criados com sucesso';
 
   @override
   String get orderCreatedError => 'Erro ao criar pedido';
 
   @override
-  String get noProductsAvailable => 'Sem produtos disponíveis';
+  String get noProductsAvailable => 'Nenhum produto disponível';
 
   @override
   String get noProductsFound => 'Nenhum produto encontrado';
@@ -237,4 +237,242 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get viewCart => 'Ver Carrinho';
+
+  @override
+  String get quickAccess => 'Acesso Rápido';
+
+  @override
+  String get lowStockProducts => 'Produtos com estoque baixo';
+
+  @override
+  String get tapToChangeLogo => 'Toque para mudar o logo';
+
+  @override
+  String get businessNameRequired => 'O nome do negócio é obrigatório';
+
+  @override
+  String get invalidEmail => 'Insira um email válido';
+
+  @override
+  String get profileUpdated => 'Perfil atualizado com sucesso';
+
+  @override
+  String get logoSelected => 'Logo selecionado com sucesso';
+
+  @override
+  String get needPermissions =>
+      'Você precisa conceder permissões para escolher uma imagem';
+
+  @override
+  String get imageSelectionError => 'Erro ao selecionar imagem';
+
+  @override
+  String get darkModeSubtitle => 'Ativar tema escuro';
+
+  @override
+  String get businessProfileSubtitle => 'Edite as informações do seu negócio';
+
+  @override
+  String get version => 'Versão';
+
+  @override
+  String get filterByDate => 'Filtrar por data';
+
+  @override
+  String results(int count) {
+    return '$count resultado(s)';
+  }
+
+  @override
+  String get noInvoicesFound => 'Nenhuma nota fiscal encontrada';
+
+  @override
+  String get clearFilters => 'Limpar filtros';
+
+  @override
+  String productsCount(int count) {
+    return '$count produto(s)';
+  }
+
+  @override
+  String get deleteInvoice => 'Excluir nota fiscal';
+
+  @override
+  String deleteInvoiceConfirm(int number) {
+    return 'Tem certeza de que deseja excluir a Nota Fiscal #$number?\n\nEsta ação não pode ser desfeita.';
+  }
+
+  @override
+  String get invoiceDeleted => 'Nota fiscal excluída';
+
+  @override
+  String get needPermissionsToShare =>
+      'Permissões necessárias para compartilhar';
+
+  @override
+  String get needPermissionsToDownload => 'Permissões necessárias para baixar';
+
+  @override
+  String get savedToGallery => 'Salvo na galeria';
+
+  @override
+  String get customerData => 'Dados do Cliente';
+
+  @override
+  String get nameField => 'Nome *';
+
+  @override
+  String get nameRequiredField => 'Nome obrigatório';
+
+  @override
+  String get phoneField => 'Telefone (opcional)';
+
+  @override
+  String get confirm => 'Confirmar';
+
+  @override
+  String get units => 'unidades';
+
+  @override
+  String get deleteProduct => 'Excluir produto';
+
+  @override
+  String get deleteProductConfirm =>
+      'Tem certeza de que deseja excluir este produto?';
+
+  @override
+  String get productDeleted => 'Produto excluído com sucesso';
+
+  @override
+  String get permissionsNeeded => 'Permissões necessárias';
+
+  @override
+  String get permissionsMessage =>
+      'Este aplicativo precisa de acesso às suas fotos para adicionar imagens aos produtos.\n\nVá para:\nConfigurações → Apps → MiNegocio → Permissões → Fotos e mídia';
+
+  @override
+  String get openSettings => 'Abrir Configurações';
+
+  @override
+  String get needPermissionToSelectImage =>
+      'Você precisa conceder permissão para selecionar imagens';
+
+  @override
+  String get trySelectAnyway => 'Tentar selecionar a imagem mesmo assim';
+
+  @override
+  String invoiceNumber(int number) {
+    return 'Nota Fiscal #$number';
+  }
+
+  @override
+  String get businessNameLabel => 'Nome da empresa';
+
+  @override
+  String get addressLabel => 'Endereço';
+
+  @override
+  String get phoneLabel => 'Telefone';
+
+  @override
+  String get emailLabel => 'Email';
+
+  @override
+  String get productList => 'Lista de produtos';
+
+  @override
+  String get unitPrice => 'Preço unitário';
+
+  @override
+  String get totalPrice => 'Total';
+
+  @override
+  String get receipt => 'Recibo';
+
+  @override
+  String receiptNumber(int number) {
+    return 'Recibo #$number';
+  }
+
+  @override
+  String get productsSuffix => 'Produtos:';
+
+  @override
+  String get totalSuffix => 'Total:';
+
+  @override
+  String get deleteReceipt => 'Excluir recibo';
+
+  @override
+  String deleteReceiptConfirm(int number) {
+    return 'Tem certeza de que deseja excluir o Recibo #$number?\n\nEsta ação não pode ser desfeita.';
+  }
+
+  @override
+  String get receiptDeleted => 'Recibo excluído';
+
+  @override
+  String get warningNeedPermissionsToShare =>
+      '⚠️ Permissões necessárias para compartilhar';
+
+  @override
+  String get warningNeedPermissionsToDownload =>
+      '⚠️ Permissões necessárias para baixar';
+
+  @override
+  String get successSavedToGallery => '✅ Salvo na galeria';
+
+  @override
+  String get searchByCustomerOrNumber => 'Buscar por cliente ou número...';
+
+  @override
+  String resultsCount(int count) {
+    return '$count resultado(s)';
+  }
+
+  @override
+  String get noReceiptsFound => 'Nenhum recibo encontrado';
+
+  @override
+  String productsCountLabel(int count) {
+    return '$count produto(s)';
+  }
+
+  @override
+  String get warningPermissionsDenied => '⚠️ Permissões negadas';
+
+  @override
+  String get successImageSelected => '✅ Imagem selecionada com sucesso';
+
+  @override
+  String get errorOccurred => '❌ Erro';
+
+  @override
+  String get successProductAdded => '✅ Produto adicionado com sucesso';
+
+  @override
+  String get successProductUpdated => '✅ Produto atualizado com sucesso';
+
+  @override
+  String errorWithMessage(String message) {
+    return '❌ Erro: $message';
+  }
+
+  @override
+  String get successOrderCreated =>
+      '✅ Pedido e nota fiscal criados com sucesso';
+
+  @override
+  String get errorOrderCreation => '❌ Erro ao criar pedido';
+
+  @override
+  String get errorAddToOrder => '❌ Adicione pelo menos um produto ao pedido';
+
+  @override
+  String errorInsufficientStock(String product) {
+    return '❌ Estoque insuficiente para $product';
+  }
+
+  @override
+  String get totalLabel => 'Total:';
 }

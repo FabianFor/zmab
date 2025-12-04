@@ -237,4 +237,239 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get viewCart => 'View Cart';
+
+  @override
+  String get quickAccess => 'Quick Access';
+
+  @override
+  String get lowStockProducts => 'Low stock products';
+
+  @override
+  String get tapToChangeLogo => 'Tap to change logo';
+
+  @override
+  String get businessNameRequired => 'Business name is required';
+
+  @override
+  String get invalidEmail => 'Enter a valid email';
+
+  @override
+  String get profileUpdated => 'Profile updated successfully';
+
+  @override
+  String get logoSelected => 'Logo selected successfully';
+
+  @override
+  String get needPermissions =>
+      'You need to grant permissions to choose an image';
+
+  @override
+  String get imageSelectionError => 'Error selecting image';
+
+  @override
+  String get darkModeSubtitle => 'Activate dark theme';
+
+  @override
+  String get businessProfileSubtitle => 'Edit your business information';
+
+  @override
+  String get version => 'Version';
+
+  @override
+  String get filterByDate => 'Filter by date';
+
+  @override
+  String results(int count) {
+    return '$count result(s)';
+  }
+
+  @override
+  String get noInvoicesFound => 'No invoices found';
+
+  @override
+  String get clearFilters => 'Clear filters';
+
+  @override
+  String productsCount(int count) {
+    return '$count product(s)';
+  }
+
+  @override
+  String get deleteInvoice => 'Delete invoice';
+
+  @override
+  String deleteInvoiceConfirm(int number) {
+    return 'Are you sure you want to delete Invoice #$number?\n\nThis action cannot be undone.';
+  }
+
+  @override
+  String get invoiceDeleted => 'Invoice deleted';
+
+  @override
+  String get needPermissionsToShare => 'Permissions needed to share';
+
+  @override
+  String get needPermissionsToDownload => 'Permissions needed to download';
+
+  @override
+  String get savedToGallery => 'Saved to gallery';
+
+  @override
+  String get customerData => 'Customer Data';
+
+  @override
+  String get nameField => 'Name *';
+
+  @override
+  String get nameRequiredField => 'Name required';
+
+  @override
+  String get phoneField => 'Phone (optional)';
+
+  @override
+  String get confirm => 'Confirm';
+
+  @override
+  String get units => 'units';
+
+  @override
+  String get deleteProduct => 'Delete product';
+
+  @override
+  String get deleteProductConfirm =>
+      'Are you sure you want to delete this product?';
+
+  @override
+  String get productDeleted => 'Product deleted successfully';
+
+  @override
+  String get permissionsNeeded => 'Permissions needed';
+
+  @override
+  String get permissionsMessage =>
+      'This app needs access to your photos to add images to products.\n\nGo to:\nSettings → Apps → MiNegocio → Permissions → Photos and media';
+
+  @override
+  String get openSettings => 'Open Settings';
+
+  @override
+  String get needPermissionToSelectImage =>
+      'You need to grant permission to select images';
+
+  @override
+  String get trySelectAnyway => 'Try selecting the image anyway';
+
+  @override
+  String invoiceNumber(int number) {
+    return 'Invoice #$number';
+  }
+
+  @override
+  String get businessNameLabel => 'Business name';
+
+  @override
+  String get addressLabel => 'Address';
+
+  @override
+  String get phoneLabel => 'Phone';
+
+  @override
+  String get emailLabel => 'Email';
+
+  @override
+  String get productList => 'Product list';
+
+  @override
+  String get unitPrice => 'Unit price';
+
+  @override
+  String get totalPrice => 'Total';
+
+  @override
+  String get receipt => 'Receipt';
+
+  @override
+  String receiptNumber(int number) {
+    return 'Receipt #$number';
+  }
+
+  @override
+  String get productsSuffix => 'Products:';
+
+  @override
+  String get totalSuffix => 'Total:';
+
+  @override
+  String get deleteReceipt => 'Delete receipt';
+
+  @override
+  String deleteReceiptConfirm(int number) {
+    return 'Are you sure you want to delete Receipt #$number?\n\nThis action cannot be undone.';
+  }
+
+  @override
+  String get receiptDeleted => 'Receipt deleted';
+
+  @override
+  String get warningNeedPermissionsToShare => '⚠️ Permissions needed to share';
+
+  @override
+  String get warningNeedPermissionsToDownload =>
+      '⚠️ Permissions needed to download';
+
+  @override
+  String get successSavedToGallery => '✅ Saved to gallery';
+
+  @override
+  String get searchByCustomerOrNumber => 'Search by customer or number...';
+
+  @override
+  String resultsCount(int count) {
+    return '$count result(s)';
+  }
+
+  @override
+  String get noReceiptsFound => 'No receipts found';
+
+  @override
+  String productsCountLabel(int count) {
+    return '$count product(s)';
+  }
+
+  @override
+  String get warningPermissionsDenied => '⚠️ Permissions denied';
+
+  @override
+  String get successImageSelected => '✅ Image selected successfully';
+
+  @override
+  String get errorOccurred => '❌ Error';
+
+  @override
+  String get successProductAdded => '✅ Product added successfully';
+
+  @override
+  String get successProductUpdated => '✅ Product updated successfully';
+
+  @override
+  String errorWithMessage(String message) {
+    return '❌ Error: $message';
+  }
+
+  @override
+  String get successOrderCreated => '✅ Order and invoice created successfully';
+
+  @override
+  String get errorOrderCreation => '❌ Error creating order';
+
+  @override
+  String get errorAddToOrder => '❌ Add at least one product to the order';
+
+  @override
+  String errorInsufficientStock(String product) {
+    return '❌ Insufficient stock for $product';
+  }
+
+  @override
+  String get totalLabel => 'Total:';
 }

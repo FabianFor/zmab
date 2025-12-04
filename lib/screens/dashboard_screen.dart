@@ -20,7 +20,6 @@ class DashboardScreen extends StatelessWidget {
     final businessProvider = context.watch<BusinessProvider>();
     final productProvider = context.watch<ProductProvider>();
     
-    // Responsive - REDUCIDO PARA TABLET
     final screenWidth = MediaQuery.of(context).size.width;
     final isTablet = screenWidth >= 600;
     final horizontalPadding = isTablet ? 24.w : 20.w;
@@ -30,11 +29,11 @@ class DashboardScreen extends StatelessWidget {
       backgroundColor: theme.scaffoldBackground,
       body: Column(
         children: [
-          // ✅ HEADER COMPACTO
+          // ✅ HEADER COMPACTO CON TEMA ADAPTABLE
           Container(
             width: double.infinity,
             decoration: BoxDecoration(
-              color: theme.primary,
+              color: theme.appBarBackground,  // ✅ Ahora usa el color del tema
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.1),
@@ -55,12 +54,12 @@ class DashboardScreen extends StatelessWidget {
                   children: [
                     Text(
                       businessProvider.profile.businessName.isEmpty
-                          ? 'Mi Negocio'
+                          ? l10n.businessName
                           : businessProvider.profile.businessName,
                       style: TextStyle(
                         fontSize: 18.sp,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: theme.appBarForeground,  // ✅ Ahora usa el color del tema
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -70,7 +69,7 @@ class DashboardScreen extends StatelessWidget {
                       l10n.businessManagement,
                       style: TextStyle(
                         fontSize: 12.sp,
-                        color: Colors.white.withOpacity(0.9),
+                        color: theme.appBarForeground.withOpacity(0.9),  // ✅ Ahora usa el color del tema
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -81,7 +80,7 @@ class DashboardScreen extends StatelessWidget {
             ),
           ),
 
-          // ✅ CONTENIDO SCROLLEABLE
+          // CONTENIDO SCROLLEABLE
           Expanded(
             child: SingleChildScrollView(
               padding: EdgeInsets.symmetric(
@@ -91,9 +90,8 @@ class DashboardScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Título "Accesos Rápidos"
                   Text(
-                    'Accesos Rápidos',
+                    l10n.quickAccess,
                     style: TextStyle(
                       fontSize: isTablet ? 17.sp : 18.sp,
                       fontWeight: FontWeight.bold,
@@ -212,7 +210,7 @@ class DashboardScreen extends StatelessWidget {
               SizedBox(width: 12.w),
               Expanded(
                 child: Text(
-                  'Productos con stock bajo',
+                  l10n.lowStockProducts,
                   style: TextStyle(
                     fontSize: isTablet ? 15.sp : 16.sp,
                     fontWeight: FontWeight.bold,
@@ -301,7 +299,6 @@ class _QuickAccessTile extends StatelessWidget {
           ),
           child: Row(
             children: [
-              // Icono circular
               Container(
                 width: isTablet ? 40.w : 44.w,
                 height: isTablet ? 40.w : 44.w,
@@ -317,7 +314,6 @@ class _QuickAccessTile extends StatelessWidget {
               ),
               SizedBox(width: isTablet ? 16.w : 16.w),
               
-              // Texto
               Expanded(
                 child: Text(
                   label,
@@ -329,7 +325,6 @@ class _QuickAccessTile extends StatelessWidget {
                 ),
               ),
               
-              // Flecha
               Icon(
                 Icons.arrow_forward_ios,
                 color: theme.iconColor,

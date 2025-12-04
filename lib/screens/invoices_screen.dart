@@ -12,7 +12,6 @@ import '../services/invoice_image_generator.dart';
 import '../services/permission_handler.dart';
 import '../services/gallery_saver.dart';
 
-// ✅ VERSIÓN CON SCAFFOLD (para acceso directo desde menú)
 class InvoicesScreen extends StatelessWidget {
   const InvoicesScreen({super.key});
 
@@ -39,7 +38,6 @@ class InvoicesScreen extends StatelessWidget {
   }
 }
 
-// ✅ CONTENIDO SIN SCAFFOLD (para usar en TabBar)
 class InvoicesScreenContent extends StatefulWidget {
   const InvoicesScreenContent({super.key});
 
@@ -75,7 +73,6 @@ class _InvoicesScreenContentState extends State<InvoicesScreenContent> {
 
     return Column(
       children: [
-        // Buscador y calendario
         Container(
           padding: EdgeInsets.all(16.w),
           color: theme.cardBackground,
@@ -90,7 +87,7 @@ class _InvoicesScreenContentState extends State<InvoicesScreenContent> {
                   },
                   style: TextStyle(fontSize: 14.sp, color: theme.textPrimary),
                   decoration: InputDecoration(
-                    hintText: _getSearchByCustomerText(l10n),
+                    hintText: l10n.searchByCustomer,
                     hintStyle: TextStyle(fontSize: 14.sp, color: theme.textHint),
                     prefixIcon: Icon(Icons.search, size: 20.sp, color: theme.iconColor),
                     suffixIcon: _searchQuery.isNotEmpty
@@ -144,7 +141,7 @@ class _InvoicesScreenContentState extends State<InvoicesScreenContent> {
                     size: 20.sp,
                   ),
                   padding: EdgeInsets.zero,
-                  tooltip: _getFilterByDateText(l10n),
+                  tooltip: l10n.filterByDate,
                 ),
               ),
             ],
@@ -161,7 +158,7 @@ class _InvoicesScreenContentState extends State<InvoicesScreenContent> {
                 SizedBox(width: 8.w),
                 Expanded(
                   child: Text(
-                    _getResultsText(l10n, filteredInvoices.length),
+                    '${filteredInvoices.length} ${_getResultsText(l10n)}',
                     style: TextStyle(
                       fontSize: 14.sp,
                       color: theme.textPrimary,
@@ -216,7 +213,7 @@ class _InvoicesScreenContentState extends State<InvoicesScreenContent> {
                             });
                           },
                           icon: Icon(Icons.clear_all, size: 18.sp),
-                          label: Text(_getClearFiltersText(l10n),
+                          label: Text(l10n.clearFilters,
                               style: TextStyle(fontSize: 14.sp)),
                           style: TextButton.styleFrom(
                             foregroundColor: theme.primary,
@@ -251,7 +248,7 @@ class _InvoicesScreenContentState extends State<InvoicesScreenContent> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    'Boleta #${invoice.invoiceNumber}',
+                                    '${l10n.receipt} #${invoice.invoiceNumber}',
                                     style: TextStyle(
                                       fontSize: isTablet ? 16.sp : 18.sp,
                                       fontWeight: FontWeight.bold,
@@ -333,7 +330,7 @@ class _InvoicesScreenContentState extends State<InvoicesScreenContent> {
                                   borderRadius: BorderRadius.circular(4.r),
                                 ),
                                 child: Text(
-                                  _getProductsCountText(l10n, invoice.items.length),
+                                  '${invoice.items.length} ${_getProductsText(l10n)}',
                                   style: TextStyle(
                                     fontSize: 12.sp,
                                     color: theme.textSecondary,
@@ -415,7 +412,7 @@ class _InvoicesScreenContentState extends State<InvoicesScreenContent> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Boleta #${invoice.invoiceNumber}',
+                    '${l10n.receipt} #${invoice.invoiceNumber}',
                     style: TextStyle(
                       fontSize: isTablet ? 18.sp : 20.sp,
                       fontWeight: FontWeight.bold,
@@ -496,7 +493,7 @@ class _InvoicesScreenContentState extends State<InvoicesScreenContent> {
                     SizedBox(height: 20.h),
 
                     Text(
-                      'Productos:',
+                      '${l10n.products}:',
                       style: TextStyle(
                         fontSize: isTablet ? 16.sp : 18.sp,
                         fontWeight: FontWeight.bold,
@@ -561,7 +558,7 @@ class _InvoicesScreenContentState extends State<InvoicesScreenContent> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Total:',
+                          '${l10n.total}:',
                           style: TextStyle(
                             fontSize: isTablet ? 18.sp : 20.sp,
                             fontWeight: FontWeight.bold,
@@ -665,16 +662,17 @@ class _InvoicesScreenContentState extends State<InvoicesScreenContent> {
             SizedBox(width: 12.w),
             Expanded(
               child: Text(
-                'Eliminar boleta', 
+                l10n.deleteInvoice, 
                 style: TextStyle(fontSize: 18.sp, color: theme.textPrimary)
               ),
             ),
           ],
         ),
-        content: Text(
-          '¿Estás seguro de eliminar la Boleta #${invoice.invoiceNumber}?\n\nEsta acción no se puede deshacer.',
-          style: TextStyle(fontSize: 15.sp, color: theme.textPrimary),
-        ),
+content: Text(
+  '¿Estás seguro de eliminar la ${l10n.receipt} #${invoice.invoiceNumber}?\n\n${l10n.cannotUndo}',
+  style: TextStyle(fontSize: 15.sp, color: theme.textPrimary),
+),
+
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -695,7 +693,7 @@ class _InvoicesScreenContentState extends State<InvoicesScreenContent> {
                       children: [
                         Icon(Icons.check_circle, color: Colors.white, size: 20.sp),
                         SizedBox(width: 8.w),
-                        Text('Boleta eliminada', style: TextStyle(fontSize: 14.sp)),
+                        Text(l10n.invoiceDeleted, style: TextStyle(fontSize: 14.sp)),
                       ],
                     ),
                     backgroundColor: Colors.green,
@@ -731,7 +729,7 @@ class _InvoicesScreenContentState extends State<InvoicesScreenContent> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              '⚠️ Se necesitan permisos para compartir',
+              '⚠️ ${l10n.needPermissionsToShare}',
               style: TextStyle(fontSize: 14.sp),
             ),
             backgroundColor: Colors.orange,
@@ -763,7 +761,7 @@ class _InvoicesScreenContentState extends State<InvoicesScreenContent> {
 
       await Share.shareXFiles(
         [XFile(imagePath)],
-        text: 'Boleta #${invoice.invoiceNumber}',
+        text: '${l10n.receipt} #${invoice.invoiceNumber}',
       );
     } catch (e) {
       if (context.mounted) {
@@ -794,7 +792,7 @@ class _InvoicesScreenContentState extends State<InvoicesScreenContent> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              '⚠️ Se necesitan permisos para descargar',
+              '⚠️ ${l10n.needPermissionsToDownload}',
               style: TextStyle(fontSize: 14.sp),
             ),
             backgroundColor: Colors.orange,
@@ -832,7 +830,7 @@ class _InvoicesScreenContentState extends State<InvoicesScreenContent> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              '✅ Guardado en galería',
+              '✅ ${l10n.savedToGallery}',
               style: TextStyle(fontSize: 14.sp),
             ),
             backgroundColor: Colors.green,
@@ -852,63 +850,34 @@ class _InvoicesScreenContentState extends State<InvoicesScreenContent> {
     }
   }
 
-  String _getFilterByDateText(AppLocalizations l10n) {
+  // ✅ FUNCIONES AUXILIARES PARA TRADUCCIONES
+  String _getResultsText(AppLocalizations l10n) {
     switch (l10n.localeName) {
-      case 'es': return 'Filtrar por fecha';
-      case 'en': return 'Filter by date';
-      case 'pt': return 'Filtrar por data';
-      case 'zh': return '按日期过滤';
-      default: return 'Filter by date';
-    }
-  }
-
-  String _getSearchByCustomerText(AppLocalizations l10n) {
-    switch (l10n.localeName) {
-      case 'es': return 'Buscar por cliente o número...';
-      case 'en': return 'Search by customer or number...';
-      case 'pt': return 'Buscar por cliente ou número...';
-      case 'zh': return '按客户或号码搜索...';
-      default: return 'Search by customer or number...';
-    }
-  }
-
-  String _getResultsText(AppLocalizations l10n, int count) {
-    switch (l10n.localeName) {
-      case 'es': return '$count resultado(s)';
-      case 'en': return '$count result(s)';
-      case 'pt': return '$count resultado(s)';
-      case 'zh': return '$count 结果';
-      default: return '$count result(s)';
+      case 'es': return 'resultado(s)';
+      case 'en': return 'result(s)';
+      case 'pt': return 'resultado(s)';
+      case 'zh': return '结果';
+      default: return 'result(s)';
     }
   }
 
   String _getNoInvoicesFoundText(AppLocalizations l10n) {
     switch (l10n.localeName) {
       case 'es': return 'No se encontraron boletas';
-      case 'en': return 'No invoices found';
-      case 'pt': return 'Nenhuma nota fiscal encontrada';
-      case 'zh': return '未找到发票';
-      default: return 'No invoices found';
+      case 'en': return 'No receipts found';
+      case 'pt': return 'Nenhum recibo encontrado';
+      case 'zh': return '未找到收据';
+      default: return 'No receipts found';
     }
   }
 
-  String _getClearFiltersText(AppLocalizations l10n) {
+  String _getProductsText(AppLocalizations l10n) {
     switch (l10n.localeName) {
-      case 'es': return 'Limpiar filtros';
-      case 'en': return 'Clear filters';
-      case 'pt': return 'Limpar filtros';
-      case 'zh': return '清除过滤器';
-      default: return 'Clear filters';
-    }
-  }
-
-  String _getProductsCountText(AppLocalizations l10n, int count) {
-    switch (l10n.localeName) {
-      case 'es': return '$count producto(s)';
-      case 'en': return '$count product(s)';
-      case 'pt': return '$count produto(s)';
-      case 'zh': return '$count 产品';
-      default: return '$count product(s)';
+      case 'es': return 'producto(s)';
+      case 'en': return 'product(s)';
+      case 'pt': return 'produto(s)';
+      case 'zh': return '产品';
+      default: return 'product(s)';
     }
   }
 }

@@ -155,5 +155,72 @@
   "emailLabel": "Email",
   "productList": "Product list",
   "unitPrice": "Unit price",
-  "totalPrice": "Total"
+  "totalPrice": "Total",
+  "receipt": "Receipt",
+  "receiptNumber": "Receipt #{number}",
+  "@receiptNumber": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "productsSuffix": "Products:",
+  "totalSuffix": "Total:",
+  "deleteReceipt": "Delete receipt",
+  "deleteReceiptConfirm": "Are you sure you want to delete Receipt #{number}?\n\nThis action cannot be undone.",
+  "@deleteReceiptConfirm": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "receiptDeleted": "Receipt deleted",
+  "warningNeedPermissionsToShare": "⚠️ Permissions needed to share",
+  "warningNeedPermissionsToDownload": "⚠️ Permissions needed to download",
+  "successSavedToGallery": "✅ Saved to gallery",
+  "searchByCustomerOrNumber": "Search by customer or number...",
+  "resultsCount": "{count} result(s)",
+  "@resultsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noReceiptsFound": "No receipts found",
+  "productsCountLabel": "{count} product(s)",
+  "@productsCountLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "warningPermissionsDenied": "⚠️ Permissions denied",
+  "successImageSelected": "✅ Image selected successfully",
+  "errorOccurred": "❌ Error",
+  "successProductAdded": "✅ Product added successfully",
+  "successProductUpdated": "✅ Product updated successfully",
+  "errorWithMessage": "❌ Error: {message}",
+  "@errorWithMessage": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "successOrderCreated": "✅ Order and invoice created successfully",
+  "errorOrderCreation": "❌ Error creating order",
+  "errorAddToOrder": "❌ Add at least one product to the order",
+  "errorInsufficientStock": "❌ Insufficient stock for {product}",
+  "@errorInsufficientStock": {
+    "placeholders": {
+      "product": {
+        "type": "String"
+      }
+    }
+  },
+  "totalLabel": "Total:"
 }

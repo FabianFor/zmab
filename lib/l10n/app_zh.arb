@@ -5,7 +5,7 @@
   "orders": "订单",
   "invoices": "发票",
   "settings": "设置",
-  "profile": "简介",
+  "profile": "个人资料",
   "add": "添加",
   "edit": "编辑",
   "delete": "删除",
@@ -30,7 +30,7 @@
   "selectLanguage": "选择语言",
   "currency": "货币",
   "selectCurrency": "选择货币",
-  "businessProfile": "业务简介",
+  "businessProfile": "企业资料",
   "businessName": "企业名称",
   "address": "地址",
   "phone": "电话",
@@ -40,12 +40,12 @@
   "error": "错误",
   "addImage": "添加图片",
   "changeImage": "更改图片",
-  "businessManagement": "业务管理",
-  "productsRegistered": "注册产品",
+  "businessManagement": "企业管理",
+  "productsRegistered": "已注册产品",
   "ordersPlaced": "已下订单",
   "totalRevenue": "总收入",
   "createOrder": "创建订单",
-  "darkMode": "暗黑模式",
+  "darkMode": "深色模式",
   "theme": "主题",
   "searchProducts": "搜索产品...",
   "searchByCustomer": "按客户或号码搜索...",
@@ -57,12 +57,12 @@
   "editProduct": "编辑产品",
   "minCharacters": "最少2个字符",
   "priceRequired": "价格为必填项",
-  "invalidPrice": "价格无效",
+  "invalidPrice": "无效价格",
   "stockRequired": "库存为必填项",
-  "invalidStock": "库存无效",
+  "invalidStock": "无效库存",
   "addToOrder": "至少添加一个产品到订单",
   "insufficientStock": "库存不足",
-  "totalItems": "总计 ({count} 项)：",
+  "totalItems": "总计（{count}项）：",
   "@totalItems": {
     "placeholders": {
       "count": {
@@ -88,15 +88,15 @@
   "tapToChangeLogo": "点击更改徽标",
   "businessNameRequired": "企业名称为必填项",
   "invalidEmail": "请输入有效的电子邮件",
-  "profileUpdated": "个人资料已成功更新",
-  "logoSelected": "徽标已成功选择",
-  "needPermissions": "您需要授予权限才能选择图片",
+  "profileUpdated": "个人资料更新成功",
+  "logoSelected": "徽标选择成功",
+  "needPermissions": "您需要授予权限以选择图片",
   "imageSelectionError": "选择图片时出错",
-  "darkModeSubtitle": "激活深色主题",
+  "darkModeSubtitle": "启用深色主题",
   "businessProfileSubtitle": "编辑您的企业信息",
   "version": "版本",
-  "filterByDate": "按日期筛选",
-  "results": "{count} 结果",
+  "filterByDate": "按日期过滤",
+  "results": "{count}个结果",
   "@results": {
     "placeholders": {
       "count": {
@@ -105,8 +105,8 @@
     }
   },
   "noInvoicesFound": "未找到发票",
-  "clearFilters": "清除筛选器",
-  "productsCount": "{count} 产品",
+  "clearFilters": "清除过滤器",
+  "productsCount": "{count}个产品",
   "@productsCount": {
     "placeholders": {
       "count": {
@@ -115,7 +115,7 @@
     }
   },
   "deleteInvoice": "删除发票",
-  "deleteInvoiceConfirm": "您确定要删除发票 #{number} 吗？\n\n此操作无法撤消。",
+  "deleteInvoiceConfirm": "您确定要删除发票#{number}吗？\n\n此操作无法撤消。",
   "@deleteInvoiceConfirm": {
     "placeholders": {
       "number": {
@@ -124,24 +124,24 @@
     }
   },
   "invoiceDeleted": "发票已删除",
-  "needPermissionsToShare": "需要权限才能分享",
-  "needPermissionsToDownload": "需要权限才能下载",
+  "needPermissionsToShare": "需要共享权限",
+  "needPermissionsToDownload": "需要下载权限",
   "savedToGallery": "已保存到图库",
   "customerData": "客户数据",
   "nameField": "姓名 *",
   "nameRequiredField": "姓名为必填项",
   "phoneField": "电话（可选）",
   "confirm": "确认",
-  "units": "件",
+  "units": "单位",
   "deleteProduct": "删除产品",
   "deleteProductConfirm": "您确定要删除此产品吗？",
-  "productDeleted": "产品已成功删除",
+  "productDeleted": "产品删除成功",
   "permissionsNeeded": "需要权限",
-  "permissionsMessage": "此应用需要访问您的照片才能向产品添加图片。\n\n前往：\n设置 → 应用 → MiNegocio → 权限 → 照片和媒体",
+  "permissionsMessage": "此应用需要访问您的照片以向产品添加图片。\n\n前往：\n设置→应用→MiNegocio→权限→照片和媒体",
   "openSettings": "打开设置",
-  "needPermissionToSelectImage": "您需要授予权限才能选择图片",
-  "trySelectAnyway": "无论如何尝试选择图片",
-  "invoiceNumber": "发票 #{number}",
+  "needPermissionToSelectImage": "您需要授予权限以选择图片",
+  "trySelectAnyway": "仍然尝试选择图片",
+  "invoiceNumber": "发票#{number}",
   "@invoiceNumber": {
     "placeholders": {
       "number": {
@@ -155,5 +155,72 @@
   "emailLabel": "电子邮件",
   "productList": "产品列表",
   "unitPrice": "单价",
-  "totalPrice": "总计"
+  "totalPrice": "总计",
+  "receipt": "收据",
+  "receiptNumber": "收据#{number}",
+  "@receiptNumber": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "productsSuffix": "产品：",
+  "totalSuffix": "总计：",
+  "deleteReceipt": "删除收据",
+  "deleteReceiptConfirm": "您确定要删除收据#{number}吗？\n\n此操作无法撤消。",
+  "@deleteReceiptConfirm": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "receiptDeleted": "收据已删除",
+  "warningNeedPermissionsToShare": "⚠️ 需要共享权限",
+  "warningNeedPermissionsToDownload": "⚠️ 需要下载权限",
+  "successSavedToGallery": "✅ 已保存到图库",
+  "searchByCustomerOrNumber": "按客户或号码搜索...",
+  "resultsCount": "{count}个结果",
+  "@resultsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "noReceiptsFound": "未找到收据",
+  "productsCountLabel": "{count}个产品",
+  "@productsCountLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "warningPermissionsDenied": "⚠️ 权限被拒绝",
+  "successImageSelected": "✅ 图片选择成功",
+  "errorOccurred": "❌ 错误",
+  "successProductAdded": "✅ 产品添加成功",
+  "successProductUpdated": "✅ 产品更新成功",
+  "errorWithMessage": "❌ 错误：{message}",
+  "@errorWithMessage": {
+    "placeholders": {
+      "message": {
+        "type": "String"
+      }
+    }
+  },
+  "successOrderCreated": "✅ 订单和发票创建成功",
+  "errorOrderCreation": "❌ 创建订单时出错",
+  "errorAddToOrder": "❌ 至少添加一个产品到订单",
+  "errorInsufficientStock": "❌ {product}库存不足",
+  "@errorInsufficientStock": {
+    "placeholders": {
+      "product": {
+        "type": "String"
+      }
+    }
+  },
+  "totalLabel": "总计："
 }

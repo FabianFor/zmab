@@ -557,6 +557,426 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Ver Carrito'**
   String get viewCart;
+
+  /// No description provided for @quickAccess.
+  ///
+  /// In es, this message translates to:
+  /// **'Accesos Rápidos'**
+  String get quickAccess;
+
+  /// No description provided for @lowStockProducts.
+  ///
+  /// In es, this message translates to:
+  /// **'Productos con stock bajo'**
+  String get lowStockProducts;
+
+  /// No description provided for @tapToChangeLogo.
+  ///
+  /// In es, this message translates to:
+  /// **'Toca para cambiar el logo'**
+  String get tapToChangeLogo;
+
+  /// No description provided for @businessNameRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'El nombre del negocio es obligatorio'**
+  String get businessNameRequired;
+
+  /// No description provided for @invalidEmail.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingrese un email válido'**
+  String get invalidEmail;
+
+  /// No description provided for @profileUpdated.
+  ///
+  /// In es, this message translates to:
+  /// **'Perfil actualizado correctamente'**
+  String get profileUpdated;
+
+  /// No description provided for @logoSelected.
+  ///
+  /// In es, this message translates to:
+  /// **'Logo seleccionado correctamente'**
+  String get logoSelected;
+
+  /// No description provided for @needPermissions.
+  ///
+  /// In es, this message translates to:
+  /// **'Necesitas dar permisos para elegir una imagen'**
+  String get needPermissions;
+
+  /// No description provided for @imageSelectionError.
+  ///
+  /// In es, this message translates to:
+  /// **'Error al seleccionar imagen'**
+  String get imageSelectionError;
+
+  /// No description provided for @darkModeSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Activa el tema oscuro'**
+  String get darkModeSubtitle;
+
+  /// No description provided for @businessProfileSubtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Edita la información de tu negocio'**
+  String get businessProfileSubtitle;
+
+  /// No description provided for @version.
+  ///
+  /// In es, this message translates to:
+  /// **'Versión'**
+  String get version;
+
+  /// No description provided for @filterByDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Filtrar por fecha'**
+  String get filterByDate;
+
+  /// No description provided for @results.
+  ///
+  /// In es, this message translates to:
+  /// **'{count} resultado(s)'**
+  String results(int count);
+
+  /// No description provided for @noInvoicesFound.
+  ///
+  /// In es, this message translates to:
+  /// **'No se encontraron boletas'**
+  String get noInvoicesFound;
+
+  /// No description provided for @clearFilters.
+  ///
+  /// In es, this message translates to:
+  /// **'Limpiar filtros'**
+  String get clearFilters;
+
+  /// No description provided for @productsCount.
+  ///
+  /// In es, this message translates to:
+  /// **'{count} producto(s)'**
+  String productsCount(int count);
+
+  /// No description provided for @deleteInvoice.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar boleta'**
+  String get deleteInvoice;
+
+  /// No description provided for @deleteInvoiceConfirm.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Estás seguro de eliminar la Boleta #{number}?\n\nEsta acción no se puede deshacer.'**
+  String deleteInvoiceConfirm(int number);
+
+  /// No description provided for @invoiceDeleted.
+  ///
+  /// In es, this message translates to:
+  /// **'Boleta eliminada'**
+  String get invoiceDeleted;
+
+  /// No description provided for @needPermissionsToShare.
+  ///
+  /// In es, this message translates to:
+  /// **'Se necesitan permisos para compartir'**
+  String get needPermissionsToShare;
+
+  /// No description provided for @needPermissionsToDownload.
+  ///
+  /// In es, this message translates to:
+  /// **'Se necesitan permisos para descargar'**
+  String get needPermissionsToDownload;
+
+  /// No description provided for @savedToGallery.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardado en galería'**
+  String get savedToGallery;
+
+  /// No description provided for @customerData.
+  ///
+  /// In es, this message translates to:
+  /// **'Datos del Cliente'**
+  String get customerData;
+
+  /// No description provided for @nameField.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre *'**
+  String get nameField;
+
+  /// No description provided for @nameRequiredField.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre requerido'**
+  String get nameRequiredField;
+
+  /// No description provided for @phoneField.
+  ///
+  /// In es, this message translates to:
+  /// **'Teléfono (opcional)'**
+  String get phoneField;
+
+  /// No description provided for @confirm.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirmar'**
+  String get confirm;
+
+  /// No description provided for @units.
+  ///
+  /// In es, this message translates to:
+  /// **'unidades'**
+  String get units;
+
+  /// No description provided for @deleteProduct.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar producto'**
+  String get deleteProduct;
+
+  /// No description provided for @deleteProductConfirm.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Estás seguro de eliminar este producto?'**
+  String get deleteProductConfirm;
+
+  /// No description provided for @productDeleted.
+  ///
+  /// In es, this message translates to:
+  /// **'Producto eliminado exitosamente'**
+  String get productDeleted;
+
+  /// No description provided for @permissionsNeeded.
+  ///
+  /// In es, this message translates to:
+  /// **'Permisos necesarios'**
+  String get permissionsNeeded;
+
+  /// No description provided for @permissionsMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Esta app necesita acceso a tus fotos para agregar imágenes a los productos.\n\nVe a:\nConfiguración → Apps → MiNegocio → Permisos → Fotos y multimedia'**
+  String get permissionsMessage;
+
+  /// No description provided for @openSettings.
+  ///
+  /// In es, this message translates to:
+  /// **'Abrir Configuración'**
+  String get openSettings;
+
+  /// No description provided for @needPermissionToSelectImage.
+  ///
+  /// In es, this message translates to:
+  /// **'Necesitas dar permiso para seleccionar imágenes'**
+  String get needPermissionToSelectImage;
+
+  /// No description provided for @trySelectAnyway.
+  ///
+  /// In es, this message translates to:
+  /// **'Intenta seleccionar la imagen de todos modos'**
+  String get trySelectAnyway;
+
+  /// No description provided for @invoiceNumber.
+  ///
+  /// In es, this message translates to:
+  /// **'Boleta #{number}'**
+  String invoiceNumber(int number);
+
+  /// No description provided for @businessNameLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre de empresa'**
+  String get businessNameLabel;
+
+  /// No description provided for @addressLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Dirección'**
+  String get addressLabel;
+
+  /// No description provided for @phoneLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Teléfono'**
+  String get phoneLabel;
+
+  /// No description provided for @emailLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Correo'**
+  String get emailLabel;
+
+  /// No description provided for @productList.
+  ///
+  /// In es, this message translates to:
+  /// **'Lista de productos'**
+  String get productList;
+
+  /// No description provided for @unitPrice.
+  ///
+  /// In es, this message translates to:
+  /// **'Unitario'**
+  String get unitPrice;
+
+  /// No description provided for @totalPrice.
+  ///
+  /// In es, this message translates to:
+  /// **'Total'**
+  String get totalPrice;
+
+  /// No description provided for @receipt.
+  ///
+  /// In es, this message translates to:
+  /// **'Boleta'**
+  String get receipt;
+
+  /// No description provided for @receiptNumber.
+  ///
+  /// In es, this message translates to:
+  /// **'Boleta #{number}'**
+  String receiptNumber(int number);
+
+  /// No description provided for @productsSuffix.
+  ///
+  /// In es, this message translates to:
+  /// **'Productos:'**
+  String get productsSuffix;
+
+  /// No description provided for @totalSuffix.
+  ///
+  /// In es, this message translates to:
+  /// **'Total:'**
+  String get totalSuffix;
+
+  /// No description provided for @deleteReceipt.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar boleta'**
+  String get deleteReceipt;
+
+  /// No description provided for @deleteReceiptConfirm.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Estás seguro de eliminar la Boleta #{number}?\n\nEsta acción no se puede deshacer.'**
+  String deleteReceiptConfirm(int number);
+
+  /// No description provided for @receiptDeleted.
+  ///
+  /// In es, this message translates to:
+  /// **'Boleta eliminada'**
+  String get receiptDeleted;
+
+  /// No description provided for @warningNeedPermissionsToShare.
+  ///
+  /// In es, this message translates to:
+  /// **'⚠️ Se necesitan permisos para compartir'**
+  String get warningNeedPermissionsToShare;
+
+  /// No description provided for @warningNeedPermissionsToDownload.
+  ///
+  /// In es, this message translates to:
+  /// **'⚠️ Se necesitan permisos para descargar'**
+  String get warningNeedPermissionsToDownload;
+
+  /// No description provided for @successSavedToGallery.
+  ///
+  /// In es, this message translates to:
+  /// **'✅ Guardado en galería'**
+  String get successSavedToGallery;
+
+  /// No description provided for @searchByCustomerOrNumber.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscar por cliente o número...'**
+  String get searchByCustomerOrNumber;
+
+  /// No description provided for @resultsCount.
+  ///
+  /// In es, this message translates to:
+  /// **'{count} resultado(s)'**
+  String resultsCount(int count);
+
+  /// No description provided for @noReceiptsFound.
+  ///
+  /// In es, this message translates to:
+  /// **'No se encontraron boletas'**
+  String get noReceiptsFound;
+
+  /// No description provided for @productsCountLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'{count} producto(s)'**
+  String productsCountLabel(int count);
+
+  /// No description provided for @warningPermissionsDenied.
+  ///
+  /// In es, this message translates to:
+  /// **'⚠️ Permisos denegados'**
+  String get warningPermissionsDenied;
+
+  /// No description provided for @successImageSelected.
+  ///
+  /// In es, this message translates to:
+  /// **'✅ Imagen seleccionada correctamente'**
+  String get successImageSelected;
+
+  /// No description provided for @errorOccurred.
+  ///
+  /// In es, this message translates to:
+  /// **'❌ Error'**
+  String get errorOccurred;
+
+  /// No description provided for @successProductAdded.
+  ///
+  /// In es, this message translates to:
+  /// **'✅ Producto agregado exitosamente'**
+  String get successProductAdded;
+
+  /// No description provided for @successProductUpdated.
+  ///
+  /// In es, this message translates to:
+  /// **'✅ Producto actualizado exitosamente'**
+  String get successProductUpdated;
+
+  /// No description provided for @errorWithMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'❌ Error: {message}'**
+  String errorWithMessage(String message);
+
+  /// No description provided for @successOrderCreated.
+  ///
+  /// In es, this message translates to:
+  /// **'✅ Pedido y boleta creados exitosamente'**
+  String get successOrderCreated;
+
+  /// No description provided for @errorOrderCreation.
+  ///
+  /// In es, this message translates to:
+  /// **'❌ Error al crear pedido'**
+  String get errorOrderCreation;
+
+  /// No description provided for @errorAddToOrder.
+  ///
+  /// In es, this message translates to:
+  /// **'❌ Agrega al menos un producto al pedido'**
+  String get errorAddToOrder;
+
+  /// No description provided for @errorInsufficientStock.
+  ///
+  /// In es, this message translates to:
+  /// **'❌ Stock insuficiente para {product}'**
+  String errorInsufficientStock(String product);
+
+  /// No description provided for @totalLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Total:'**
+  String get totalLabel;
 }
 
 class _AppLocalizationsDelegate

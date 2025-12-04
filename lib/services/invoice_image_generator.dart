@@ -9,12 +9,11 @@ import '../models/invoice.dart';
 import '../models/business_profile.dart';
 import '../providers/settings_provider.dart';
 import '../core/utils/app_logger.dart';
-
+import '../l10n/app_localizations.dart';
 
 /// ✅ FUNCIONA 100% OFFLINE - No requiere internet
 class InvoiceImageGenerator {
   static final GlobalKey _globalKey = GlobalKey();
-
 
   static Future<String> generateImage({
     required Invoice invoice,
@@ -30,7 +29,7 @@ class InvoiceImageGenerator {
       final overlay = Overlay.of(context);
       
       overlayEntry = OverlayEntry(
-        builder: (context) => Positioned(
+        builder: (overlayContext) => Positioned(
           left: -10000,
           top: -10000,
           child: RepaintBoundary(
@@ -48,6 +47,7 @@ class InvoiceImageGenerator {
                       invoice: invoice,
                       businessProfile: businessProfile,
                       settingsProvider: settingsProvider,
+                      context: context,
                     ),
                   ),
                 ),
@@ -57,16 +57,13 @@ class InvoiceImageGenerator {
         ),
       );
 
-
       overlay.insert(overlayEntry);
       
       await Future.delayed(const Duration(milliseconds: 500));
 
-
       if (_globalKey.currentContext == null) {
         throw Exception('No se pudo obtener el contexto del RepaintBoundary');
       }
-
 
       RenderRepaintBoundary boundary =
           _globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
@@ -81,10 +78,8 @@ class InvoiceImageGenerator {
       Uint8List pngBytes = byteData.buffer.asUint8List();
       AppLogger.success('Imagen capturada: ${pngBytes.length} bytes');
 
-
       overlayEntry.remove();
       overlayEntry = null;
-
 
       final directory = await getTemporaryDirectory();
       final tempPath = '${directory.path}/temp_invoice_${invoice.invoiceNumber}_${DateTime.now().millisecondsSinceEpoch}.png';
@@ -95,7 +90,6 @@ class InvoiceImageGenerator {
       if (!await file.exists()) {
         throw Exception('No se pudo guardar la imagen temporal');
       }
-
 
       AppLogger.success('Imagen guardada: $tempPath');
       return tempPath;
@@ -113,30 +107,31 @@ class InvoiceImageGenerator {
   }
 }
 
-
 class InvoiceContent extends StatelessWidget {
   final Invoice invoice;
   final BusinessProfile businessProfile;
   final SettingsProvider settingsProvider;
-
+  final BuildContext context;
 
   const InvoiceContent({
     super.key,
     required this.invoice,
     required this.businessProfile,
     required this.settingsProvider,
+    required this.context,
   });
 
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext ctx) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 20),
         
-        // Logo centrado (SIN texto "Logo de negocio")
+        // Logo centrado
         Center(
           child: Column(
             children: [
@@ -181,7 +176,7 @@ class InvoiceContent extends StatelessWidget {
         Text(
           businessProfile.businessName.isNotEmpty 
               ? businessProfile.businessName 
-              : "Nombre de empresa",
+              : l10n.businessNameLabel,
           style: const TextStyle(
             fontSize: 32, 
             fontWeight: FontWeight.bold,
@@ -201,7 +196,7 @@ class InvoiceContent extends StatelessWidget {
               child: Text(
                 businessProfile.address.isNotEmpty 
                     ? businessProfile.address 
-                    : "Dirección",
+                    : l10n.addressLabel,
                 style: const TextStyle(
                   fontSize: 16,
                   color: Colors.black,
@@ -220,7 +215,7 @@ class InvoiceContent extends StatelessWidget {
             Text(
               businessProfile.phone.isNotEmpty 
                   ? businessProfile.phone 
-                  : "Teléfono",
+                  : l10n.phoneLabel,
               style: const TextStyle(
                 fontSize: 16,
                 color: Colors.black,
@@ -239,7 +234,7 @@ class InvoiceContent extends StatelessWidget {
               child: Text(
                 businessProfile.email.isNotEmpty 
                     ? businessProfile.email 
-                    : "Correo",
+                    : l10n.emailLabel,
                 style: const TextStyle(
                   fontSize: 16,
                   color: Colors.black,
@@ -260,15 +255,15 @@ class InvoiceContent extends StatelessWidget {
             2: FlexColumnWidth(1.2),
           },
           children: [
-            // Header de tabla (con "Lista de productos", "Unitario", "Total")
+            // Header de tabla
             TableRow(
               decoration: BoxDecoration(color: Colors.grey[300]),
-              children: const [
+              children: [
                 Padding(
-                  padding: EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(12),
                   child: Text(
-                    "Lista de productos",
-                    style: TextStyle(
+                    l10n.productList,
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                       fontSize: 16,
@@ -276,10 +271,10 @@ class InvoiceContent extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(12),
                   child: Text(
-                    "Unitario",
-                    style: TextStyle(
+                    l10n.unitPrice,
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                       fontSize: 16,
@@ -288,10 +283,10 @@ class InvoiceContent extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(12),
                   child: Text(
-                    "Total",
-                    style: TextStyle(
+                    l10n.totalPrice,
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                       fontSize: 16,
@@ -350,7 +345,7 @@ class InvoiceContent extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           color: Colors.grey[300],
           child: Text(
-            "Total: ${settingsProvider.formatPrice(invoice.total)}",
+            '${l10n.totalLabel} ${settingsProvider.formatPrice(invoice.total)}',
             style: const TextStyle(
               fontSize: 24, 
               fontWeight: FontWeight.bold,

@@ -237,4 +237,239 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get viewCart => 'Ver Carrito';
+
+  @override
+  String get quickAccess => 'Accesos Rápidos';
+
+  @override
+  String get lowStockProducts => 'Productos con stock bajo';
+
+  @override
+  String get tapToChangeLogo => 'Toca para cambiar el logo';
+
+  @override
+  String get businessNameRequired => 'El nombre del negocio es obligatorio';
+
+  @override
+  String get invalidEmail => 'Ingrese un email válido';
+
+  @override
+  String get profileUpdated => 'Perfil actualizado correctamente';
+
+  @override
+  String get logoSelected => 'Logo seleccionado correctamente';
+
+  @override
+  String get needPermissions => 'Necesitas dar permisos para elegir una imagen';
+
+  @override
+  String get imageSelectionError => 'Error al seleccionar imagen';
+
+  @override
+  String get darkModeSubtitle => 'Activa el tema oscuro';
+
+  @override
+  String get businessProfileSubtitle => 'Edita la información de tu negocio';
+
+  @override
+  String get version => 'Versión';
+
+  @override
+  String get filterByDate => 'Filtrar por fecha';
+
+  @override
+  String results(int count) {
+    return '$count resultado(s)';
+  }
+
+  @override
+  String get noInvoicesFound => 'No se encontraron boletas';
+
+  @override
+  String get clearFilters => 'Limpiar filtros';
+
+  @override
+  String productsCount(int count) {
+    return '$count producto(s)';
+  }
+
+  @override
+  String get deleteInvoice => 'Eliminar boleta';
+
+  @override
+  String deleteInvoiceConfirm(int number) {
+    return '¿Estás seguro de eliminar la Boleta #$number?\n\nEsta acción no se puede deshacer.';
+  }
+
+  @override
+  String get invoiceDeleted => 'Boleta eliminada';
+
+  @override
+  String get needPermissionsToShare => 'Se necesitan permisos para compartir';
+
+  @override
+  String get needPermissionsToDownload =>
+      'Se necesitan permisos para descargar';
+
+  @override
+  String get savedToGallery => 'Guardado en galería';
+
+  @override
+  String get customerData => 'Datos del Cliente';
+
+  @override
+  String get nameField => 'Nombre *';
+
+  @override
+  String get nameRequiredField => 'Nombre requerido';
+
+  @override
+  String get phoneField => 'Teléfono (opcional)';
+
+  @override
+  String get confirm => 'Confirmar';
+
+  @override
+  String get units => 'unidades';
+
+  @override
+  String get deleteProduct => 'Eliminar producto';
+
+  @override
+  String get deleteProductConfirm => '¿Estás seguro de eliminar este producto?';
+
+  @override
+  String get productDeleted => 'Producto eliminado exitosamente';
+
+  @override
+  String get permissionsNeeded => 'Permisos necesarios';
+
+  @override
+  String get permissionsMessage =>
+      'Esta app necesita acceso a tus fotos para agregar imágenes a los productos.\n\nVe a:\nConfiguración → Apps → MiNegocio → Permisos → Fotos y multimedia';
+
+  @override
+  String get openSettings => 'Abrir Configuración';
+
+  @override
+  String get needPermissionToSelectImage =>
+      'Necesitas dar permiso para seleccionar imágenes';
+
+  @override
+  String get trySelectAnyway => 'Intenta seleccionar la imagen de todos modos';
+
+  @override
+  String invoiceNumber(int number) {
+    return 'Boleta #$number';
+  }
+
+  @override
+  String get businessNameLabel => 'Nombre de empresa';
+
+  @override
+  String get addressLabel => 'Dirección';
+
+  @override
+  String get phoneLabel => 'Teléfono';
+
+  @override
+  String get emailLabel => 'Correo';
+
+  @override
+  String get productList => 'Lista de productos';
+
+  @override
+  String get unitPrice => 'Unitario';
+
+  @override
+  String get totalPrice => 'Total';
+
+  @override
+  String get receipt => 'Boleta';
+
+  @override
+  String receiptNumber(int number) {
+    return 'Boleta #$number';
+  }
+
+  @override
+  String get productsSuffix => 'Productos:';
+
+  @override
+  String get totalSuffix => 'Total:';
+
+  @override
+  String get deleteReceipt => 'Eliminar boleta';
+
+  @override
+  String deleteReceiptConfirm(int number) {
+    return '¿Estás seguro de eliminar la Boleta #$number?\n\nEsta acción no se puede deshacer.';
+  }
+
+  @override
+  String get receiptDeleted => 'Boleta eliminada';
+
+  @override
+  String get warningNeedPermissionsToShare =>
+      '⚠️ Se necesitan permisos para compartir';
+
+  @override
+  String get warningNeedPermissionsToDownload =>
+      '⚠️ Se necesitan permisos para descargar';
+
+  @override
+  String get successSavedToGallery => '✅ Guardado en galería';
+
+  @override
+  String get searchByCustomerOrNumber => 'Buscar por cliente o número...';
+
+  @override
+  String resultsCount(int count) {
+    return '$count resultado(s)';
+  }
+
+  @override
+  String get noReceiptsFound => 'No se encontraron boletas';
+
+  @override
+  String productsCountLabel(int count) {
+    return '$count producto(s)';
+  }
+
+  @override
+  String get warningPermissionsDenied => '⚠️ Permisos denegados';
+
+  @override
+  String get successImageSelected => '✅ Imagen seleccionada correctamente';
+
+  @override
+  String get errorOccurred => '❌ Error';
+
+  @override
+  String get successProductAdded => '✅ Producto agregado exitosamente';
+
+  @override
+  String get successProductUpdated => '✅ Producto actualizado exitosamente';
+
+  @override
+  String errorWithMessage(String message) {
+    return '❌ Error: $message';
+  }
+
+  @override
+  String get successOrderCreated => '✅ Pedido y boleta creados exitosamente';
+
+  @override
+  String get errorOrderCreation => '❌ Error al crear pedido';
+
+  @override
+  String get errorAddToOrder => '❌ Agrega al menos un producto al pedido';
+
+  @override
+  String errorInsufficientStock(String product) {
+    return '❌ Stock insuficiente para $product';
+  }
+
+  @override
+  String get totalLabel => 'Total:';
 }

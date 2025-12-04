@@ -273,7 +273,7 @@ class ProductCard extends StatelessWidget {
                             context,
                             icon: Icons.inventory_2,
                             label: l10n.stock,
-                            value: '${product.stock} unidades',
+                            value: '${product.stock} ${l10n.units}',
                             valueColor: product.stock <= 5 ? theme.error : theme.textPrimary,
                           ),
                         ],
@@ -401,7 +401,7 @@ class ProductCard extends StatelessWidget {
             SizedBox(width: 12.w),
             Expanded(
               child: Text(
-                l10n.confirmDelete,
+                l10n.deleteProduct,
                 style: TextStyle(
                   fontSize: isVerySmall ? 16.sp : 18.sp,
                   color: theme.textPrimary,
@@ -417,7 +417,7 @@ class ProductCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '¿Estás seguro de eliminar este producto?',
+              l10n.deleteProductConfirm,
               style: TextStyle(
                 fontSize: isVerySmall ? 13.sp : 16.sp,
                 color: theme.textPrimary,
@@ -449,7 +449,7 @@ class ProductCard extends StatelessWidget {
             ),
             SizedBox(height: 12.h),
             Text(
-              'Producto: ${product.name}',
+              '${l10n.name}: ${product.name}',
               style: TextStyle(
                 fontSize: isVerySmall ? 12.sp : 14.sp,
                 fontWeight: FontWeight.bold,
@@ -481,7 +481,7 @@ class ProductCard extends StatelessWidget {
                     children: [
                       const Icon(Icons.check_circle, color: Colors.white),
                       SizedBox(width: 8.w),
-                      const Expanded(child: Text('Producto eliminado exitosamente')),
+                      Expanded(child: Text(l10n.productDeleted)),
                     ],
                   ),
                   backgroundColor: Colors.green,
