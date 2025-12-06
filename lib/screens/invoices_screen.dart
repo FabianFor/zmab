@@ -780,6 +780,7 @@ class _InvoicesScreenContentState extends State<InvoicesScreenContent> {
             logoPath: '',
           ),
           settingsProvider: settingsProvider,
+          languageCode: l10n.localeName,
           translations: {
             'productList': l10n.productList,
             'quantity': l10n.quantity,
@@ -874,9 +875,10 @@ class _InvoicesScreenContentState extends State<InvoicesScreenContent> {
             logoPath: '',
           ),
           settingsProvider: settingsProvider,
+          languageCode: l10n.localeName,
           translations: {
             'productList': l10n.productList,
-            'quantityShort': l10n.quantityShort,
+            'quantity': l10n.quantity,
             'unitPrice': l10n.unitPrice,
             'total': l10n.totalPrice,
             'totalLabel': l10n.totalLabel,

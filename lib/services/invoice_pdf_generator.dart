@@ -17,32 +17,24 @@ class InvoicePdfGenerator {
   }) async {
     final pdf = pw.Document();
 
-    // ✅ Cargar fuentes con soporte multiidioma (incluyendo chino)
     pw.Font? font;
     pw.Font? fontBold;
     
     try {
-      // ✅ CORRECCIÓN: Usar fuentes que soporten chino
       if (languageCode == 'zh') {
-        // Opción 1: Intentar Noto Sans con soporte CJK
         try {
           font = await PdfGoogleFonts.notoSansRegular();
           fontBold = await PdfGoogleFonts.notoSansBold();
-          print('✅ Fuente Noto Sans cargada para chino');
         } catch (e1) {
-          // Opción 2: Usar Roboto como fallback
           font = await PdfGoogleFonts.robotoRegular();
           fontBold = await PdfGoogleFonts.robotoBold();
-          print('✅ Fuente Roboto cargada como fallback para chino');
         }
       } else {
         font = await PdfGoogleFonts.notoSansRegular();
         fontBold = await PdfGoogleFonts.notoSansBold();
       }
     } catch (e) {
-      print('⚠️ Error cargando fuente de Google: $e');
-      // Fallback final: usar fuente por defecto del sistema
-      print('⚠️ Usando fuente por defecto del sistema');
+      print('⚠️ Error cargando fuente: $e');
     }
 
     pw.ImageProvider? logoImage;

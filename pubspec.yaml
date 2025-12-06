@@ -47,6 +47,11 @@ dependencies:
   
   # Network
   connectivity_plus: ^6.0.5
+  
+  # PDF & File handling
+  pdf: ^3.10.4
+  open_file: ^3.5.0
+  printing: ^5.11.0
 
 dev_dependencies:
   flutter_test:
@@ -57,10 +62,27 @@ dev_dependencies:
   hive_generator: ^2.0.1
   build_runner: ^2.4.9
   
-  # ... dependencias existentes
-  pdf: ^3.10.4
-  open_file: ^3.5.0
-  printing: ^5.11.0
+  # App Icon Generator
+  flutter_launcher_icons: ^0.13.1
+
+# ✅ Configuración del ícono de la app
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/logo.png"
+  min_sdk_android: 21
+  
+  # Ícono adaptable para Android
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/icon/logo.png"
+  
+  # Para iOS
+  remove_alpha_ios: true
+
 flutter:
   uses-material-design: true
   generate: true
+  
+  # ✅ Agregar carpeta de assets para el ícono
+  assets:
+    - assets/icon/
