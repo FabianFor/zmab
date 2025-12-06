@@ -383,7 +383,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get quantityShort => '数量';
 
   @override
-  String get unitPrice => '单价';
+  String get unitPrice => '价格';
 
   @override
   String get totalPrice => '总计';

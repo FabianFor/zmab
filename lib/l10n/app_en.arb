@@ -156,7 +156,7 @@
   "productList": "Product list",
   "quantity": "Quantity",
   "quantityShort": "Qty.",
-  "unitPrice": "Unit price",
+  "unitPrice": "Price",
   "totalPrice": "Total",
   "receipt": "Receipt",
   "receiptNumber": "Receipt #{number}",

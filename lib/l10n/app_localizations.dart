@@ -831,7 +831,7 @@ abstract class AppLocalizations {
   /// No description provided for @unitPrice.
   ///
   /// In es, this message translates to:
-  /// **'Precio unitario'**
+  /// **'Precio'**
   String get unitPrice;
 
   /// No description provided for @totalPrice.

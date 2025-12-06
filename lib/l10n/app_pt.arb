@@ -156,7 +156,7 @@
   "productList": "Lista de produtos",
   "quantity": "Quantidade",
   "quantityShort": "Qtd.",
-  "unitPrice": "Preço unitário",
+  "unitPrice": "Preço",
   "totalPrice": "Total",
   "receipt": "Recibo",
   "receiptNumber": "Recibo #{number}",

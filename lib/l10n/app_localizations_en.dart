@@ -386,7 +386,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get quantityShort => 'Qty.';
 
   @override
-  String get unitPrice => 'Unit price';
+  String get unitPrice => 'Price';
 
   @override
   String get totalPrice => 'Total';

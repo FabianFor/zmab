@@ -4,7 +4,6 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:printing/printing.dart';
-import 'package:flutter/services.dart' show rootBundle;  // ✅ AGREGA ESTA LÍNEA
 import '../models/business_profile.dart';
 import '../providers/settings_provider.dart';
 
@@ -18,23 +17,32 @@ class InvoicePdfGenerator {
   }) async {
     final pdf = pw.Document();
 
-    // ✅ Cargar fuentes con soporte multiidioma
+    // ✅ Cargar fuentes con soporte multiidioma (incluyendo chino)
     pw.Font? font;
     pw.Font? fontBold;
     
     try {
-      // Intenta cargar Noto Sans (soporta chino, japonés, etc.)
-      font = await PdfGoogleFonts.notoSansRegular();
-      fontBold = await PdfGoogleFonts.notoSansBold();
+      // ✅ CORRECCIÓN: Usar fuentes que soporten chino
+      if (languageCode == 'zh') {
+        // Opción 1: Intentar Noto Sans con soporte CJK
+        try {
+          font = await PdfGoogleFonts.notoSansRegular();
+          fontBold = await PdfGoogleFonts.notoSansBold();
+          print('✅ Fuente Noto Sans cargada para chino');
+        } catch (e1) {
+          // Opción 2: Usar Roboto como fallback
+          font = await PdfGoogleFonts.robotoRegular();
+          fontBold = await PdfGoogleFonts.robotoBold();
+          print('✅ Fuente Roboto cargada como fallback para chino');
+        }
+      } else {
+        font = await PdfGoogleFonts.notoSansRegular();
+        fontBold = await PdfGoogleFonts.notoSansBold();
+      }
     } catch (e) {
       print('⚠️ Error cargando fuente de Google: $e');
-      // Fallback: usar fuente por defecto
-      try {
-        final fontData = await rootBundle.load("assets/fonts/Roboto-Regular.ttf");
-        font = pw.Font.ttf(fontData);
-      } catch (e2) {
-        print('⚠️ Usando fuente por defecto del sistema');
-      }
+      // Fallback final: usar fuente por defecto del sistema
+      print('⚠️ Usando fuente por defecto del sistema');
     }
 
     pw.ImageProvider? logoImage;
@@ -177,8 +185,8 @@ class InvoicePdfGenerator {
                 pw.Table(
                   border: pw.TableBorder.all(color: PdfColors.grey400, width: 1),
                   columnWidths: {
-                    0: const pw.FlexColumnWidth(3.0),
-                    1: const pw.FlexColumnWidth(1.0),
+                    0: const pw.FlexColumnWidth(2.8),
+                    1: const pw.FlexColumnWidth(1.3),
                     2: const pw.FlexColumnWidth(1.5),
                     3: const pw.FlexColumnWidth(1.5),
                   },
@@ -206,7 +214,7 @@ class InvoicePdfGenerator {
                         pw.Padding(
                           padding: const pw.EdgeInsets.all(8),
                           child: pw.Text(
-                            translations['unitPrice'] ?? 'Unit price',
+                            translations['unitPrice'] ?? 'Price',
                             style: getTextStyle(fontSize: 13, bold: true),
                             textAlign: pw.TextAlign.center,
                           ),

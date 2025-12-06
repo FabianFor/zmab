@@ -156,7 +156,7 @@
   "productList": "产品列表",
   "quantity": "数量",
   "quantityShort": "数量",
-  "unitPrice": "单价",
+  "unitPrice": "价格",
   "totalPrice": "总计",
   "receipt": "收据",
   "receiptNumber": "收据 #{number}",
